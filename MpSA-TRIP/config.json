@@ -1,5 +1,0 @@
-{
-	"INPUT_FILE": "path_to_fastq/fastq.gz_source",
-	"OUTPUT_DIR": "path_to_output_directory",
-	
-}
