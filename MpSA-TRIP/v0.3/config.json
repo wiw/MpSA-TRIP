@@ -1,5 +1,92 @@
 {
-	"INPUT_FILE": "path_to_fastq/fastq.gz_source",
-	"OUTPUT_DIR": "path_to_output_directory",
-	
+    "project": "TRIP",
+    "core": {
+        "errors": {
+                "index_error": 0,
+                "sub_index_error": 1,
+                "barcode_error": 2
+            },
+        "length": {
+            "sub_index_length": 5,
+            "barcode_length": 18,
+            "mutations_length": 8
+        },
+        "thresholds": {
+            "minimum_reads": 3,
+            "mutation_reliability": 0.95
+        }
+    },
+    "input_file": {
+        "single": {
+            "path": "path_to_fastq/fastq.gz/pickle_source"
+            },
+        "multiple": {
+            "fmap": ["path_to_fastq/fastq.gz/pickle_source_one", "path_to_fastq/fastq.gz/pickle_source_two"],
+            "fnorm": ["path_to_fastq/fastq.gz/pickle_source", "path_to_fastq/fastq.gz/pickle_source_two"],
+            "fexpr": ["path_to_fastq/fastq.gz/pickle_source", "path_to_fastq/fastq.gz/pickle_source_two"]
+        }
+    },
+    "output_dir": "path_to_output_directory",
+    "content":{
+        "mapping": {
+            "replicates": 2,
+            "index": {
+                "m1": "TTCGGAGT",
+                "m2": "ACTCATTT"
+            },
+            "sub_index": {
+                "AGTCA": "PCNA",
+                "ACGTA": "Hsp70",
+                "CTGCT": "MtnA",
+                "AGCTC": "HexA",
+                "TTGAG": "Tbp",
+                "TCAAA": "Pyk",
+                "TCGCT": "Promoterless"
+            },
+            "constant1": ["gtcacaagggccggccacaactc", 3],
+            "constant2": ["ctcgatc", 1],
+            "constant3": ["ttaaccctagaaagataatc", 2],
+            "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2", "genome", "constant3"]
+        },
+        "normalization": {
+            "replicates": 2,
+            "index": {
+                "n1": "AGTCGCCG",
+                "n2": "TAAACATC"
+            },
+            "sub_index": {
+                "AGTCA": "PCNA",
+                "ACGTA": "Hsp70",
+                "CTGCT": "MtnA",
+                "AGCTC": "HexA",
+                "TTGAG": "Tbp",
+                "TCAAA": "Pyk",
+                "TCGCT": "Promoterless"
+            },
+            "constant1": ["gtcacaagggccggccacaactc", 3],
+            "constant2": ["ctcgatc", 1],
+            "constant3": ["ttaaccctagaaagataatc", 2],
+            "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2"]
+        },
+        "normalization": {
+            "replicates": 2,
+            "index": {
+                "e1": "GGTATGTT",
+                "e2": "GAGGGACC"
+            },
+            "sub_index": {
+                "AGTCA": "PCNA",
+                "ACGTA": "Hsp70",
+                "CTGCT": "MtnA",
+                "AGCTC": "HexA",
+                "TTGAG": "Tbp",
+                "TCAAA": "Pyk",
+                "TCGCT": "Promoterless"
+            },
+            "constant1": ["gtcacaagggccggccacaactc", 3],
+            "constant2": ["ctcgatc", 1],
+            "constant3": ["ttaaccctagaaagataatc", 2],
+            "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2"]
+        }
+    }
 }
