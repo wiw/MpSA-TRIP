@@ -1,6 +1,11 @@
 {
     "project": "TRIP",
     "core": {
+        "arguments": {
+            "experiment_name": "some_experiment_name",
+            "paired": false,
+            "barcode_reversed": true
+        },
         "errors": {
             "index_error": 0,
             "sub_index_error": 1,
@@ -9,11 +14,10 @@
         "length": {
             "sub_index_length": 5,
             "barcode_length": 18,
-            "mutations_length": 8
         },
         "thresholds": {
             "minimum_reads": 3,
-            "mutation_reliability": 0.95
+            "mutation_reliability": 0.8
         },
         "existing": {
             "R": "/usr/bin/Rscript",
@@ -74,7 +78,7 @@
             "constant3": ["ttaaccctagaaagataatc", 2],
             "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2"]
         },
-        "normalization": {
+        "expression": {
             "replicates": 2,
             "index": {
                 "e1": "GGTATGTT",
