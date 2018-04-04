@@ -2,10 +2,10 @@
     "project": "TRIP",
     "core": {
         "errors": {
-                "index_error": 0,
-                "sub_index_error": 1,
-                "barcode_error": 2
-            },
+            "index_error": 0,
+            "sub_index_error": 1,
+            "barcode_error": 2
+        },
         "length": {
             "sub_index_length": 5,
             "barcode_length": 18,
@@ -14,6 +14,12 @@
         "thresholds": {
             "minimum_reads": 3,
             "mutation_reliability": 0.95
+        },
+        "existing": {
+            "R": "/usr/bin/Rscript",
+            "bowtie": "/usr/bin/bowtie",
+            "bowtie_indexes": "/home/anton/data/DAM/indexes/dmel-r6.19/dmel-r6.19",
+            "bowtie_filter_indexes": "/home/anton/data/DAM/indexes/rfpl/rfpl"
         }
     },
     "input_file": {
