@@ -9,9 +9,9 @@ You can define two values.
 
 #### *Example*
 
-	{
-		"project": "TRIP"
-	}
+    {
+        "project": "TRIP"
+    }
 
 ## Section *core*:
 
@@ -25,15 +25,15 @@ Contain **five** dictionaries who defined main programm parameters.
 
 #### *Example*
 
-	{
-		"core": {
-			"arguments": {
-				"experiment_name": "some_experiment_name",
-	            "paired": false,
-	            "barcode_reversed": true
-			}
-		}
-	}
+    {
+        "core": {
+            "arguments": {
+                "experiment_name": "some_experiment_name",
+                "paired": false,
+                "barcode_reversed": true
+            }
+        }
+    }
 ***
 ### *errors*
 > contains some error reads values
@@ -44,15 +44,15 @@ Contain **five** dictionaries who defined main programm parameters.
 
 #### *Example*
 
-	{
-		"core": {
-			"errors": {
-	            "index_error": 0,
-	            "sub_index_error": 1,
-	            "barcode_error": 2
-	        }
-	    }
-	}
+    {
+        "core": {
+            "errors": {
+                "index_error": 0,
+                "sub_index_error": 1,
+                "barcode_error": 2
+            }
+        }
+    }
 ***
 ### *length*
 > contains parameters of sequence lengths
@@ -63,14 +63,14 @@ Contain **five** dictionaries who defined main programm parameters.
 
 #### *Example*
 
-	{
-		"core": {
-			"length": {
-	            "sub_index_length": 5,
-	            "barcode_length": 18
-	        }
-	    }
-	}
+    {
+        "core": {
+            "length": {
+                "sub_index_length": 5,
+                "barcode_length": 18
+            }
+        }
+    }
 ***
 ### *thresholds*
 > contains parameters that determine the restrictions applied to the output of the results
@@ -80,14 +80,14 @@ Contain **five** dictionaries who defined main programm parameters.
 
 #### *Example*
 
-	{
-		"core": {
-			"thresholds": {
-	            "minimum_reads": 3,
-	            "sequence_reliability": 0.8
-	        }
-	    }
-	}
+    {
+        "core": {
+            "thresholds": {
+                "minimum_reads": 3,
+                "sequence_reliability": 0.8
+            }
+        }
+    }
 ***
 ### *external*
 > link to external libraries and additional files
@@ -99,16 +99,16 @@ Contain **five** dictionaries who defined main programm parameters.
 
 #### *Example*
 
-	{
-		"core": {
-	        "external": {
-	            "R": "/usr/bin/Rscript",
-	            "bowtie": "/usr/bin/bowtie",
-	            "bowtie_indexes": "/path/to/your/indexes/folder/dmel-r6.19/dmel-r6.19",
-	            "bowtie_filter_indexes": "/path/to/your/indexes/folder/rfpl/rfpl"
-	        }
-	    }
-	}
+    {
+        "core": {
+            "external": {
+                "R": "/usr/bin/Rscript",
+                "bowtie": "/usr/bin/bowtie",
+                "bowtie_indexes": "/path/to/your/indexes/folder/dmel-r6.19/dmel-r6.19",
+                "bowtie_filter_indexes": "/path/to/your/indexes/folder/rfpl/rfpl"
+            }
+        }
+    }
 
 ## Section *input_file*:
 
@@ -124,13 +124,13 @@ Use **ONLY ONE** option: *single* or *multiple*
 
 #### *Example*
 
-	{
-		"input_file": {
-			"single": {
-				"path": "/path/to/your/fastq/fastq.gz/or/pickle.file"
-			}
-		}
-	}
+    {
+        "input_file": {
+            "single": {
+                "path": "/path/to/your/fastq/fastq.gz/or/pickle.file"
+            }
+        }
+    }
 
 **or you can use *multiple* option**
 
@@ -143,15 +143,15 @@ Use **ONLY ONE** option: *single* or *multiple*
 
 #### *Example*
 
-	{
-		"input_file": {
-			"multiple": {
-				"fmap": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/fastq/fastq.gz/or/pickle.file"],
-	            "fnorm": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/fastq/fastq.gz/or/pickle.file"],
-	            "fexpr": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/fastq/fastq.gz/or/pickle.file"]
-			}
-		}
-	}
+    {
+        "input_file": {
+            "multiple": {
+                "fmap": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/fastq/fastq.gz/or/pickle.file"],
+                "fnorm": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/fastq/fastq.gz/or/pickle.file"],
+                "fexpr": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/fastq/fastq.gz/or/pickle.file"]
+            }
+        }
+    }
 
 ## Section *output_dir*:
 
@@ -159,9 +159,9 @@ Contain path to directory result
 
 #### *Example*
 
-	{
-		"output_dir": "path/to/output/directory"
-	}
+    {
+        "output_dir": "path/to/output/directory"
+    }
 
 ## Section *content*:
 
@@ -173,62 +173,62 @@ Section in which you can determine the structure of your data. Data can consist 
 
 #### *Example*
 
-	{
-		"content": {
-			"mapping": {
-				"replicates": 2
-			}
-		}
-	}
+    {
+        "content": {
+            "mapping": {
+                "replicates": 2
+            }
+        }
+    }
 
 * *index* - defined by an arbitrary index name and its sequence. It is important that the number of indices correspond to the number of replicas, even if the indices have the same sequences.
 
 #### *Example*
 
-	{
-		"content": {
-			"mapping": {
-				"index": {
-					"m1": "TTCGGAGT",
-	                "m2": "ACTCATTT" 
-				}
-			}
-		}
-	}
+    {
+        "content": {
+            "mapping": {
+                "index": {
+                    "m1": "TTCGGAGT",
+                    "m2": "ACTCATTT" 
+                }
+            }
+        }
+    }
 
 * *sub_index* - ***Optional***, but ***required*** if you specify *sub\_index\_error* value. Defines sequences of sub-indexes and their aliases.
 
 #### *Example*
 
-	{
-		"content": {
-			"mapping": {
-				"sub_index": {
-					"PCNA": "AGTCA",
-	                "Hsp70": "ACGTA",
-	                "MtnA": "CTGCT",
-	                "HexA": "AGCTC",
-	                "Tbp": "TTGAG",
-	                "Pyk": "TCAAA",
-	                "Promoterless": "TCGCT"
-	            }
-			}
-		}
-	}
+    {
+        "content": {
+            "mapping": {
+                "sub_index": {
+                    "PCNA": "AGTCA",
+                    "Hsp70": "ACGTA",
+                    "MtnA": "CTGCT",
+                    "HexA": "AGCTC",
+                    "Tbp": "TTGAG",
+                    "Pyk": "TCAAA",
+                    "Promoterless": "TCGCT"
+                }
+            }
+        }
+    }
 
 * *constant_1* - *constant_**N*** - вefines sequences of constant parts of a read. They can be any number, but it is better to adhere to a reasonable number of constant parts - no more than 4-5 sequences per read. Each constant part has an alias, sequence and an error level, which is recommended to be set as 10% of the length of the sequence
 
 #### *Example*
 
-	{
-		"content": {
-			"mapping": {
-	            "constant1": ["gtcacaagggccggccacaactc", 3],
-	            "constant2": ["ctcgatc", 1],
-	            "constant3": ["ttaaccctagaaagataatc", 2],
-			}
-		}
-	}
+    {
+        "content": {
+            "mapping": {
+                "constant1": ["gtcacaagggccggccacaactc", 3],
+                "constant2": ["ctcgatc", 1],
+                "constant3": ["ttaaccctagaaagataatc", 2],
+            }
+        }
+    }
 
 * *read_structure* - here we determine the order of the elements of which the reader consists.
 
@@ -242,112 +242,112 @@ To do this, use the following standard keywords and notations:
 
 #### *Example*
 
-	{
-		"content": {
-			"mapping": {
-				"read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2", "sequence", "constant3"]
-			}
-		}
-	}
+    {
+        "content": {
+            "mapping": {
+                "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2", "sequence", "constant3"]
+            }
+        }
+    }
 ***
 ***
 
 ## And in the end, an example of a fully assembled config
 
-	{
-	    "project": "TRIP",
-	    "core": {
-	        "arguments": {
-	            "experiment_name": "some_experiment_name",
-	            "paired": false,
-	            "barcode_reversed": true
-	        },
-	        "errors": {
-	            "index_error": 0,
-	            "sub_index_error": 1,
-	            "barcode_error": 2
-	        },
-	        "length": {
-	            "sub_index_length": 5,
-	            "barcode_length": 18,
-	        },
-	        "thresholds": {
-	            "minimum_reads": 3,
-	            "sequence_reliability": 0.8
-	        },
-	        "external": {
-	            "R": "/usr/bin/Rscript",
-	            "bowtie": "/usr/bin/bowtie",
-	            "bowtie_indexes": "/path/to/your/indexes/folder/dmel-r6.19/dmel-r6.19",
-	            "bowtie_filter_indexes": "/path/to/your/indexes/folder/rfpl/rfpl"
-	        }
-	    },
-	    "input_file": {
-	        "single": {
-	            "path": "path_to_fastq/fastq.gz/pickle_source"
-	            }
-	    },
-	    "output_dir": "path_to_output_directory",
-	    "content":{
-	        "mapping": {
-	            "replicates": 2,
-	            "index": {
-	                "m1": "TTCGGAGT",
-	                "m2": "ACTCATTT"
-	            },
-	            "sub_index": {
-	                "AGTCA": "PCNA",
-	                "ACGTA": "Hsp70",
-	                "CTGCT": "MtnA",
-	                "AGCTC": "HexA",
-	                "TTGAG": "Tbp",
-	                "TCAAA": "Pyk",
-	                "TCGCT": "Promoterless"
-	            },
-	            "constant1": ["gtcacaagggccggccacaactc", 3],
-	            "constant2": ["ctcgatc", 1],
-	            "constant3": ["ttaaccctagaaagataatc", 2],
-	            "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2", "sequence", "constant3"]
-	        },
-	        "normalization": {
-	            "replicates": 2,
-	            "index": {
-	                "n1": "AGTCGCCG",
-	                "n2": "TAAACATC"
-	            },
-	            "sub_index": {
-	                "PCNA": "AGTCA",
-	                "Hsp70": "ACGTA",
-	                "MtnA": "CTGCT",
-	                "HexA": "AGCTC",
-	                "Tbp": "TTGAG",
-	                "Pyk": "TCAAA",
-	                "Promoterless": "TCGCT"
-	            },
-	            "constant1": ["gtcacaagggccggccacaactc", 3],
-	            "constant2": ["ctcgatc", 1],
-	            "constant3": ["ttaaccctagaaagataatc", 2],
-	            "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2"]
-	        },
-	        "expression": {
-	            "replicates": 2,
-	            "index": {
-	                "e1": "GGTATGTT",
-	                "e2": "GAGGGACC"
-	            },
-	            "sub_index": {
-	                "AGTCA": "PCNA",
-	                "ACGTA": "Hsp70",
-	                "CTGCT": "MtnA",
-	                "AGCTC": "HexA",
-	                "TTGAG": "Tbp",
-	                "TCAAA": "Pyk",
-	                "TCGCT": "Promoterless"
-	            },
-	            "constant1": ["gtcacaagggccggccacaactc", 3],
-	            "constant2": ["ctcgatc", 1],
-	            "constant3": ["ttaaccctagaaagataatc", 2],
-	            "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2"]
-	        }
-	    }
-	}
+    {
+        "project": "TRIP",
+        "core": {
+            "arguments": {
+                "experiment_name": "some_experiment_name",
+                "paired": false,
+                "barcode_reversed": true
+            },
+            "errors": {
+                "index_error": 0,
+                "sub_index_error": 1,
+                "barcode_error": 2
+            },
+            "length": {
+                "sub_index_length": 5,
+                "barcode_length": 18,
+            },
+            "thresholds": {
+                "minimum_reads": 3,
+                "sequence_reliability": 0.8
+            },
+            "external": {
+                "R": "/usr/bin/Rscript",
+                "bowtie": "/usr/bin/bowtie",
+                "bowtie_indexes": "/path/to/your/indexes/folder/dmel-r6.19/dmel-r6.19",
+                "bowtie_filter_indexes": "/path/to/your/indexes/folder/rfpl/rfpl"
+            }
+        },
+        "input_file": {
+            "single": {
+                "path": "path_to_fastq/fastq.gz/pickle_source"
+                }
+        },
+        "output_dir": "path_to_output_directory",
+        "content":{
+            "mapping": {
+                "replicates": 2,
+                "index": {
+                    "m1": "TTCGGAGT",
+                    "m2": "ACTCATTT"
+                },
+                "sub_index": {
+                    "AGTCA": "PCNA",
+                    "ACGTA": "Hsp70",
+                    "CTGCT": "MtnA",
+                    "AGCTC": "HexA",
+                    "TTGAG": "Tbp",
+                    "TCAAA": "Pyk",
+                    "TCGCT": "Promoterless"
+                },
+                "constant1": ["gtcacaagggccggccacaactc", 3],
+                "constant2": ["ctcgatc", 1],
+                "constant3": ["ttaaccctagaaagataatc", 2],
+                "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2", "sequence", "constant3"]
+            },
+            "normalization": {
+                "replicates": 2,
+                "index": {
+                    "n1": "AGTCGCCG",
+                    "n2": "TAAACATC"
+                },
+                "sub_index": {
+                    "PCNA": "AGTCA",
+                    "Hsp70": "ACGTA",
+                    "MtnA": "CTGCT",
+                    "HexA": "AGCTC",
+                    "Tbp": "TTGAG",
+                    "Pyk": "TCAAA",
+                    "Promoterless": "TCGCT"
+                },
+                "constant1": ["gtcacaagggccggccacaactc", 3],
+                "constant2": ["ctcgatc", 1],
+                "constant3": ["ttaaccctagaaagataatc", 2],
+                "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2"]
+            },
+            "expression": {
+                "replicates": 2,
+                "index": {
+                    "e1": "GGTATGTT",
+                    "e2": "GAGGGACC"
+                },
+                "sub_index": {
+                    "AGTCA": "PCNA",
+                    "ACGTA": "Hsp70",
+                    "CTGCT": "MtnA",
+                    "AGCTC": "HexA",
+                    "TTGAG": "Tbp",
+                    "TCAAA": "Pyk",
+                    "TCGCT": "Promoterless"
+                },
+                "constant1": ["gtcacaagggccggccacaactc", 3],
+                "constant2": ["ctcgatc", 1],
+                "constant3": ["ttaaccctagaaagataatc", 2],
+                "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2"]
+            }
+        }
+    }
