@@ -17,9 +17,9 @@
         },
         "thresholds": {
             "minimum_reads": 3,
-            "mutation_reliability": 0.8
+            "sequence_reliability": 0.8
         },
-        "existing": {
+        "external": {
             "R": "/usr/bin/Rscript",
             "bowtie": "/usr/bin/bowtie",
             "bowtie_indexes": "/home/anton/data/DAM/indexes/dmel-r6.19/dmel-r6.19",
@@ -56,7 +56,7 @@
             "constant1": ["gtcacaagggccggccacaactc", 3],
             "constant2": ["ctcgatc", 1],
             "constant3": ["ttaaccctagaaagataatc", 2],
-            "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2", "genome", "constant3"]
+            "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2", "sequence", "constant3"]
         },
         "normalization": {
             "replicates": 2,
@@ -65,13 +65,13 @@
                 "n2": "TAAACATC"
             },
             "sub_index": {
-                "AGTCA": "PCNA",
-                "ACGTA": "Hsp70",
-                "CTGCT": "MtnA",
-                "AGCTC": "HexA",
-                "TTGAG": "Tbp",
-                "TCAAA": "Pyk",
-                "TCGCT": "Promoterless"
+                "PCNA": "AGTCA",
+                "Hsp70": "ACGTA",
+                "MtnA": "CTGCT",
+                "HexA": "AGCTC",
+                "Tbp": "TTGAG",
+                "Pyk": "TCAAA",
+                "Promoterless": "TCGCT"
             },
             "constant1": ["gtcacaagggccggccacaactc", 3],
             "constant2": ["ctcgatc", 1],

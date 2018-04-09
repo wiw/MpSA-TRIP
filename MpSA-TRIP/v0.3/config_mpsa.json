@@ -16,9 +16,9 @@
         },
         "thresholds": {
             "minimum_reads": 3,
-            "mutation_reliability": 0.8
+            "sequence_reliability": 0.8
         },
-        "existing": {
+        "external": {
             "R": "/usr/bin/Rscript"
         }
     },
