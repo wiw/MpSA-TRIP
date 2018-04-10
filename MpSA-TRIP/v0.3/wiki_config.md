@@ -1,6 +1,6 @@
 # HOW TO MAKE CONFIG FILE FOR TRIP/MpSA PROJECT
 
-At first, *config file* contains **five** main blocks: *project*, *core*, *input\_file*, *output\_dir* and *content*.
+At first, *config file* contains **six** main blocks: *project*, *logging*, *core*, *input\_file*, *output\_dir* and *content*.
 
 Second, the file must be saved with the ***json*** extension. The recommended name is ***config***.
 
@@ -13,6 +13,16 @@ You can define two values.
 
     {
         "project": "TRIP"
+    }
+
+## Section *logging*:
+
+Contain single parameter - path to logging system config file. Default value is *"logging.json"*. This file is provided by default **AS IS** and can not be changed.
+
+#### *Example*
+
+    {
+        "logging": "logging.json"
     }
 
 ## Section *core*:
@@ -258,6 +268,7 @@ To do this, use the following standard keywords and notations:
 
     {
         "project": "TRIP",
+        "logging": "logging.json",
         "core": {
             "arguments": {
                 "experiment_name": "some_experiment_name",
