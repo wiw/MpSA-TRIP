@@ -1,6 +1,8 @@
 # HOW TO MAKE CONFIG FILE FOR TRIP/MpSA PROJECT
 
-At first, *config file* contains **five** main blocks: *project*, *core*, *input\_file*, *output\_dir* and *content*
+At first, *config file* contains **five** main blocks: *project*, *core*, *input\_file*, *output\_dir* and *content*.
+
+Second, the file must be saved with the ***json*** extension. The recommended name is ***config***.
 
 ## Section *project*:
 
