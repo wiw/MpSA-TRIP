@@ -218,16 +218,16 @@ Section in which you can determine the structure of your data. Data can consist 
         }
     }
 
-* *constant_1* - *constant_**N*** - вefines sequences of constant parts of a read. They can be any number, but it is better to adhere to a reasonable number of constant parts - no more than 4-5 sequences per read. Each constant part has an alias, sequence and an error level, which is recommended to be set as 10% of the length of the sequence
+* *constant_1* - *constant_**N*** - defines sequences of constant parts of a read. They can be any number instead ***"N"***, but it is better to adhere to a reasonable number of constant parts - no more than 4-5 sequences per read. Each constant part has an alias, sequence and an error level, which is recommended to be set as 10% of the length of the sequence
 
 #### *Example*
 
     {
         "content": {
             "mapping": {
-                "constant1": ["gtcacaagggccggccacaactc", 3],
-                "constant2": ["ctcgatc", 1],
-                "constant3": ["ttaaccctagaaagataatc", 2],
+                "constant_1": ["gtcacaagggccggccacaactc", 3],
+                "constant_2": ["ctcgatc", 1],
+                "constant_3": ["ttaaccctagaaagataatc", 2],
             }
         }
     }
@@ -236,18 +236,18 @@ Section in which you can determine the structure of your data. Data can consist 
 
 To do this, use the following standard keywords and notations:
 * **index** - index sequence
-* **constant\_N** - constant part of read, where "N" is number of part
-* **sub\_index** - optional defined sub-index in read
+* **constant\_N** - constant part of read, where **"N"** is number of part
+* **sub\_index** - ***optional*** defined sub-index in read
 * **barcode** - barcode location in read
 * **sequence** - the investigated sequence, *"mutation"* in **"MpSA"** project or *"genome"* in **"TRIP"**
-* **4** - a fixed number of characters *"ATGC"*, not related to any of the above categories. You can use any other number
+* **N** - a fixed number of characters from dictionary - *"ATGC"*, not related to any of the above categories. 
 
 #### *Example*
 
     {
         "content": {
             "mapping": {
-                "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2", "sequence", "constant3"]
+                "read_structure": ["index", "constant_1", "barcode", 7, "sub_index", "constant_2", "sequence", "constant_3"]
             }
         }
     }
@@ -306,10 +306,10 @@ To do this, use the following standard keywords and notations:
                     "TCAAA": "Pyk",
                     "TCGCT": "Promoterless"
                 },
-                "constant1": ["gtcacaagggccggccacaactc", 3],
-                "constant2": ["ctcgatc", 1],
-                "constant3": ["ttaaccctagaaagataatc", 2],
-                "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2", "sequence", "constant3"]
+                "constant_1": ["gtcacaagggccggccacaactc", 3],
+                "constant_2": ["ctcgatc", 1],
+                "constant_3": ["ttaaccctagaaagataatc", 2],
+                "read_structure": ["index", "constant_1", "barcode", 7, "sub_index", "constant_2", "sequence", "constant_3"]
             },
             "normalization": {
                 "replicates": 2,
@@ -326,10 +326,10 @@ To do this, use the following standard keywords and notations:
                     "Pyk": "TCAAA",
                     "Promoterless": "TCGCT"
                 },
-                "constant1": ["gtcacaagggccggccacaactc", 3],
-                "constant2": ["ctcgatc", 1],
-                "constant3": ["ttaaccctagaaagataatc", 2],
-                "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2"]
+                "constant_1": ["gtcacaagggccggccacaactc", 3],
+                "constant_2": ["ctcgatc", 1],
+                "constant_3": ["ttaaccctagaaagataatc", 2],
+                "read_structure": ["index", "constant_1", "barcode", 7, "sub_index", "constant_2"]
             },
             "expression": {
                 "replicates": 2,
@@ -346,10 +346,10 @@ To do this, use the following standard keywords and notations:
                     "TCAAA": "Pyk",
                     "TCGCT": "Promoterless"
                 },
-                "constant1": ["gtcacaagggccggccacaactc", 3],
-                "constant2": ["ctcgatc", 1],
-                "constant3": ["ttaaccctagaaagataatc", 2],
-                "read_structure": ["index", "constant1", "barcode", 4, "sub_index", "constant2"]
+                "constant_1": ["gtcacaagggccggccacaactc", 3],
+                "constant_2": ["ctcgatc", 1],
+                "constant_3": ["ttaaccctagaaagataatc", 2],
+                "read_structure": ["index", "constant_1", "barcode", 7, "sub_index", "constant_2"]
             }
         }
     }
