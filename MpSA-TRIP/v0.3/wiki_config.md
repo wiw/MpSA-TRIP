@@ -32,7 +32,7 @@ Contain **five** dictionaries who defined main programm parameters.
 > contains required parameters
 
 1. *experiment_name* - Some unique label for your experiment run
-2. *paired* - This is **true** if you have forward**&**reverse reads after Illumina Mi/Hi-Seq or another sequence system, else it's **false**
+2. *paired* - This is **true** if you have forward&reverse reads after Illumina Mi/Hi-Seq or another sequence system, else it's **false**
 3. *barcode_reversed* - If, when you were creating a library, you built in barcodes in reversed mode that set this option to **true**, else - **false**
 
 #### *Example*
