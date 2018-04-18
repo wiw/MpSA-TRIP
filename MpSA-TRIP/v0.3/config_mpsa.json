@@ -1,12 +1,11 @@
 {
     "project": "MpSA",
+    "logging": "logging.json",
     "core": {
-        "arguments": {
-            "experiment_name": "some_experiment_name",
-            "paired": false,
-            "barcode_reversed": true
+        "argument": {
+            "experiment_name": "some_experiment_name"
         },
-        "errors": {
+        "error": {
             "index_error": 0,
             "barcode_error": 2
         },
@@ -14,7 +13,7 @@
             "barcode_length": 18,
             "mutations_length": 8
         },
-        "thresholds": {
+        "threshold": {
             "minimum_reads": 3,
             "sequence_reliability": 0.8
         },
@@ -36,6 +35,8 @@
     "content":{
         "mapping": {
             "replicates": 2,
+            "paired": false,
+            "barcode_reversed": true,
             "index": {
                 "m1": "CAAGATAA",
                 "m2": "GGACAACG"
@@ -47,6 +48,8 @@
         },
         "normalization": {
             "replicates": 1,
+            "paired": false,
+            "barcode_reversed": true,
             "index": {
                 "n1": "GTACCGTT",
             },
@@ -56,6 +59,8 @@
         },
         "expression": {
             "replicates": 2,
+            "paired": false,
+            "barcode_reversed": true,
             "index": {
                 "e1": "GCCACATA",
                 "e2": "CCTATGGT"

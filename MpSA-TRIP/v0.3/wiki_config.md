@@ -28,21 +28,17 @@ Contain single parameter - path to logging system config file. Default value is 
 ## Section *core*:
 
 Contain **five** dictionaries who defined main programm parameters.
-### *arguments*
-> contains required parameters
+### *argument*
+> contain required parameter
 
-1. *experiment_name* - Some unique label for your experiment run
-2. *paired* - This is **true** if you have forward&reverse reads after Illumina Mi/Hi-Seq or another sequence system, else it's **false**
-3. *barcode_reversed* - If, when you were creating a library, you built in barcodes in reversed mode that set this option to **true**, else - **false**
+* *experiment_name* - Some unique label for your experiment run
 
 #### *Example*
 
     {
         "core": {
             "arguments": {
-                "experiment_name": "some_experiment_name",
-                "paired": false,
-                "barcode_reversed": true
+                "experiment_name": "some_experiment_name"
             }
         }
     }
@@ -158,9 +154,9 @@ Use **ONLY ONE** option: *single* or *multiple*
     {
         "input_file": {
             "multiple": {
-                "fmap": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/fastq/fastq.gz/or/pickle.file"],
-                "fnorm": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/fastq/fastq.gz/or/pickle.file"],
-                "fexpr": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/fastq/fastq.gz/or/pickle.file"]
+                "mapping": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/another/fastq/fastq.gz/or/pickle.file"],
+                "normalization": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/another/fastq/fastq.gz/or/pickle.file"],
+                "expression": ["/path/to/your/fastq/fastq.gz/or/pickle.file", "/path/to/your/another/fastq/fastq.gz/or/pickle.file"]
             }
         }
     }
@@ -189,6 +185,31 @@ Section in which you can determine the structure of your data. Data can consist 
         "content": {
             "mapping": {
                 "replicates": 2
+            }
+        }
+    }
+
+* *paired* - This is **true** if you have forward&reverse reads after Illumina Mi/Hi-Seq or another sequence system, else it's **false**
+
+
+#### *Example*
+
+    {
+        "content": {
+            "mapping": {
+                "paired": false
+            }
+        }
+    }
+
+* *barcode_reversed* - If, when you were creating a library, you built in barcodes in reversed mode that set this option to **true**, else - **false**
+
+#### *Example*
+
+    {
+        "content": {
+            "mapping": {
+                "barcode_reversed": true
             }
         }
     }
@@ -270,12 +291,10 @@ To do this, use the following standard keywords and notations:
         "project": "TRIP",
         "logging": "logging.json",
         "core": {
-            "arguments": {
+            "argument": {
                 "experiment_name": "some_experiment_name",
-                "paired": false,
-                "barcode_reversed": true
             },
-            "errors": {
+            "error": {
                 "index_error": 0,
                 "sub_index_error": 1,
                 "barcode_error": 2
@@ -284,7 +303,7 @@ To do this, use the following standard keywords and notations:
                 "sub_index_length": 5,
                 "barcode_length": 18,
             },
-            "thresholds": {
+            "threshold": {
                 "minimum_reads": 3,
                 "sequence_reliability": 0.8
             },
@@ -304,18 +323,20 @@ To do this, use the following standard keywords and notations:
         "content":{
             "mapping": {
                 "replicates": 2,
+                "paired": false,
+                "barcode_reversed": true,
                 "index": {
                     "m1": "TTCGGAGT",
                     "m2": "ACTCATTT"
                 },
                 "sub_index": {
-                    "AGTCA": "PCNA",
-                    "ACGTA": "Hsp70",
-                    "CTGCT": "MtnA",
-                    "AGCTC": "HexA",
-                    "TTGAG": "Tbp",
-                    "TCAAA": "Pyk",
-                    "TCGCT": "Promoterless"
+                    "PCNA": "AGTCA",
+                    "Hsp70": "ACGTA",
+                    "MtnA": "CTGCT",
+                    "HexA": "AGCTC",
+                    "Tbp": "TTGAG",
+                    "Pyk": "TCAAA",
+                    "Promoterless": "TCGCT"
                 },
                 "constant_1": ["gtcacaagggccggccacaactc", 3],
                 "constant_2": ["ctcgatc", 1],
@@ -324,6 +345,8 @@ To do this, use the following standard keywords and notations:
             },
             "normalization": {
                 "replicates": 2,
+                "paired": false,
+                "barcode_reversed": true,
                 "index": {
                     "n1": "AGTCGCCG",
                     "n2": "TAAACATC"
@@ -344,18 +367,20 @@ To do this, use the following standard keywords and notations:
             },
             "expression": {
                 "replicates": 2,
+                "paired": false,
+                "barcode_reversed": true,
                 "index": {
                     "e1": "GGTATGTT",
                     "e2": "GAGGGACC"
                 },
                 "sub_index": {
-                    "AGTCA": "PCNA",
-                    "ACGTA": "Hsp70",
-                    "CTGCT": "MtnA",
-                    "AGCTC": "HexA",
-                    "TTGAG": "Tbp",
-                    "TCAAA": "Pyk",
-                    "TCGCT": "Promoterless"
+                    "PCNA": "AGTCA",
+                    "Hsp70": "ACGTA",
+                    "MtnA": "CTGCT",
+                    "HexA": "AGCTC",
+                    "Tbp": "TTGAG",
+                    "Pyk": "TCAAA",
+                    "Promoterless": "TCGCT"
                 },
                 "constant_1": ["gtcacaagggccggccacaactc", 3],
                 "constant_2": ["ctcgatc", 1],
