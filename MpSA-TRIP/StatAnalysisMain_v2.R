@@ -18,17 +18,17 @@ library(RColorBrewer)
 source(file.path("/home/anton/data/R-script/R-counts/RUN", "functions.R"))
 
 
-wde <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Expr_A20-23/Dump"
-wdn <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Norm_A10-13/Dump"
-wdm <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Map_A1-4/Dump"
+wde <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/repeat/sample_S1_L001_R1_001_expr/Dump"
+wdn <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/repeat/sample_S1_L001_R1_001_norm/Dump"
+wdm <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/repeat/sample_S1_L001_R1_001_map/Dump"
 #mwd95 <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping/Dump"
 #mwd80 <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping_80/Dump"
 popName <- data.frame("pop1" = c("e18-1-1", "e18-1-2", "n18-1-1", "n18-1-2"), "pop2" = c("e18-2-1", "e18-2-2", "n18-2-1", "n18-2-2"))
 mapName <- data.frame("pop1" = c("m18-1-1", "m18-1-2"), "pop2" = c("m18-2-1", "m18-2-2"))
 
-pmi <- c('AGCTC', 'ACGTA', 'CTGCT', 'AGTCA', 'TTGAG', 'TCGCT')
-names(pmi) <- c("HexA", "Hsp70", "MtnA", "PCNA", "Tbp", "Promoterless")
-output <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/Stat_output/genome"
+pmi <- c('AGCTC', 'ACGTA', 'CTGCT', 'AGTCA', 'TCAAA', 'TTGAG', 'TCGCT')
+names(pmi) <- c("HexA", "Hsp70", "MtnA", "PCNA", "Pyk", "Tbp", "Promoterless")
+output <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/repeat/Stat_output"
 #setwd(wd)
 
 ShowData <- function() {

@@ -57,7 +57,7 @@ variations = list(itertools.permutations(["n", "e1", "e2"], 2))
 for comb in variations:
     for i in data[comb[0]]:
         if i not in data[comb[1]].keys():
-            data[comb[1]][i] = 0
+            data[comb[1]][i] = "NA"
 for k, v in data.items():
     simpleWrite(v, dump, k + ".txt")
 
@@ -90,9 +90,9 @@ plt.savefig(os.path.join(dump, "venn_mapping_R1_R2_95.pdf"), fmt='pdf')
 
 ################
 # GENOME
-normdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Norm_A10-13"
-exprdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Expr_A20-23"
-mapdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Map_A1-4"
+normdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/repeat/sample_S1_L001_R1_001_norm"
+exprdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/repeat/sample_S1_L001_R1_001_expr"
+mapdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/repeat/sample_S1_L001_R1_001_map"
 normDict = {"n18-1-1":"AGTCGCCG", "n18-1-2":"TAAACATC", "n18-2-1":"ACAATTCG", "n18-2-2":"TACTTGTC"}
 exprDict = {"e18-1-1":"GGTATGTT", "e18-1-2":"GAGGGACC", "e18-2-1":"TAGCTCTA", "e18-2-2":"TAATTGCG"}
 mapDict = {"m18-1-1":"TTCGGAGT", "m18-1-2":"ACTCATTT", "m18-2-1":"GGGATCCG", "m18-2-2":"TCAAGCAA"}
@@ -177,8 +177,8 @@ for p in mapName:
 
 ################
 # GENOME v.2
-normdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Norm_A10-13"
-exprdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Expr_A20-23"
+normdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/repeat/sample_S1_L001_R1_001_norm"
+exprdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/repeat/sample_S1_L001_R1_001_expr"
 normDict = {"n18-1-1":"AGTCGCCG", "n18-1-2":"TAAACATC", "n18-2-1":"ACAATTCG", "n18-2-2":"TACTTGTC"}
 exprDict = {"e18-1-1":"GGTATGTT", "e18-1-2":"GAGGGACC", "e18-2-1":"TAGCTCTA", "e18-2-2":"TAATTGCG"}
 indexNameE = {k:os.path.join(exprdir, k, "index_{}.fastq".format(v)) for k,v in exprDict.items()}

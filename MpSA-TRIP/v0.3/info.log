@@ -1,0 +1,93 @@
+Time: 2018-04-11 16:32:39,808 // Msg: Hello world!
+Time: 2018-04-18 17:06:49,343 // Msg: Don't reverse string. Return initial value
+Traceback (most recent call last):
+  File "<stdin>", line 6, in reverseComplement
+AttributeError: 'bool' object has no attribute 'translate'
+Time: 2018-04-18 17:08:02,526 // Msg: Don't reverse string. Return initial value
+Traceback (most recent call last):
+  File "<stdin>", line 6, in reverseComplement
+AttributeError: 'bool' object has no attribute 'translate'
+Time: 2018-04-18 17:37:32,779 // Msg: Error with make regexp for 'sequence' key
+Traceback (most recent call last):
+  File "<stdin>", line 45, in regexp_maker
+TypeError: regexp_maker() takes at most 3 arguments (4 given)
+Time: 2018-04-20 15:28:11,782 // Msg: Don't load config file from config.json
+Traceback (most recent call last):
+  File "<stdin>", line 5, in load_main_config
+IOError: [Errno 2] No such file or directory: 'config.json'
+Time: 2018-04-20 15:29:54,143 // Msg: Don't load config file from config.json
+Traceback (most recent call last):
+  File "<stdin>", line 5, in load_main_config
+IOError: [Errno 2] No such file or directory: 'config.json'
+Time: 2018-04-20 15:30:06,479 // Msg: Don't load config file from config.json
+Traceback (most recent call last):
+  File "<stdin>", line 5, in load_main_config
+IOError: [Errno 2] No such file or directory: 'config.json'
+Time: 2018-04-20 15:31:29,110 // Msg: Don't load config file from /
+Traceback (most recent call last):
+  File "<stdin>", line 5, in load_main_config
+IOError: [Errno 21] Is a directory: '/'
+Time: 2018-04-20 15:38:45,395 // Msg: Don't load config file from config.json
+Traceback (most recent call last):
+  File "<stdin>", line 5, in load_main_config
+IOError: [Errno 2] No such file or directory: 'config.json'
+Time: 2018-04-20 15:39:01,938 // Msg: Don't load config file from config.json
+Traceback (most recent call last):
+  File "<stdin>", line 5, in load_main_config
+IOError: [Errno 2] No such file or directory: 'config.json'
+Time: 2018-04-20 15:39:25,627 // Msg: Don't load config file from config.json
+Traceback (most recent call last):
+  File "<stdin>", line 5, in load_main_config
+IOError: [Errno 2] No such file or directory: 'config.json'
+Time: 2018-04-20 15:47:03,455 // Msg: Don't load config file from 
+Traceback (most recent call last):
+  File "<stdin>", line 4, in load_main_config
+IOError: [Errno 2] No such file or directory: ''
+Time: 2018-04-20 15:47:33,040 // Msg: Don't load config file from /
+Traceback (most recent call last):
+  File "<stdin>", line 4, in load_main_config
+IOError: [Errno 21] Is a directory: '/'
+Time: 2018-04-20 15:48:54,822 // Msg: Don't load config file from 
+Traceback (most recent call last):
+  File "<stdin>", line 4, in load_main_config
+IOError: [Errno 2] No such file or directory: ''
+Time: 2018-04-20 15:49:13,648 // Msg: Don't load config file from jkljlk
+None
+Time: 2018-04-20 16:11:42,693 // Msg: Don't load config file from 
+Traceback (most recent call last):
+  File "<stdin>", line 3, in <module>
+IOError: [Errno 2] No such file or directory: ''
+Time: 2018-04-20 16:13:10,742 // Msg: Don't load config file from 
+Traceback (most recent call last):
+  File "<stdin>", line 3, in <module>
+IOError: [Errno 2] No such file or directory: ''
+Time: 2018-04-20 16:13:35,501 // Msg: Don't load config file from 
+Traceback (most recent call last):
+  File "<stdin>", line 3, in <module>
+IOError: [Errno 2] No such file or directory: ''
+Time: 2018-04-20 16:14:16,612 // Msg: Don't load config file from ''
+Traceback (most recent call last):
+  File "<stdin>", line 3, in <module>
+IOError: [Errno 2] No such file or directory: ''
+Time: 2018-04-20 16:15:55,036 // Msg: Don't load config file from ''
+Traceback (most recent call last):
+  File "<stdin>", line 4, in load_main_config
+IOError: [Errno 2] No such file or directory: ''
+Time: 2018-04-20 16:15:59,116 // Msg: Don't load config file from '/'
+Traceback (most recent call last):
+  File "<stdin>", line 4, in load_main_config
+IOError: [Errno 21] Is a directory: '/'
+Time: 2018-04-20 16:36:40,284 // Msg: Don't load config file from '\'
+Traceback (most recent call last):
+  File "<stdin>", line 4, in load_main_config
+IOError: [Errno 2] No such file or directory: '\\'
+Time: 2018-04-20 16:50:32,126 // Msg: Don't load config file from ''
+Traceback (most recent call last):
+  File "<stdin>", line 8, in load_main_config
+IOError
+Time: 2018-04-20 16:52:27,365 // Msg: Don't load config file from ''
+Traceback (most recent call last):
+  File "<stdin>", line 8, in load_main_config
+IOError: Don't correct path!
+Time: 2018-04-23 16:18:53,952 // Msg: hello
+Time: 2018-04-23 16:23:22,333 // Msg: hello
