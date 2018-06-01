@@ -1,0 +1,17 @@
+workdir = '/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Mapping_A1-4'
+reverse_barcode = True
+PdumpDir = '/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Mapping_A1-4/Dump'
+gap_size = 0
+random_read = False
+input = '/home/anton/backup/input/trip/RUN_2017-11-27/sample_S1_L001_R1_001.fastq.gz'
+no_trim_index = False
+experiment_label = 'Genome_Mapping_A1-4'
+reverse = None
+reverse_complement = True
+input_file = '/home/anton/backup/input/trip/RUN_2017-11-27/sample_S1_L001_R1_001.fastq.gz'
+merge_indexes = False
+mode = 'genome'
+forward = None
+output = '/home/anton/backup/input/trip/RUN_2017-11-27/results'
+inputLocation = '/home/anton/backup/input/trip/RUN_2017-11-27/results'
+make_barcode_library = False

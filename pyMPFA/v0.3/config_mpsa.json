@@ -1,0 +1,73 @@
+{
+    "project": "MpSA",
+    "logging": "logging.json",
+    "core": {
+        "argument": {
+            "experiment_name": "some_experiment_name"
+        },
+        "error": {
+            "index_error": 0,
+            "barcode_error": 2
+        },
+        "length": {
+            "barcode_length": 18,
+            "mutations_length": 8
+        },
+        "threshold": {
+            "minimum_reads": 3,
+            "sequence_reliability": 0.8
+        },
+        "external": {
+            "R": "/usr/bin/Rscript"
+        }
+    },
+    "input_file": {
+        "single": {
+            "path": "path_to_fastq/fastq.gz/pickle_source"
+            },
+        "multiple": {
+            "fmap": ["path_to_fastq/fastq.gz/pickle_source_one", "path_to_fastq/fastq.gz/pickle_source_two"],
+            "fnorm": ["path_to_fastq/fastq.gz/pickle_source", "path_to_fastq/fastq.gz/pickle_source_two"],
+            "fexpr": ["path_to_fastq/fastq.gz/pickle_source", "path_to_fastq/fastq.gz/pickle_source_two"]
+        }
+    },
+    "output_dir": "path_to_output_directory",
+    "content":{
+        "mapping": {
+            "replicates": 2,
+            "paired": false,
+            "barcode_reversed": true,
+            "index": {
+                "m1": "CAAGATAA",
+                "m2": "GGACAACG"
+            },
+            "constant1": ["GACACTCGAGGATCGAG", 2],
+            "constant2": ["gagttgtggccggcccttgtgactgggaaaaccctggcgtaaataaaatacgaaatgactagtcatgcgtcaatt", 6],
+            "constant3": ["gattatctttaacgtacgtcACAAT", 3],
+            "read_structure": ["index", "constant1", "barcode", "constant2", "mutation", "constant3"]
+        },
+        "normalization": {
+            "replicates": 1,
+            "paired": false,
+            "barcode_reversed": true,
+            "index": {
+                "n1": "GTACCGTT",
+            },
+            "constant1": ["cgccagggttttcccagtcacaagggccggccacaactc", 3],
+            "constant2": ["ctcgatcctcgagtgtcacctaaatcgtatgcggccgcgaattcttacttgtacagctcgtccatgccgagagtgatcccggcggc", 5],
+            "read_structure": ["index", "constant1", "barcode", "constant2"]
+        },
+        "expression": {
+            "replicates": 2,
+            "paired": false,
+            "barcode_reversed": true,
+            "index": {
+                "e1": "GCCACATA",
+                "e2": "CCTATGGT"
+            },
+            "constant1": ["cgccagggttttcccagtcacaagggccggccacaactc", 3],
+            "constant2": ["ctcgatcctcgagtgtcacctaaatcgtatgcggccgcgaattcttacttgtacagctcgtccatgccgagagtgatcccggcggc", 5],
+            "read_structure": ["index", "constant1", "barcode", "constant2"]
+        }
+    }
+}
