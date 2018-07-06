@@ -19,7 +19,7 @@ from ReliableCombBcMutFunc import SelectionReliableBarcode, SelectionReliableBar
 def CollectBarcodeMutation(indexFile, barcodeLength, mutationLength, readsValue, barcodeError, const_2, const_3, const_2Error, const_3Error, regExpBcMut, reverseBC):
     # print("Start collect barcodes...\nI'm using next regular exxpression for search: {}".format(regExpBcMut))
     bcList, bcMutList = [], []
-    non_matched_reads = os.path.join(os.path.dirname(indexFile), "undef_{}".format(indexFile))
+    non_matched_reads = os.path.join(os.path.dirname(indexFile), "undef_{}".format(os.path.basename(indexFile)))
     records = supp.GetTotalSeqRecords(indexFile)
     bar = progressbar.ProgressBar(maxval=records, widgets=[progressbar.Bar(left='<', marker='.', right='>')]).start()
     t=0.0
