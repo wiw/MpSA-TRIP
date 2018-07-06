@@ -47,13 +47,14 @@ FRC = {k:GetTotalSeqRecords(v) for k,v in indexName.items()}
 
 # load bcDict from pickle
 simpleWrite(FRC, dump, "frc.txt")
-n = {k:sum([i[1] for i in v]) for k, v in Pload(FRC.keys()[2] + "_bcDict", dump).items()}
+n1 = {k:sum([i[1] for i in v]) for k, v in Pload(FRC.keys()[3] + "_bcDict", dump).items()}
+n2 = {k:sum([i[1] for i in v]) for k, v in Pload(FRC.keys()[2] + "_bcDict", dump).items()}
 e1 = {k:sum([i[1] for i in v]) for k, v in Pload(FRC.keys()[1] + "_bcDict", dump).items()}
 e2 = {k:sum([i[1] for i in v]) for k, v in Pload(FRC.keys()[0] + "_bcDict", dump).items()}
 
 # Aligning dict between them
-data = {"n":n, "e1":e1, "e2":e2}
-variations = list(itertools.permutations(["n", "e1", "e2"], 2))
+data = {"n1":n1, "n2":n2, "e1":e1, "e2":e2}
+variations = list(itertools.permutations(["n1", "n2", "e1", "e2"], 2))
 for comb in variations:
     for i in data[comb[0]]:
         if i not in data[comb[1]].keys():

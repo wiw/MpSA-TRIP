@@ -19,24 +19,28 @@ from ReliableCombBcMutFunc import SelectionReliableBarcode, SelectionReliableBar
 def CollectBarcodeMutation(indexFile, barcodeLength, mutationLength, readsValue, barcodeError, const_2, const_3, const_2Error, const_3Error, regExpBcMut, reverseBC):
     # print("Start collect barcodes...\nI'm using next regular exxpression for search: {}".format(regExpBcMut))
     bcList, bcMutList = [], []
+    non_matched_reads = os.path.join(os.path.dirname(indexFile), "undef_{}".format(indexFile))
     records = supp.GetTotalSeqRecords(indexFile)
     bar = progressbar.ProgressBar(maxval=records, widgets=[progressbar.Bar(left='<', marker='.', right='>')]).start()
     t=0.0
     expr = regex.compile(regExpBcMut)
     with nopen(indexFile) as handle:
-        for seq_record in SeqIO.parse(handle, "fastq"):
-            bar.update(t)
-            t+=1
-            match = expr.match(str(seq_record.seq))
-            if match is not None:
-                if int(barcodeLength*0.9) <= len(match.group("barcode")) <= int(barcodeLength*1.1) and len(match.group("mutation")) == mutationLength:
-                    if "N" not in match.group("barcode").upper() and "N" not in match.group("mutation").upper():
-                        if reverseBC:
-                            bcList.append(reverseComplement(match.group("barcode")))
-                            bcMutList.append((reverseComplement(match.group("barcode")), reverseComplement(match.group("mutation"))))
-                        else:
-                            bcList.append(match.group("barcode"))
-                            bcMutList.append((match.group("barcode"), match.group("mutation")))
+        with open(non_matched_reads, "wb") as undef:
+            for seq_record in SeqIO.parse(handle, "fastq"):
+                bar.update(t)
+                t+=1
+                match = expr.match(str(seq_record.seq))
+                if match is not None:
+                    if int(barcodeLength*0.9) <= len(match.group("barcode")) <= int(barcodeLength*1.1) and len(match.group("mutation")) == mutationLength:
+                        if "N" not in match.group("barcode").upper() and "N" not in match.group("mutation").upper():
+                            if reverseBC:
+                                bcList.append(reverseComplement(match.group("barcode")))
+                                bcMutList.append((reverseComplement(match.group("barcode")), reverseComplement(match.group("mutation"))))
+                            else:
+                                bcList.append(match.group("barcode"))
+                                bcMutList.append((match.group("barcode"), match.group("mutation")))
+                else:
+                    SeqIO.write(seq_record, undef, "fastq")
     bar.finish()
     bcCount = Counter(bcList)
     bcMutCount = dict(Counter(bcMutList))

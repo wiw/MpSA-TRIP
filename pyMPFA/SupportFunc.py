@@ -1,8 +1,9 @@
 #C:\Python27\python.exe
 #!/usr/bin/env python
 # encoding: utf-8
-import os, csv, regex, datetime, json, logging, logging.config
+import os, csv, regex, datetime, json, logging, logging.config, pickle
 from toolshed import nopen
+from matplotlib import pyplot as plt
 """
 **** SUPPORT FUNCTIONS
 """
@@ -96,3 +97,20 @@ def LogInfo(msg):
 def LogErr(msg):
     logger = logging.getLogger(__name__)
     logger.error(msg)
+
+def make_histogramm_plot(pkl):
+    def pickle_opener(i):
+        with open(i, "rb") as handle:
+            unserialized_data = pickle.load(handle)
+        return unserialized_data
+    def _get_count(doubled_sets_in_list):
+        return sum([count for item, count in doubled_sets_in_list])
+    data = pickle_opener(pkl)
+    dumpdir = os.path.dirname(pkl)
+    filename, ext = os.path.splitext(os.path.basename(pkl))
+    hset = [_get_count(value) for key, value in data.items()]
+    plt.figure(figsize=(10,10))
+    plt.title("Histogramm plot for " + filename)
+    n, bins, patches = plt.hist(hset, 200)
+    plt.savefig(os.path.join(dumpdir, filename), fmt='png')
+    return len(data)

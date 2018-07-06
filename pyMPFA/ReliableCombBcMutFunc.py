@@ -9,62 +9,65 @@ import progressbar, Levenshtein
 """
 
 def SelectionReliableBarcode(bcCount, readsValue, barcodeError):
+    bcDict = {}
+    bcHashDict = {}
     # Sorting
     bcCountSorted = sorted(bcCount.items(), key=lambda x:x[1], reverse=True)
     # Get the most common length of barcodes
     bcLengthMax = max(Counter([len(x[0]) for x in bcCountSorted]).items(), key=lambda x:x[1])
     # Estimate often part  of barcode length
     bcLengthRatio = float(bcLengthMax[1]) / float(len(bcCountSorted))
-    # If part more then 95% that barcodes to leave with the same length
-    if bcLengthRatio >= 0.95: bcCountSorted = [x for x in bcCountSorted if len(x[0]) == bcLengthMax[0]]
+    # If part more then 99% that barcodes to leave with the same length
+    if bcLengthRatio >= 0.99:
+        bcCountSorted = [x for x in bcCountSorted if len(x[0]) == bcLengthMax[0]]
     # Select barcodes with reads count more then readsValue
-    bcCountSorted = [x for x in bcCountSorted if x[1] > readsValue ]
-    bcSortedList = [x[0] for x in bcCountSorted]
-    bcDict = {}
-    bcHashDict = {}
-    # print("        Sort and count barcodes.\n")
-    records = len(bcCountSorted)
-    bar = progressbar.ProgressBar(maxval=records, widgets=[progressbar.SimpleProgress()]).start()
-    t=0.0
-    for bc in bcCountSorted:
-        bar.update(t)
-        t+=1
-        chunks, chunk_size = len(bc[0]), 4
-        bcKeyListOne = [bc[0][i:i+chunk_size] for i in range(0, chunks, chunk_size-1)]
-        bcKeyListTwo = [i for i in bcKeyListOne if i in bcHashDict.keys()]
-        if any(bcKeyListTwo):
-            # True
-            tmpListBc = []
-            for hashKey in bcKeyListTwo: tmpListBc.extend([bcMut for bcMut in bcHashDict[hashKey] if Levenshtein.distance(bc[0], bcMut) <= barcodeError])
-            tmpListBc = list(set(tmpListBc))
-            if any(tmpListBc):
+    bcCountSorted = [x for x in bcCountSorted if x[1] > readsValue]
+    if barcodeError == 0:
+        bcDict = {bc:seq for bc, seq in bcCountSorted}
+    else:
+        bcSortedList = [x[0] for x in bcCountSorted]
+        records = len(bcCountSorted)
+        bar = progressbar.ProgressBar(maxval=records, widgets=[progressbar.SimpleProgress()]).start()
+        t=0.0
+        for bc in bcCountSorted:
+            bar.update(t)
+            t+=1
+            chunks, chunk_size = len(bc[0]), 4
+            bcKeyListOne = [bc[0][i:i+chunk_size] for i in range(0, chunks, chunk_size-1)]
+            bcKeyListTwo = [i for i in bcKeyListOne if i in bcHashDict.keys()]
+            if any(bcKeyListTwo):
                 # True
-                if len(tmpListBc) > 1:
-                    # We get the frequency of occurrence of the barcode from the dictionary, for those barcodes that are in tmpListBc
-                    # Get the maximum frequency for bcFreq
-                    # Find the bar code with the maximum frequency of occurrence
-                    bcUniqMut = [bcc[0] for bcc in [bcu for bcu in bcCountSorted if bcu[0] in tmpListBc] if bcc[1] == max([m[1] for m in [bcu for bcu in bcCountSorted if bcu[0] in tmpListBc]])]
-                    # If the maximum frequency is inherent in two or more barcodes, then we take the bar code with the minimum index
-                    if len(bcUniqMut) > 1:
-                        bcUniqMut = bcCountSorted[min([bcSortedList.index(x) for x in tmpListBc])][0]
+                tmpListBc = []
+                for hashKey in bcKeyListTwo: tmpListBc.extend([bcMut for bcMut in bcHashDict[hashKey] if Levenshtein.distance(bc[0], bcMut) <= barcodeError])
+                tmpListBc = list(set(tmpListBc))
+                if any(tmpListBc):
+                    # True
+                    if len(tmpListBc) > 1:
+                        # We get the frequency of occurrence of the barcode from the dictionary, for those barcodes that are in tmpListBc
+                        # Get the maximum frequency for bcFreq
+                        # Find the bar code with the maximum frequency of occurrence
+                        bcUniqMut = [bcc[0] for bcc in [bcu for bcu in bcCountSorted if bcu[0] in tmpListBc] if bcc[1] == max([m[1] for m in [bcu for bcu in bcCountSorted if bcu[0] in tmpListBc]])]
+                        # If the maximum frequency is inherent in two or more barcodes, then we take the bar code with the minimum index
+                        if len(bcUniqMut) > 1:
+                            bcUniqMut = bcCountSorted[min([bcSortedList.index(x) for x in tmpListBc])][0]
+                        else:
+                            bcUniqMut = "".join(bcUniqMut)
+                        # Write a mutant barcode to a string with a unique bar code
+                        bcDict[bcUniqMut].append(bc)
                     else:
-                        bcUniqMut = "".join(bcUniqMut)
-                    # Write a mutant barcode to a string with a unique bar code
-                    bcDict[bcUniqMut].append(bc)
+                        bcDict[tmpListBc[0]].append(bc)
                 else:
-                    bcDict[tmpListBc[0]].append(bc)
+                    # False
+                    difHash = [y for y in bcKeyListOne if y not in bcKeyListTwo]
+                    sameHash = [y for y in bcKeyListOne if y in bcKeyListTwo]
+                    if any(difHash): bcHashDict.update(dict.fromkeys(difHash, [bc[0]]))
+                    for sameHashKey in sameHash: bcHashDict[sameHashKey].extend([bc[0]])
+                    bcDict[bc[0]] = [bc]
             else:
                 # False
-                difHash = [y for y in bcKeyListOne if y not in bcKeyListTwo]
-                sameHash = [y for y in bcKeyListOne if y in bcKeyListTwo]
-                if any(difHash): bcHashDict.update(dict.fromkeys(difHash, [bc[0]]))
-                for sameHashKey in sameHash: bcHashDict[sameHashKey].extend([bc[0]])
+                bcHashDict.update(dict.fromkeys(bcKeyListOne, [bc[0]]))
                 bcDict[bc[0]] = [bc]
-        else:
-            # False
-            bcHashDict.update(dict.fromkeys(bcKeyListOne, [bc[0]]))
-            bcDict[bc[0]] = [bc]
-    bar.finish()
+        bar.finish()
     return bcDict
 
 def SelectionReliableBarcodeMutation(bcMutCount, bcDict):

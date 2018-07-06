@@ -43,8 +43,10 @@ def SaveDictToPy(dictVar, filename):
 
 def Pdump(obj, name, folder):
     locationObj = os.path.join(folder, name)
-    with open(locationObj + ".pickle", 'wb') as handle:
+    filename = locationObj + ".pickle"
+    with open(filename, 'wb') as handle:
         pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    return filename
 
 def Pload(name, folder):
     locationObj = os.path.join(folder, name)

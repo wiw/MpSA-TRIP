@@ -1,4 +1,6 @@
 #!/usr/bin/R
+rm(list=ls())
+
 library(gplots)
 library(ggplot2)
 library(snapCGH)
@@ -15,7 +17,6 @@ library(seqLogo)
 source(file.path("/home/anton/data/R-script/R-counts/RUN", "functions.R"))
 
 
-rm(list=ls())
 wd <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_cDNA_29-36_A14-16/Dump"
 mwd95 <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping/Dump"
 mwd80 <- "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping_80/Dump"
@@ -32,9 +33,9 @@ return(df)
 }
 
 loadFiles <- list.files(pattern="*.txt")
-ControlDF <- data.frame("control" = c("wt_bc1", "wt_bc2", "dC_bc3", "dC_bc4"), "n" = c(1633+27, 1654+9, 1641+11, 1632+10), "e1" = c(487+13, 590, 1073+9, 1992+24), "e2" = c(419+11, 503, 916, 1760+9))
+ControlDF <- data.frame("control" = c("wt_bc1", "wt_bc2", "dC_bc3", "dC_bc4"), "n1" = c(1633+27, 1654+9, 1641+11, 1632+10), "n2" = c(2522+63, 2585+32, 2587+58, 2615+99), "e1" = c(487+13, 590, 1073+9, 1992+24), "e2" = c(419+11, 503, 916, 1760+9))
 frcData <- read.delim("frc.txt")
-frcData$id <- c("e2", "e1", "n")
+frcData$id <- c("e2", "e1", "n2", "n1")
 loadFiles <- loadFiles[loadFiles != "frc.txt"]
 DATA <- list()
 # prepare experiment
@@ -56,10 +57,12 @@ for (i in frcData$id){
 }
 # normalization experiments&control
 for (expr in c("e1", "e2")){
-	DATA[[expr]]$norm <- DATA[[expr]]$rpm / DATA$n$rpm
+	norm_item <- sub("(.)([0-9])", "n\\2", expr)
+	DATA[[expr]]$norm <- DATA[[expr]]$rpm / DATA[[norm_item]]$rpm
 	rpm <- paste(expr, "rpm", sep="_")
 	norm <- paste(expr, "norm", sep="_")
-	ControlDF[[norm]] <- ControlDF[[rpm]] / ControlDF$n_rpm
+	norm_item_control <- sub("(.)([0-9]_.*)", "n\\2", rpm)
+	ControlDF[[norm]] <- ControlDF[[rpm]] / ControlDF[[norm_item_control]]
 }
 
 ControlDF$eMean <- rowMeans(cbind(ControlDF$e1_norm, ControlDF$e2_norm))
@@ -168,3 +171,17 @@ dev.off()
 pdf(file=file.path(output, "Position weight matrix_80.pdf"), width=14, height=14)
 print(multiplot(plotlist=stringPlotList[13:24], cols=2, layout=matrix(c(1:12), ncol = 2, nrow = 6, byrow=T)))
 dev.off()
+
+
+# Check range in mutation activity
+> mappingList$result_mp80_by_mut[mappingList$result_mp80_by_mut$mean %in% max(mappingList$result_mp80_by_mut$mean), ]
+          mut     mean
+CATTCGCC 5.683054
+
+> mappingList$result_mp80_by_mut[mappingList$result_mp80_by_mut$mean %in% min(mappingList$result_mp80_by_mut$mean), ]
+          mut      mean
+CCGACGCT 0.1358579
+
+# Differences between activity
+> max(mappingList$result_mp80_by_mut$mean) / min(mappingList$result_mp80_by_mut$mean)
+[1] 41.83087
