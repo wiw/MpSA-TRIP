@@ -54,7 +54,7 @@ def Pload(name, folder):
         unserialized_data = pickle.load(handle)
         return unserialized_data
 
-MODULES = ["param", "PairedEndFunc", "SupportFunc", "ReadIndexesFunc", "CollectBcMutFunc", "MakeRandSeqFunc", "CheckBarcodesFunc", "ReliableCombBcMutFunc", "WriteFunc", "BarcodeMutationMain", "BarcodeLibraryMain", "BarcodeGenomeLibMain", "BarcodeGenomeMapMain"]
+MODULES = ["PairedEndFunc", "SupportFunc", "ReadIndexesFunc", "CollectBcMutFunc", "MakeRandSeqFunc", "CheckBarcodesFunc", "ReliableCombBcMutFunc", "WriteFunc", "BarcodeMutationMain", "BarcodeLibraryMain", "BarcodeGenomeLibMain", "BarcodeGenomeMapMain"]
 
 
 """
@@ -70,10 +70,11 @@ def ParseArguments():
                     default="single", help="prints <mode> to stdout where \
                         R1 is equivalent to reads without a pair in R2 [%(default)s]")
     p.add_argument("--output", "-o", help="Set location of output folder. Use absolute path!")
+    p.add_argument("--parameter_file", "-pf", help="Path to configurable parameter file")
     p.add_argument("--no_trim_index", "-T", action="store_true", help="Don't trim indexes with first concatenated \
                                                                 constant part. Trim by default. \
                                                                 If you use this option, be sure to check \
-                                                                the regular expressions in file 'param.py'.")
+                                                                the regular expressions in your parameter file - option '-pf'.")
     p.add_argument("--reverse_complement", "-rc", action="store_false", 
                     default=True, help="reverse complement R2 when joining [%(default)s]. Default value is [%(default)s]")
     p.add_argument("--gap_size", "-G", default=0, help="If you have gap between forward and reverse reads,\
@@ -109,6 +110,7 @@ def CheckModules(MODULES):
 
 def CheckArgs(args):
     variableSet = {}
+    # if.os.path.exists(args.parameter_file)
     if args.mode == "single" or args.mode == "genome":
         try:
             if os.path.isabs(args.input):
@@ -200,7 +202,23 @@ def main(args):
             regExpIndex: {}\n\
             regExpBcMut: {}\n\
             regExpBc: {}\n\
-            ".format(", ".join([i for i in param.indexList.values()]), param.indexError, param.barcodeError, param.barcodeLength, param.mutationLength, param.readsValue, param.mutationProbability, param.separator, param.const_1.upper(), param.const_2.upper(), param.const_3.upper(), param.const_1Error, param.const_2Error, param.const_3Error, ', '.join([i for i in param.regExpIndex.values()]), param.regExpBcMut, param.regExpBc))
+            ".format(", ".join([i for i in param.indexList.values()]),
+                param.indexError,
+                param.barcodeError,
+                param.barcodeLength,
+                param.mutationLength,
+                param.readsValue,
+                param.mutationProbability,
+                param.separator,
+                param.const_1.upper(),
+                param.const_2.upper(),
+                param.const_3.upper(),
+                param.const_1Error,
+                param.const_2Error,
+                param.const_3Error,
+                ', '.join([i for i in param.regExpIndex.values()]),
+                param.regExpBcMut,
+                param.regExpBc))
     else:
         supp.LogErr("Attention! Not all the necessary files are in the folder with the program. Please place '{}' into directory '{}' with the program.".format(wrongImport, os.getcwd()))
     variableSet = CheckArgs(args)

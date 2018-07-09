@@ -23,7 +23,7 @@ def SelectionReliableBarcode(bcCount, readsValue, barcodeError):
     # Select barcodes with reads count more then readsValue
     bcCountSorted = [x for x in bcCountSorted if x[1] > readsValue]
     if barcodeError == 0:
-        bcDict = {bc:seq for bc, seq in bcCountSorted}
+        bcDict = {bc: [(bc, seq)] for bc, seq in bcCountSorted}
     else:
         bcSortedList = [x[0] for x in bcCountSorted]
         records = len(bcCountSorted)
@@ -71,14 +71,16 @@ def SelectionReliableBarcode(bcCount, readsValue, barcodeError):
     return bcDict
 
 def SelectionReliableBarcodeMutation(bcMutCount, bcDict):
-    mDict = {}
-    for x, y in bcMutCount.items():
-        if mDict.get(x[0]) == None:
-            mDict[x[0]] = [(x[1], y)]
-        else:
-            mDict[x[0]].append((x[1], y))
-    seqDict = {x: {y[0]: mDict[y[0]] for y in bcDict[x]} for x in bcDict.keys()}
-    return seqDict
+    _mDict, _seqDict = {}, {}
+    for bcseq, value in bcMutCount.iteritems():
+        bc, seq = bcseq
+        _mDict.setdefault(bc, []).append((seq, value))
+    for root_bc, values in bcDict.items():
+        _seqDict.setdefault(root_bc, {})
+        for bc_values in values:
+            _bc, vl = bc_values
+            _seqDict[root_bc].setdefault(_bc, _mDict[_bc])
+    return _seqDict
 
 def SelectionReliableBarcodeGenome(bcGenomeCount, bcDict):
     gDict = {}

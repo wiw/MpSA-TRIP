@@ -13,6 +13,7 @@ import picks
 from TripMain_0_2 import Pdump
 
 def main():
+    supp.setup_logging()
     for name in param.indexList:
         index = param.indexList[name]
         if not os.path.exists(os.path.join(picks.workdir, name)): os.makedirs(os.path.join(picks.workdir, name))
@@ -35,11 +36,7 @@ def main():
             chkb.mainCheckBarcodeInDict(bcDict, param.barcodeError)
         csvFile = wrt.WriteBcDictToFile(bcDict, os.path.join(picks.workdir, name), indexFile)
         csvFile_R = wrt.SimpleCsvWriter(None, bcDict, os.path.join(picks.workdir, name), indexFile)
-        supp.LogInfo('''        I had select the {} unique barcodes.\n
-    Results writing to file '{}'
-    in your working directory: '{}'\n
-    Dump files:\n
-    barcodes dictionary: {}\n'''.format(length_of_bcdict, csvFile, os.path.join(picks.workdir, name)), pickle_dump_file)
+        supp.LogInfo('''        I had select the {} unique barcodes.\nResults writing to file '{}'in your working directory: '{}'\nDump files:\nbarcodes dictionary: {}\n'''.format(length_of_bcdict, csvFile, os.path.join(picks.workdir, name), pickle_dump_file))
         if os.path.exists(param.rscript):
             pathToScript = os.path.join(os.getcwd(), "trip_Rstat.R")
             option = [csvFile_R, os.path.dirname(csvFile_R), index]

@@ -1,7 +1,7 @@
 #C:\Python27\python.exe
 #!/usr/bin/env python
 # encoding: utf-8
-import os, csv, regex, datetime, json, logging, logging.config, pickle
+import os, csv, regex, datetime, json, logging, logging.config, pickle, math
 from toolshed import nopen
 from matplotlib import pyplot as plt
 """
@@ -106,11 +106,13 @@ def make_histogramm_plot(pkl):
     def _get_count(doubled_sets_in_list):
         return sum([count for item, count in doubled_sets_in_list])
     data = pickle_opener(pkl)
+    length_data = len(data)
+    _bins = math.log(length_data, 2) + 1
     dumpdir = os.path.dirname(pkl)
     filename, ext = os.path.splitext(os.path.basename(pkl))
     hset = [_get_count(value) for key, value in data.items()]
     plt.figure(figsize=(10,10))
     plt.title("Histogramm plot for " + filename)
-    n, bins, patches = plt.hist(hset, 200)
+    n, bins, patches = plt.hist(hset, _bins)
     plt.savefig(os.path.join(dumpdir, filename), fmt='png')
-    return len(data)
+    return length_data

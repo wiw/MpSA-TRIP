@@ -13,6 +13,7 @@ import picks
 from TripMain_0_2 import Pdump
 
 def main():
+    supp.setup_logging()
     for name in param.indexList:
         index = param.indexList[name]
         if not os.path.exists(os.path.join(picks.workdir, name)): os.makedirs(os.path.join(picks.workdir, name))
@@ -39,13 +40,7 @@ def main():
         pickle_dump_resultDict = Pdump(resultDict, name + "_resultDict", picks.PdumpDir)
         csvFile = wrt.WriteResultsToFile(resultDict, bcDict, seqDict, os.path.join(picks.workdir, name), indexFile)
         csvFile_R = wrt.SimpleCsvWriter(resultDict, bcDict, os.path.join(picks.workdir, name), indexFile)
-        supp.LogInfo('''        I had select the {} unique mutations.\n
-    Results writing to file '{}'
-    in your working directory: '{}'\n
-    Dump files:\n
-    barcodes dictionary: {}\n
-    sequences dictionary: {}\n
-    results dictionary: {}'''.format(len(resultDict), csvFile, os.path.join(picks.workdir, name)), pickle_dump_bcDict, pickle_dump_seqDict, pickle_dump_resultDict)
+        supp.LogInfo('''        I had select the {} unique mutations.\nResults writing to file '{}'in your working directory: '{}'\nDump files:\nbarcodes dictionary: {}\nsequences dictionary: {}\nresults dictionary: {}'''.format(len(resultDict), csvFile, os.path.join(picks.workdir, name), pickle_dump_bcDict, pickle_dump_seqDict, pickle_dump_resultDict))
         if os.path.exists(param.rscript):
             pathToScript = os.path.join(os.getcwd(), "trip_Rstat.R")
             option = [csvFile_R, os.path.dirname(csvFile_R), index]
