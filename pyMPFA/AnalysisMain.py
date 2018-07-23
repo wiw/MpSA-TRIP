@@ -91,7 +91,7 @@ def load_pickle(CONFIG):
         regex0 = re.compile(".*" + item)
         replicate_dir = filter(regex0.match, os.listdir(CONFIG["experiment_dir"]))[0]
         path_to = os.path.join(CONFIG["experiment_dir"], replicate_dir, "Dump")
-        path_to_rpl = os.path.join(CONFIG["experiment_dir"], replicate_dir, "**/*.fastq*")
+        path_to_rpl = os.path.join(CONFIG["experiment_dir"], replicate_dir, "**/index*.fastq")
         if re.search("control.*", item) is None:
             rpl_count_data.extend(search_counting_replicates(item, path_to_rpl))
         if item in ("control_m", "mapping"):
@@ -229,6 +229,20 @@ def align_mapped_ratio_vs_expr_replicates(mapped_ratio_data, expr_1_2_data):
     return mapped_norm_expression_data
 
 def make_report(REPORT, CONFIG):
+    def count_effective_reads(data, item_name):
+        eff_count = []
+        if re.search("mapping", item_name) is None:
+            for key, value in data[item_name].items():
+                eff_count.append(sum([_count for _string, _count in value]))
+        else:
+            for key, value in data[item_name].items():
+                eff_count.append(sum([x for x in value if type(x) == int]))
+                mutation_dict_existance = [x for x in value if type(x) == dict]
+                if len(mutation_dict_existance) == 1:
+                    mutation_dict = mutation_dict_existance[0]
+                    for _key, _value in mutation_dict.items():
+                        eff_count.append(sum([_count for _string, _count in _value]))
+        return sum(eff_count)
     # path to template and set filename
     name, ext_one, ext_two = os.path.basename(CONFIG["html_template"]).split(".")
     current = datetime.datetime.now().strftime("%Y_%m_%d")
@@ -248,6 +262,11 @@ def make_report(REPORT, CONFIG):
             if element in ["mapped_ratio_data", "mapped_norm_expression_data"]:
                 source_for_json = len(REPORT[element])
             write_to_report[element] = json2html.convert(json = source_for_json, table_attributes="class=\"table table-bordered table-hover\"")
+        _t_tmp = {}
+        for item in REPORT["data"]:
+            _t_tmp.setdefault(item, count_effective_reads(REPORT["data"], item))
+        _source_for_json = OrderedDict(sorted(_t_tmp.items()))
+        write_to_report["effective_reads_count"] = json2html.convert(json = _source_for_json, table_attributes="class=\"table table-bordered table-hover\"")
         with open(CONFIG["html_template"], "rb") as handle:
             _for_substitute = Template(handle.read()).safe_substitute(write_to_report)
             with open(path_to_html_report, "wb") as out_file:

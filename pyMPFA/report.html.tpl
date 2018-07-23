@@ -28,6 +28,16 @@
     			$output_rpl_count
     		</div>
     	</div>
+        <div class="row">
+            <div class="col">
+                <h2>Effective reads count from each replica.</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                $effective_reads_count
+            </div>
+        </div>
     </div>
     <div class="container">
     	<div class="row">

@@ -60,7 +60,7 @@ def WriteResultsToFile(resultDict, bcDict, seqDict, workdir, indexFile, customTx
 
 def WriteBcDictToFile(bcDict, workdir, indexFile, customTxt=''):
     indexString = os.path.basename(indexFile).split(".")[0].split("_")[1]
-    csvFile = os.path.join(workdir, "{}_barcodeDictionary{}.csv".format(indexString, customTxt))
+    csvFile = os.path.join(workdir, "{}_barcodeDictionary_{}.csv".format(indexString, customTxt))
     with open(csvFile, "wb") as handle:
         fieldnames = ['Barcode', 'BCSequence', 'BCSequenceCount']
         writer = csv.DictWriter(handle, fieldnames=fieldnames, delimiter='\t')

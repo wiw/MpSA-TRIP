@@ -10,7 +10,12 @@
     e-mail: anton.ivankin.gmail.com
     source: github.com/.....
 """
-import os, pickle, subprocess, argparse, json, logging
+import os
+import pickle
+import subprocess
+import argparse
+import json
+import logging
 import PairedEndFunc as pend
 import SupportFunc as supp
 import param
@@ -20,18 +25,14 @@ Logger = logging.getLogger(__name__)
 """
 **** SAVE/LOAD FUNCTIONS
 """
-def load_config(PATH_TO_CONFIG_FILE):
-    try:
-        with open(PATH_TO_CONFIG_FILE, 'rb') as js:
-            loaded_config = json.load(js)
-            config.update(loaded_config)
-        if config.get("SCRIPT_LOG") is None:
-            config["SCRIPT_LOG"] = None
-        logging.basicConfig(filename=config["SCRIPT_LOG"], level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',datefmt='%Y.%m.%d %H:%M:%S')
-        Logger.info("Config file is successfully updated!")
-        return config
-    except:
-        Logger.exception("Doesn't correct config file!")
+def load_main_config(config_path):
+    if os.path.exists(config_path) and os.path.isfile(config_path):
+        with open(config_path, "rt") as handle:
+            config = json.load(handle)
+            return config
+    else:
+        raise IOError
+        Logger.exception("Don't load config file from '{}'".format(config_path))
 
 def SaveDictToPy(dictVar, filename):
     with open(filename + ".py", "wb") as handle:

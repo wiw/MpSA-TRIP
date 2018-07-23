@@ -238,19 +238,28 @@ with open(gatc_mismatch_file, "w") as handle:
 
 '''
 Analyse of Hybrids in Lib cDNA 29-36 mapping
+Options:
 '''
 indexList = {"m1": "CAAGATAA", "m2": "GGACAACG"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping_80/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping_80"
+
+'''
+Analyse of Hybrids in Lib cDNA 33-40 mapping
+Options:
+'''
+indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_1__bcmutProb_80/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_1__bcmutProb_80/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping"
+
 control_barcodes = {"wt1": ["TTCCAAGTGCAGGTTAGGCG", "TTACGCAT"],
                     "wt2": ["TGTGTACGGCTTGCTCTCAA", "TTACGCAT"],
                     "dc3": ["GAGCCCGGATCCACTCCAAG", "TTAGCATG"],
                     "dc4": ["TGTCACGTCAGCTAACCCAC", "TTAGCATG"]}
-
-lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping_80/Dump"
-workdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping_80"
 lib_bcDict, lib_seqDict, lib_resultDict= {}, {}, {}
 similarity = 1
 
-for item in ["m1", "m2"]:
+for item in indexList:
     lib_bcDict[item] = Pload(item+"_bcDict", lib_mapping_dump)
     lib_seqDict[item] = Pload(item+"_seqDict", lib_mapping_dump)
     lib_resultDict[item] = Pload(item+"_resultDict", lib_mapping_dump)

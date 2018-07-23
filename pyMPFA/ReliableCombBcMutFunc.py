@@ -38,7 +38,9 @@ def SelectionReliableBarcode(bcCount, readsValue, barcodeError):
             if any(bcKeyListTwo):
                 # True
                 tmpListBc = []
-                for hashKey in bcKeyListTwo: tmpListBc.extend([bcMut for bcMut in bcHashDict[hashKey] if Levenshtein.distance(bc[0], bcMut) <= barcodeError])
+                for hashKey in bcKeyListTwo: 
+                    _tmp = [bcMut for bcMut in bcHashDict[hashKey] if Levenshtein.distance(bc[0], bcMut) <= barcodeError]
+                    tmpListBc.extend(_tmp)
                 tmpListBc = list(set(tmpListBc))
                 if any(tmpListBc):
                     # True

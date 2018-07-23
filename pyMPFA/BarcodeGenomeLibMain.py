@@ -16,7 +16,6 @@ def main():
     supp.setup_logging()
     for name in param.indexList:
         index = param.indexList[name]
-        # readsStat = {}
         if not os.path.exists(os.path.join(picks.workdir, name)): os.makedirs(os.path.join(picks.workdir, name))
         indexFile = os.path.join(picks.workdir, name, "index_{}.fastq".format(index.upper()))
         # indexFiltFile = os.path.join(picks.workdir, name, "filt_index_{}.fastq".format(index.upper()))

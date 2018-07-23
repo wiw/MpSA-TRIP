@@ -114,5 +114,5 @@ def make_histogramm_plot(pkl):
     plt.figure(figsize=(10,10))
     plt.title("Histogramm plot for " + filename)
     n, bins, patches = plt.hist(hset, _bins)
-    plt.savefig(os.path.join(dumpdir, filename), fmt='png')
+    plt.savefig(os.path.join(dumpdir, filename + ".png"), fmt='png')
     return length_data

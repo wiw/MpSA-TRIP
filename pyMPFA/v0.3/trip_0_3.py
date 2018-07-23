@@ -10,7 +10,18 @@
     source: https://github.com/wiw/MpSA-TRIP/
 """
 
-import os, pickle, subprocess, argparse, json, logging, logging.config, gzip, regex, pdb, string, Levenshtein
+import os
+import pickle
+import subprocess
+import argparse
+import json
+import logging
+import logging.config
+import gzip
+import regex
+import pdb
+import string
+import Levenshtein
 from Bio.SeqIO.QualityIO import FastqGeneralIterator
 from collections import OrderedDict
 from pprint import pprint as View
