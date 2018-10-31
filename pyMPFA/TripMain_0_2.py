@@ -1,4 +1,3 @@
-#C:\Python27\python.exe
 #!/usr/bin/env python
 # encoding: utf-8
 """
@@ -25,6 +24,8 @@ Logger = logging.getLogger(__name__)
 """
 **** SAVE/LOAD FUNCTIONS
 """
+
+
 def load_main_config(config_path):
     if os.path.exists(config_path) and os.path.isfile(config_path):
         with open(config_path, "rt") as handle:
@@ -34,6 +35,7 @@ def load_main_config(config_path):
         raise IOError
         Logger.exception("Don't load config file from '{}'".format(config_path))
 
+
 def SaveDictToPy(dictVar, filename):
     with open(filename + ".py", "wb") as handle:
         for k, v in dictVar.items():
@@ -42,6 +44,7 @@ def SaveDictToPy(dictVar, filename):
             else:
                 handle.write(str(k) + " = " + str(v) + "\n")
 
+
 def Pdump(obj, name, folder):
     locationObj = os.path.join(folder, name)
     filename = locationObj + ".pickle"
@@ -49,35 +52,39 @@ def Pdump(obj, name, folder):
         pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
     return filename
 
+
 def Pload(name, folder):
     locationObj = os.path.join(folder, name)
     with open(locationObj + '.pickle', 'rb') as handle:
         unserialized_data = pickle.load(handle)
         return unserialized_data
 
-MODULES = ["PairedEndFunc", "SupportFunc", "ReadIndexesFunc", "CollectBcMutFunc", "MakeRandSeqFunc", "CheckBarcodesFunc", "ReliableCombBcMutFunc", "WriteFunc", "BarcodeMutationMain", "BarcodeLibraryMain", "BarcodeGenomeLibMain", "BarcodeGenomeMapMain"]
+
+MODULES = ["PairedEndFunc", "SupportFunc", "ReadIndexesFunc", "CollectBcMutFunc",
+           "MakeRandSeqFunc", "CheckBarcodesFunc", "ReliableCombBcMutFunc", "WriteFunc",
+           "BarcodeMutationMain", "BarcodeLibraryMain", "BarcodeGenomeLibMain", "BarcodeGenomeMapMain"]
 
 
 """
 **** PARSE ARGUMENTS
 """
 
+
 def ParseArguments():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--input", "-i", help="fastq file for TRIP experiment")
     p.add_argument("--forward", "-f", help="mapping forward fastq")
     p.add_argument("--reverse", "-r", help="mapping reverse fastq")
-    p.add_argument("--mode", "-m", choices=["single", "paired", "fwd", "rev", "genome"], 
-                    default="single", help="prints <mode> to stdout where \
+    p.add_argument("--mode", "-m", choices=["single", "paired", "fwd", "rev", "genome"],
+                   default="single", help="prints <mode> to stdout where \
                         R1 is equivalent to reads without a pair in R2 [%(default)s]")
     p.add_argument("--output", "-o", help="Set location of output folder. Use absolute path!")
-    p.add_argument("--parameter_file", "-pf", help="Path to configurable parameter file")
     p.add_argument("--no_trim_index", "-T", action="store_true", help="Don't trim indexes with first concatenated \
                                                                 constant part. Trim by default. \
                                                                 If you use this option, be sure to check \
                                                                 the regular expressions in your parameter file - option '-pf'.")
-    p.add_argument("--reverse_complement", "-rc", action="store_false", 
-                    default=True, help="reverse complement R2 when joining [%(default)s]. Default value is [%(default)s]")
+    p.add_argument("--reverse_complement", "-rc", action="store_false",
+                   default=True, help="reverse complement R2 when joining [%(default)s]. Default value is [%(default)s]")
     p.add_argument("--gap_size", "-G", default=0, help="If you have gap between forward and reverse reads,\
                                      then please specify gap size in b.p. Default value is [%(default)s]")
     p.add_argument("--experiment_label", "-l", help="A label that is added to the name of the working folder \
@@ -86,12 +93,14 @@ def ParseArguments():
     p.add_argument("--make_barcode_library", "-B", action="store_true", help="Make only barcode library.")
     p.add_argument("--merge_indexes", "-M", action="store_true", help="Merge data into one table for all available indexes")
     p.add_argument("--reverse_barcode", "-rb", action="store_true", help="Reverse your barcode if you use reversed reads or barcodes")
+    p.add_argument("--combine_paired", "-C", action="store_true", help="Merge paired end sequences")
     args = p.parse_args()
     return args
 
 """
 **** CHECK ARGUMENTS
 """
+
 
 def CheckModules(MODULES):
     report = {}
@@ -109,9 +118,9 @@ def CheckModules(MODULES):
         wrongImport = ", ".join([i + ".py" for i in report if report[i] == False])
     return (result, wrongImport)
 
+
 def CheckArgs(args):
     variableSet = {}
-    # if.os.path.exists(args.parameter_file)
     if args.mode == "single" or args.mode == "genome":
         try:
             if os.path.isabs(args.input):
@@ -154,12 +163,25 @@ def CheckArgs(args):
                 modeKeyword = "single forward"
             else:
                 modeKeyword = "single reversed"
-            supp.LogErr("\nYou are in \"{}\" mode!\n\nPlease choose TWO fastq file with arguments \"--forward (-f) ... --reverse (-r) ...\"!\n\nExit programm...\n".format(modeKeyword))
+            supp.LogErr("\nYou are in \"{}\" mode!\n\n\
+                Please choose TWO fastq file with arguments \"--forward (-f) ... --reverse (-r) ...\"!\n\n\
+                Exit programm...\n".format(modeKeyword))
             raise EOFError
-        supp.LogInfo('''\n            All checks are completed!
-        Start working with paired reads...\n\n''')
-        variableSet["input_file"] = pend.FastqJoinPaired(variableSet["r1"], variableSet["r2"], output_dir=variableSet["inputLocation"], gap_size=args.gap_size, separator=param.separator, mode=args.mode, reverse_complement=args.reverse_complement)
-        supp.LogInfo('''\n End of combine reads...\n\n''')
+        if args.combine_paired:
+            supp.LogInfo('''\n            All checks are completed!
+            Start working with paired reads...\n\n''')
+            variableSet["input_file"] = pend.FastqJoinPaired(variableSet["r1"],
+                                                             variableSet["r2"],
+                                                             output_dir=variableSet["inputLocation"],
+                                                             gap_size=args.gap_size,
+                                                             separator=param.separator,
+                                                             mode=args.mode,
+                                                             reverse_complement=args.reverse_complement)
+            supp.LogInfo('''\n End of combine reads...\n\n''')
+    # make fake input_file for paired mode
+    if args.mode == "paired":
+        if variableSet.get("input_file") is None and variableSet.get("r1") is not None:
+            variableSet["input_file"] = variableSet["r1"]
     supp.LogInfo('''\n            START MAIN PROGRAMM!\n
     author: Anton V. Ivankin\n
     e-mail: anton.ivankin.gmail.com\n
@@ -173,12 +195,14 @@ def CheckArgs(args):
         variableSet["workdir"] = os.path.join(variableSet["inputLocation"], os.path.basename(variableSet["input_file"]).split(".")[0])
     supp.LogInfo("You are working directory in {}\n".format(variableSet["workdir"]))
     variableSet["PdumpDir"] = os.path.join(variableSet["workdir"], "Dump")
-    if not os.path.exists(variableSet["PdumpDir"]): os.makedirs(variableSet["PdumpDir"])
+    if not os.path.exists(variableSet["PdumpDir"]):
+        os.makedirs(variableSet["PdumpDir"])
     return variableSet
 
 """
 **** RUN FUNCTION
 """
+
 
 def main(args):
     supp.setup_logging()
@@ -201,27 +225,24 @@ def main(args):
             const_2Error: {}\n\
             const_3Error: {}\n\
             regExpIndex: {}\n\
-            regExpBcMut: {}\n\
-            regExpBc: {}\n\
             ".format(", ".join([i for i in param.indexList.values()]),
-                param.indexError,
-                param.barcodeError,
-                param.barcodeLength,
-                param.mutationLength,
-                param.readsValue,
-                param.mutationProbability,
-                param.separator,
-                param.const_1.upper(),
-                param.const_2.upper(),
-                param.const_3.upper(),
-                param.const_1Error,
-                param.const_2Error,
-                param.const_3Error,
-                ', '.join([i for i in param.regExpIndex.values()]),
-                param.regExpBcMut,
-                param.regExpBc))
+                     param.indexError,
+                     param.barcodeError,
+                     param.barcodeLength,
+                     param.mutationLength,
+                     param.readsValue,
+                     param.mutationProbability,
+                     param.separator,
+                     param.const_1.upper(),
+                     param.const_2.upper(),
+                     param.const_3.upper(),
+                     param.const_1Error,
+                     param.const_2Error,
+                     param.const_3Error,
+                     ', '.join([i for i in param.regExpIndex.values()])))
     else:
-        supp.LogErr("Attention! Not all the necessary files are in the folder with the program. Please place '{}' into directory '{}' with the program.".format(wrongImport, os.getcwd()))
+        supp.LogErr("Attention! Not all the necessary files are in the folder with the program. \
+            Please place '{}' into directory '{}' with the program.".format(wrongImport, os.getcwd()))
     variableSet = CheckArgs(args)
     variableSet.update(vars(args))
     SaveDictToPy(variableSet, "picks")
@@ -229,26 +250,32 @@ def main(args):
         if args.merge_indexes:
             if args.make_barcode_library:
                 # scriptPy = "BarcodeLibraryMergeMain.py"
-                supp.LogErr("This options not avalable now...")
+                supp.LogErr("This options is not avalable now...")
                 pass
             else:
                 # scriptPy = "BarcodeMutationMergeMain.py"
-                supp.LogErr("This options not avalable now...")
+                supp.LogErr("This options is not avalable now...")
                 pass
         else:
             if args.make_barcode_library:
                 scriptPy = "BarcodeLibraryMain.py"
-            else:    
+            else:
                 scriptPy = "BarcodeMutationMain.py"
     elif variableSet["mode"] == "genome":
         if args.make_barcode_library:
             scriptPy = "BarcodeGenomeLibMain.py"
         else:
             scriptPy = "BarcodeGenomeMapMain.py"
-            
+    elif variableSet["mode"] == "paired":
+        if args.make_barcode_library:
+            # scriptPy = "BarcodePairedLibMain.py"
+            supp.LogErr("This options is not avalable now...")
+            pass
+        else:
+            scriptPy = "BarcodePairedMapMain.py"
     else:
         # scriptPy = "AnotherCrazyFile.py"
-        supp.LogErr("This options not avalable now...")
+        supp.LogErr("This options is not avalable now...")
         pass
     cmd = ["python", scriptPy]
     subprocess.call(cmd)

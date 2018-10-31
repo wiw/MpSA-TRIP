@@ -1,4 +1,3 @@
-#C:\Python27\python.exe
 #!/usr/bin/env python
 # encoding: utf-8
 import os, param, picks
@@ -9,13 +8,15 @@ import ReliableCombBcMutFunc as relc
 import WriteFunc as wrt
 from TripMain_0_2 import Pdump
 
+
 def main():
     supp.setup_logging()
     for name in param.indexList:
         supp.LogInfo("Working in {}".format(name))
         index = param.indexList[name]
         resultDictPI = {}
-        if not os.path.exists(os.path.join(picks.workdir, name)): os.makedirs(os.path.join(picks.workdir, name))
+        if not os.path.exists(os.path.join(picks.workdir, name)):
+            os.makedirs(os.path.join(picks.workdir, name))
         indexFile = os.path.join(picks.workdir, name, "index_{}.fastq".format(index.upper()))
         if not os.path.exists(indexFile) or os.stat(indexFile).st_size == 0:
             rind.SplitFastqByIndexes(picks.input_file, indexFile, index.upper(), param.indexError, param.const_1.upper(), param.const_1Error, param.regExpIndex, picks.no_trim_index)

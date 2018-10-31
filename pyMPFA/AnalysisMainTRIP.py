@@ -26,6 +26,7 @@ import seaborn as sns
 supp.setup_logging()
 # logger = logging.getLogger(__name__)
 
+
 def WriteResultsToFile(resultDict, bcDict, seqDict, statDict, workdir, indexFile, customTxt=''):
     indexString = os.path.basename(indexFile).split(".")[0].split("_")[1]
     csvFile = os.path.join(workdir, "{}_barcode-mutation_count_{}.csv".format(indexString, customTxt))
@@ -64,7 +65,7 @@ def WriteResultsToFile(resultDict, bcDict, seqDict, statDict, workdir, indexFile
             if len(resultDict[barcodeID]) > 2:
                 wtd = resultDict[barcodeID][2]
                 if len(wtd) != 0:
-                    tmplist=[]
+                    tmplist = []
                     for i in wtd.values():
                         tmplist.extend(i)
                     AssociatedMutations = '\n'.join(str(x[0]) for x in tmplist)
@@ -95,6 +96,7 @@ def WriteResultsToFile(resultDict, bcDict, seqDict, statDict, workdir, indexFile
                 'HybridsPortion': HybridsPortion})
     return os.path.basename(csvFile)
 
+
 def mean(numbers):
     try:
         return float(sum(numbers)) / max(len(numbers), 1)
@@ -117,7 +119,7 @@ for item in namesList:
     # mapBCDict["m"+item] = Pload("m"+item+"_"+bc, mapd)
     normBCDict["n"+item] = Pload("n"+item+"_"+bc, normd)
     mapResDict["m"+item] = Pload("m"+item+"_"+res, mapd)
- 
+
 mainDict = {"map": mapResDict, "norm": normBCDict}
 mainBioDict, mainMergeDict = {}, {}
 
@@ -174,7 +176,7 @@ with open(mainMergeDictFile, "wb") as handle:
 # A10-13 normalization index
 # indexList = {"n18-1-1":"AGTCGCCG", "n18-1-2":"TAAACATC", "n18-2-1":"ACAATTCG", "n18-2-2":"TACTTGTC"}
 
-#A20-23 expression index
+# A20-23 expression index
 # indexList = {"e18-1-1":"GGTATGTT", "e18-1-2":"GAGGGACC", "e18-2-1":"TAGCTCTA", "e18-2-2":"TAATTGCG"}
 
 # a14, a15, a16 = GetTotalSeqRecords
@@ -236,66 +238,112 @@ with open(gatc_mismatch_file, "w") as handle:
                         handle.write("@{}\n{}\n+\n{}\n".format(*seqStr))
 
 
-'''
-Analyse of Hybrids in Lib cDNA 29-36 mapping
-Options:
-'''
-indexList = {"m1": "CAAGATAA", "m2": "GGACAACG"}
-lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping_80/Dump"
-workdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping_80"
+# ###################################### Lib 29-36
+# indexList = {"m1": "CAAGATAA", "m2": "GGACAACG"}
+# lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping/Dump"
+# workdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping"
 
-'''
-Analyse of Hybrids in Lib cDNA 33-40 mapping
-Options:
-'''
+# indexList = {"29-36_m1": "CAAGATAA", "29-36_m2": "GGACAACG"}
+# lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_1__bcmutProb_95/sample_20171127_20180510_Lib_29-36_mapping/Dump"
+# workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_1__bcmutProb_95/sample_20171127_20180510_Lib_29-36_mapping"
+
+# indexList = {"29-36_m1": "CAAGATAA", "29-36_m2": "GGACAACG"}
+# lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_95_bcError_0/Lib_29-36/sample_S1_L001_R1_001_Lib_29-36_mapping/Dump"
+# workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_95_bcError_0/Lib_29-36/sample_S1_L001_R1_001_Lib_29-36_mapping"
+
+# indexList = {"29-36_m1": "CAAGATAA", "29-36_m2": "GGACAACG"}
+# lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_80_bcError_0/Lib_29-36/sample_S1_L001_R1_001_Lib_29-36_mapping/Dump"
+# workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_80_bcError_0/Lib_29-36/sample_S1_L001_R1_001_Lib_29-36_mapping"
+
+# indexList = {"29-36_m1": "CAAGATAA", "29-36_m2": "GGACAACG"}
+# lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_50_bcError_0/Lib_29-36/sample_S1_L001_R1_001_Lib_29-36_mapping/Dump"
+# workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_50_bcError_0/Lib_29-36/sample_S1_L001_R1_001_Lib_29-36_mapping"
+indexList = {"29-36_m1": "CAAGATAA", "29-36_m2": "GGACAACG"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcmutProb_95_bcError_2_bmc_genomics/Lib_29-36/sample_S1_L001_R1_001_Lib_29-36_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcmutProb_95_bcError_2_bmc_genomics/Lib_29-36/sample_S1_L001_R1_001_Lib_29-36_mapping"
+bcRead_2__bcmutProb_95_bcError_2_bmc_genomics/Lib_29-36/sample_S1_L001_R1_001_Lib_29-36_mapping
+
+# ################################################## Lib 33-40
 indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
 lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_1__bcmutProb_80/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
 workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_1__bcmutProb_80/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping"
+
+indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_95/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_95/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping"
+
+indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_95_bcError_0/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_95_bcError_0/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping"
+
+indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_50_bcError_0/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_50_bcError_0/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping"
+
+indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_80_bcError_0/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_80_bcError_0/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping"
+
+indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_95_bcError_0/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_0__bcmutProb_95_bcError_0/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping"
+
+indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_1__bcmutProb_80/Lib_33-40_/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_1__bcmutProb_80/Lib_33-40_/1_S1_L001_R1_001_Lib_33-40_mapping"
+
+indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/1_S1_L001_R1_001_Lib_33-40_mapping"
 
 control_barcodes = {"wt1": ["TTCCAAGTGCAGGTTAGGCG", "TTACGCAT"],
                     "wt2": ["TGTGTACGGCTTGCTCTCAA", "TTACGCAT"],
                     "dc3": ["GAGCCCGGATCCACTCCAAG", "TTAGCATG"],
                     "dc4": ["TGTCACGTCAGCTAACCCAC", "TTAGCATG"]}
-lib_bcDict, lib_seqDict, lib_resultDict= {}, {}, {}
+lib_bcDict, lib_seqDict, lib_resultDict = {}, {}, {}
 similarity = 1
 
-for item in indexList:
-    lib_bcDict[item] = Pload(item+"_bcDict", lib_mapping_dump)
-    lib_seqDict[item] = Pload(item+"_seqDict", lib_mapping_dump)
-    lib_resultDict[item] = Pload(item+"_resultDict", lib_mapping_dump)
-    lib_statDict, hybrids_summary_stat = {}, []
-    for bc in lib_resultDict[item]:
-        main_mutation_seq = lib_resultDict[item][bc][0]
-        main_mutation_count = lib_resultDict[item][bc][1]
-        temp_mutation, temp_statistic = [], {}
-        for k in lib_seqDict[item][bc]:
-            temp_mutation.extend(lib_seqDict[item][bc][k])
-        # '''
-        # x[0]: this is sequence of mutation
-        # x[1]: this is count of this mutation
-        # The element of temp_mutation is tuple: ('mutation', count)
-        # '''
-        temp_mutation = dict(Counter([x[0] for x in temp_mutation for _ in range(x[1])]))
-        temp_statistic[main_mutation_seq] = temp_mutation[main_mutation_seq]
-        for mutations in temp_mutation:
-            if mutations != main_mutation_seq:
-                distance = Levenshtein.distance(main_mutation_seq, mutations)
-                if distance <= similarity:
-                    temp_statistic[main_mutation_seq] += temp_mutation[mutations]
-                else:
-                    temp_statistic[mutations] = temp_mutation[mutations]
-        hybrid_portion = round(1 - (float(max(temp_statistic.values())) / float(sum(temp_statistic.values()))), 6)
-        hybrids_summary_stat.append(hybrid_portion)
-        lib_statDict[bc] = dict(hybrids = hybrid_portion, mutations = temp_statistic)
-    hybrids_summary = str(round(mean(hybrids_summary_stat) * 100, 2)) + "%"
-    plt.figure(figsize=(10,10))
-    plt.title("Histogram density plot for hybrids portion in {}".format(item))
-    plt.xlabel("Hybrids portion in pct")
-    plt.ylabel("Portion of hybrids portion from all values")
-    x = [x * 100 for x in hybrids_summary_stat]
-    sns.kdeplot(x)
-    plt.savefig(os.path.join(lib_mapping_dump, "Histogram density plot for hybrids portion in {}.pdf".format(item)), fmt='pdf')
-    index = param.indexList[item]
-    indexFile = os.path.join(workdir, item, "index_{}.fastq".format(index.upper()))
-    csv_file = WriteResultsToFile(lib_resultDict[item], lib_bcDict[item], lib_seqDict[item], lib_statDict, os.path.join(workdir, item), indexFile, customTxt="with_hybrids_pct")
-    supp.LogInfo("Report write to {}\nHybrids pct: {}".format(csv_file, hybrids_summary))
+
+def count_hybrids():
+    for item in indexList:
+        lib_bcDict[item] = Pload(item+"_bcDict", lib_mapping_dump)
+        lib_seqDict[item] = Pload(item+"_seqDict", lib_mapping_dump)
+        lib_resultDict[item] = Pload(item+"_resultDict", lib_mapping_dump)
+        lib_statDict, hybrids_summary_stat = {}, []
+        for bc in lib_resultDict[item]:
+            main_mutation_seq = lib_resultDict[item][bc][0]
+            main_mutation_count = lib_resultDict[item][bc][1]
+            temp_mutation, temp_statistic = [], {}
+            for k in lib_seqDict[item][bc]:
+                temp_mutation.extend(lib_seqDict[item][bc][k])
+            # '''
+            # x[0]: this is sequence of mutation
+            # x[1]: this is count of this mutation
+            # The element of temp_mutation is tuple: ('mutation', count)
+            # '''
+            temp_mutation = dict(Counter([x[0] for x in temp_mutation for _ in range(x[1])]))
+            temp_statistic[main_mutation_seq] = temp_mutation[main_mutation_seq]
+            for mutations in temp_mutation:
+                if mutations != main_mutation_seq:
+                    distance = Levenshtein.distance(main_mutation_seq, mutations)
+                    if distance <= similarity:
+                        temp_statistic[main_mutation_seq] += temp_mutation[mutations]
+                    else:
+                        temp_statistic[mutations] = temp_mutation[mutations]
+            hybrid_portion = round(1 - (float(max(temp_statistic.values())) / float(sum(temp_statistic.values()))), 6)
+            hybrids_summary_stat.append(hybrid_portion)
+            lib_statDict[bc] = dict(hybrids=hybrid_portion, mutations=temp_statistic)
+        hybrids_summary = str(round(mean(hybrids_summary_stat) * 100, 4)) + "%"
+        plt.figure(figsize=(10, 10))
+        plt.title("Histogram density plot for hybrids portion in {}".format(item))
+        plt.xlabel("Hybrids portion in pct")
+        plt.ylabel("Portion of hybrids portion from all values")
+        x = [x * 100 for x in hybrids_summary_stat]
+        sns.kdeplot(x)
+        plt.savefig(os.path.join(lib_mapping_dump, "Histogram density plot for hybrids portion in {}.pdf".format(item)), fmt='pdf')
+        index = indexList[item]
+        indexFile = os.path.join(workdir, item, "index_{}.fastq".format(index.upper()))
+        csv_file = WriteResultsToFile(lib_resultDict[item], lib_bcDict[item], lib_seqDict[item], lib_statDict, os.path.join(workdir, item), indexFile, customTxt="with_hybrids_pct")
+        supp.LogInfo("Report write to {}\nHybrids pct: {}".format(csv_file, hybrids_summary))
+
+count_hybrids()

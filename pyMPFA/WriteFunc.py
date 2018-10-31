@@ -1,10 +1,11 @@
-#C:\Python27\python.exe
 #!/usr/bin/env python
 # encoding: utf-8
-import os, csv
+import os
+import csv
 """
 **** WRITE RESULTS TO FILE FUNCTIONS
 """
+
 
 def WriteResultsToFile(resultDict, bcDict, seqDict, workdir, indexFile, customTxt=''):
     indexString = os.path.basename(indexFile).split(".")[0].split("_")[1]
@@ -30,7 +31,7 @@ def WriteResultsToFile(resultDict, bcDict, seqDict, workdir, indexFile, customTx
             if len(resultDict[barcodeID]) > 2:
                 wtd = resultDict[barcodeID][2]
                 if len(wtd) != 0:
-                    tmplist=[]
+                    tmplist = []
                     for i in wtd.values():
                         tmplist.extend(i)
                     AssociatedMutations = '\n'.join(str(x[0]) for x in tmplist)
@@ -58,6 +59,7 @@ def WriteResultsToFile(resultDict, bcDict, seqDict, workdir, indexFile, customTx
                 'LostBarcodes': TotalBCSequence-resultDict[barcodeID][1]})
     return os.path.basename(csvFile)
 
+
 def WriteBcDictToFile(bcDict, workdir, indexFile, customTxt=''):
     indexString = os.path.basename(indexFile).split(".")[0].split("_")[1]
     csvFile = os.path.join(workdir, "{}_barcodeDictionary_{}.csv".format(indexString, customTxt))
@@ -75,6 +77,7 @@ def WriteBcDictToFile(bcDict, workdir, indexFile, customTxt=''):
                 'BCSequence': BCSequence,
                 'BCSequenceCount': BCSequenceCount})
     return os.path.basename(csvFile)
+
 
 def SimpleCsvWriter(resultDict, bcDict, workdir, indexFile, customTxt=''):
     indexString = os.path.basename(indexFile).split(".")[0].split("_")[1]

@@ -28,6 +28,7 @@ from pprint import pprint as View
 
 Logger = logging.getLogger(__name__)
 
+
 def load_main_config(config_path):
     if os.path.exists(config_path) and os.path.isfile(config_path):
         with open(config_path, "rt") as handle:
@@ -44,7 +45,8 @@ def load_logging_config(path):
             config = json.load(f)
         logging.config.dictConfig(config)
     except:
-        logging.basicConfig(filename=None, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',datefmt='%Y.%m.%d %H:%M:%S')
+        logging.basicConfig(filename=None, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y.%m.%d %H:%M:%S')
+
 
 def parse_arguments():
     try:
@@ -56,6 +58,7 @@ def parse_arguments():
     except:
         Logger.exception("Don't parse arguments!")
 
+
 def open_input(INPUT):
     try:
         if INPUT.endswith('gz'):
@@ -65,6 +68,7 @@ def open_input(INPUT):
     except:
         Logger.exception("Opener error!")
 
+
 def load_pickle(data):
     try:
         with open_input(data) as handle:
@@ -73,11 +77,13 @@ def load_pickle(data):
     except:
         Logger.exception("Don't load your data {}".format(data))
 
+
 def select_file(config, experiment):
     if config['input_file'].keys() == ["single"]:
         return [config['input_file']['single']['path']]
     elif config['input_file'].keys() == ["multiple"]:
         return config['input_file']['muliple'][experiment]
+
 
 def reverseComplement(x):
     try:

@@ -1,11 +1,13 @@
-#C:\Python27\python.exe
 #!/usr/bin/env python
 # encoding: utf-8
-import Levenshtein, progressbar, itertools
+import Levenshtein
+import progressbar
+import itertools
 import SupportFunc as supp
 """
 **** CHECKING BARCODES FOR UNIQUENESS FUNCTIONS
 """
+
 
 def workerCheckBarcode(bcDict, barcodeError, bcCombinationList):
     stat = 0
@@ -15,6 +17,7 @@ def workerCheckBarcode(bcDict, barcodeError, bcCombinationList):
                 bcDict.pop(key, None)
             stat += 1
     return stat
+
 
 def mainCheckBarcodeInDict(bcDict, barcodeError):
     # print("        Check unique barcodes for error...\n")
@@ -39,11 +42,15 @@ def mainCheckBarcodeInDict(bcDict, barcodeError):
     else:
         supp.LogInfo("        There were {} errors. Do not worry, they are already deleted.\n".format(stat))
 
-def checkPMI(exp, pmi, pmiSubst):
-    chkResult = []
-    for i in pmi:
-        if Levenshtein.distance(str(exp), str(i)) <= int(pmiSubst):
-            chkResult.append(str(i))
-    if len(chkResult) == 1:
-        return chkResult[0]
-    return False
+
+def checkPMI(_pmi, pmi_item, options):
+    check_result = []
+    if _pmi == pmi_item:
+        return pmi_item
+    else:
+        for item in options["pmi"]:
+            if Levenshtein.distance(str(_pmi), str(item)) <= int(options["pmiSubst"]):
+                check_result.append(str(item))
+        if len(check_result) == 1:
+            return check_result[0]
+        return False

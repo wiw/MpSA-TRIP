@@ -14,29 +14,52 @@ library(gridExtra)
 library(Biostrings)
 library(seqLogo)
 library(jsonlite)
+library(ggseqlogo)
+library(RColorBrewer)
 options(run.main=TRUE)
 source(file.path("/home/anton/data/R-script/R-counts/RUN", "functions.R"))
 args <- commandArgs(TRUE)
 
-wd <- "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_33-40_bcRead-1_bcMutated-0"
-control <- "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_33-40_bcRead-1_bcMutated-0/control.json"
-data <- "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_33-40_bcRead-1_bcMutated-0/data.json"
-rpl_count <- "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_33-40_bcRead-1_bcMutated-0/rpl_count.json"
-arguments <- list("wd"=wd, "control"=control, "data"=data, "rpl"=rpl_count)
+####################
+# Replace arguments. Use this section only for development! Remove in the production.
+
+# wd <- "/home/anton/backup/input/trip/RUN_2018-06-07/results/statistics/trip6_2"
+# control <- "/home/anton/backup/input/trip/RUN_2018-06-07/results/statistics/trip6_2/control.json"
+# data <- "/home/anton/backup/input/trip/RUN_2018-06-07/results/statistics/trip6_2/data.json"
+# rpl_count <- "/home/anton/backup/input/trip/RUN_2018-06-07/results/statistics/trip6_2/rpl_count.json"
+
+# use_method <- "mpsa"
+# wd <- "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_33-40"
+# control <- "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_33-40/control.json"
+# data <- "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_33-40/data.json"
+# rpl_count <- "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_33-40/rpl_count.json"
+# arguments <- list("use_method"=use_method, "wd"=wd, "control"=control, "data"=data, "rpl"=rpl_count)
+###################
 
 parse_args <- function(args) {
-    wd <- args[1]
-    control <- file.path(args[1], args[2])
-    data <- file.path(args[1], args[3])
-    rpl_count <- file.path(args[1], args[4])
-    return(list("wd"=wd, "control"=control, "data"=data, "rpl"=rpl_count))
+    output_arguments = list()
+    output_arguments$use_method <- args[1]
+    output_arguments$wd <- args[2]
+    if (args[1] == "mpsa") {
+        output_arguments$control <- args[3]
+        output_arguments$data <- args[4]
+        output_arguments$rpl <- args[5]
+    } else {
+        output_arguments$data <- args[3]
+        output_arguments$rpl <- args[4]
+    }
+    return(output_arguments)
 }
+
+
 load_json <- function(json_file) {
     if (file.exists(json_file) && !dir.exists(json_file)) {
         loaded_data <- jsonlite::fromJSON(json_file, flatten = T)
     }
     return(loaded_data)
 }
+
+
 transposition_table <- function(df, column_number_who_transposed) {
     tt_int <- as.integer(paste0(column_number_who_transposed, collapse=""))
     if (is.integer(tt_int) && tt_int > 0 && tt_int <= ncol(df)){
@@ -52,7 +75,9 @@ transposition_table <- function(df, column_number_who_transposed) {
     }
     return(ttt)
 }
-convert_data <- function(loaded_jsn, first_item_name) {
+
+
+convert_data <- function(loaded_jsn, first_item_name, use_method) {
     if (first_item_name == "control") {
         synonymous <- list("e" = "expression", "m" = "mapping", "n" = "normalization")
         ab <- sub("control_", "", names(loaded_jsn))
@@ -66,15 +91,23 @@ convert_data <- function(loaded_jsn, first_item_name) {
         first_column <- names(loaded_jsn)
     }
     mtx <- as.data.frame(matrix(unlist(loaded_jsn), nrow = length(loaded_jsn), byrow=T), stringsAsFactors=F)
-    mtxDF <- cbind(as.data.frame(sapply(mtx[,c(1:ncol(mtx)-1)], as.numeric)), mtx[, ncol(mtx)])
-    converted_df <- cbind(data.frame("V0" = first_column, stringsAsFactors=F), mtxDF)
+    mtxDF <- lapply(mtx, function(x) {x1 <- type.convert(as.character(x))
+                                            if(is.factor(x1))
+                                                as.character(x1)
+                                            else x1})
+    converted_df <- cbind(data.frame("V0" = first_column, stringsAsFactors=F), mtxDF, stringsAsFactors=F)
     names(converted_df) <- c(first_item_name, sub("-", "_", names(loaded_jsn[[1]])))
+    if (use_method == "trip") {
+        replacement <- c("chr", "start", "string")
+        names(converted_df)[names(converted_df) %in% c("mutation", NA)] <- replacement
+    }
     return(converted_df)
 }
 
+
 main_loading <- function(arguments) {
     output <- list()
-    for (item in names(arguments)[!names(arguments) %in% "wd"]) {
+    for (item in names(arguments)[!names(arguments) %in% c("wd", "use_method")]) {
         if (item == "rpl") {
             output$rpl <- as.data.frame(load_json(arguments[[item]]), stringsAsFactors=F)
             names(output$rpl) <- c("replicate", "count")
@@ -85,7 +118,7 @@ main_loading <- function(arguments) {
             } else {
                 first_item_name <- "barcode"
             }
-            output[[item]] <- convert_data(load_json(arguments[[item]]), first_item_name)
+            output[[item]] <- convert_data(load_json(arguments[[item]]), first_item_name, arguments$use_method)
         }
         if (item != "data") {
             output[[item]] <- transposition_table(output[[item]], 1)
@@ -94,12 +127,17 @@ main_loading <- function(arguments) {
     return(output)
 }
 
+
 rpm <- function(V1, int) {
     return((V1/int)*10^6)
 }
+
+
 normalization <- function(V1, V2) {
     return(V1/V2)
 }
+
+
 remove_unv_data <- function(df, col_vector) {
     all_combinations <- combn(col_vector, 2, simplify = FALSE)
     for (comb in all_combinations) {
@@ -110,13 +148,17 @@ remove_unv_data <- function(df, col_vector) {
     }
     return(df)
 }
+
+
 custom_mean <- function(df, col_vector) {
     return(rowMeans(df[, col_vector]))
 }
 
+
 vector.is.empty <- function(x) {
     return( length(x) == 0 )
 }
+
 
 prepare_data <- function(DATA) {
     for (set in sort(names(DATA)[!names(DATA) %in% "rpl"])) {
@@ -158,6 +200,7 @@ prepare_data <- function(DATA) {
     return(DATA)
 }
 
+
 normalization_to_control <- function(DATA) {
     # Count mean value for control wt data
     wt_row_vector <- grep("wt", DATA$control$control)
@@ -175,6 +218,7 @@ normalization_to_control <- function(DATA) {
     }
     return(DATA)
 }
+
 
 scatter_plots_wrapper <- function(DATA, experiment_set) {
     main_vector <- list()
@@ -205,6 +249,7 @@ scatter_plots_wrapper <- function(DATA, experiment_set) {
     return ( scatter_plots(main_vector) )
 }
 
+
 scatter_plots <- function(main_vector) {
     plot.list <- list()
     for ( experiment in names(main_vector) ) {
@@ -220,13 +265,19 @@ scatter_plots <- function(main_vector) {
                 all_values <- paste0( "values = ", length(V1) )
             }
             label_text <- c(sets, corr_vector, all_values)
-            x.coord <- rep( max( V1, na.rm = T ) * 0.2, length(label_text) )
-            y.coord <- seq( max( V2, na.rm = T ) * 0.7, by = -(3 * max(DATA$data$expression_2_rpm, na.rm = T) / 100), length.out = length(label_text) )
+            x.coord <- rep( max( V1, na.rm = T ) * 0.1, length(label_text) )
+            y.coord <- seq( max( V2, na.rm = T ) * 0.8, by = -(3 * max( V2, na.rm = T ) / 100), length.out = length(label_text) )
             scplot <- ggplot( main_vector[[ experiment ]][[ sets ]], aes_string( names_V[1], names_V[2] ) ) + 
                 geom_point(alpha = 5/10, colour = "#65A6D1", size = 3, na.rm = T) + 
                 xlab( paste0( experiment, " replicate 1" ) ) + 
                 ylab( paste0( experiment, " replicate 2" ) ) + 
-                annotate( "text", x = x.coord, y = y.coord, label = label_text, size = 5, na.rm=T ) + 
+                annotate( "text", 
+                    x = x.coord, 
+                    y = y.coord, 
+                    label = label_text, 
+                    hjust = 0,
+                    size = 5, 
+                    na.rm=T ) + 
                 labs( title = paste0( "Scatter plot correlation\nbetween ", experiment, " replicate 1 and 2" ) ) + 
                 theme_bw() + 
                 theme(plot.title = element_text(size = 18),
@@ -242,6 +293,7 @@ scatter_plots <- function(main_vector) {
     return(plot.list)
 }
 
+
 density_plots <- function(DATA){
     plot.list <- list()
     # Density plot for expression replicate mean
@@ -250,19 +302,53 @@ density_plots <- function(DATA){
     expr_mean_name <- grep("_mn_control", names(DATA$control))
     control_mean <- sort(c(mean(DATA$control[[expr_mean_name]][wt]), mean(DATA$control[[expr_mean_name]][delta_c])))
     t.coord <- with(DATA$data, density(expression_mn_control))
-    x.coord <- quantile(t.coord$x)[names(quantile(t.coord$x)) %in% "25%"]
-    y.coord <- quantile(t.coord$x)[names(quantile(t.coord$x)) %in% "75%"]
+    x.coord <- quantile(t.coord$x)[names(quantile(t.coord$x)) %in% "0%"]
+    y.coord <- quantile(t.coord$x)[names(quantile(t.coord$x)) %in% "50%"]
     e_mean <- ggplot() +
         geom_density(colour="#ff9933", data=DATA$data, aes(expression_mn_control)) +
         geom_vline(aes(xintercept=control_mean), colour=c("#336600", "#330066")) +
         theme_bw() +
         xlab("Norm. expression value ( log2( expr / (norm * control) )") +
         ylab("Expression count (portion)") +
-        annotate("text", x = x.coord, y = y.coord, label = paste("Total barcodes\nexpr. mean:", nrow(DATA$data))) + 
+        annotate( "text", 
+            x = x.coord, 
+            y = y.coord, 
+            hjust = 0, 
+            label = paste( "Total barcodes\nexpr. mean:", nrow( DATA$data ) ) ) +
         labs(title = "Mean expression")
     plot.list$e_mean <- e_mean
     return(plot.list)
 }
+
+trip_density_plots <- function(DATA, to_title){
+    plot.list <- list()
+    # Density plot for expression replicate mean
+    t.coord <- with(DATA$data, density(expression_mean_norm))
+    x.coord <- quantile(t.coord$x)[names(quantile(t.coord$x)) %in% "0%"]
+    y.coord <- quantile(t.coord$x)[names(quantile(t.coord$x)) %in% "50%"]
+    e_mean <- ggplot() +
+        geom_density(colour="#ff9933", data=DATA$data, aes(expression_mean_norm)) +
+        theme_bw() +
+        xlab("Norm. expression value ( expr / norm )") +
+        ylab("Expression portion") +
+        annotate( "text", 
+            x = x.coord, 
+            y = y.coord, 
+            hjust = 0, 
+            label = paste( "Total barcodes\nexpr. mean:", nrow( DATA$data ) ) ) +
+        labs(title = paste0("Mean expression ", to_title))
+    plot.list$e_mean <- e_mean
+    return(plot.list)
+}
+
+pwm <- function(DATA, column_name) {
+    plot.list <- list()
+    for (method in c("bits", "prob")){
+        plot.list[[method]] <- ggplot() + geom_logo(as.character(DATA[[column_name]]), method=method, seq_type="dna") + theme_logo() + labs(title=paste0("Position weight matrix by ", method, ". Count: ", length(DATA[[column_name]])))
+    }
+    return(plot.list)
+}
+
 
 main <- function(args) {
     arguments <- parse_args(args)
@@ -272,15 +358,23 @@ main <- function(args) {
     # DATA <- prepare_data( DATA )
     # DATA <- normalization_to_control( DATA )
     ##########################################
-    DATA <- normalization_to_control( prepare_data( main_loading( arguments ) ) )
-    draw_list <- append( scatter_plots_wrapper( DATA, c("expression", "normalization") ), density_plots(DATA) )
+    if (arguments$use_method == "mpsa") {
+        DATA <- normalization_to_control( prepare_data( main_loading( arguments ) ) )
+        filename <- basename(arguments$wd)
+        draw_list <- c( scatter_plots_wrapper( DATA, c("expression", "normalization") ), density_plots(DATA), pwm(DATA$data, "mutation") )
+    } else {
+        DATA <- prepare_data( main_loading( arguments ) )
+        print("DATA ... OK")
+        filename <- paste(basename(dirname(arguments$wd)), basename(arguments$wd), sep="_")
+        draw_list <- c( scatter_plots_wrapper( DATA, c("expression", "normalization") ), trip_density_plots(DATA, filename) )
+    }
     if (length(draw_list) <= 4) {
         cols_value <- ceiling( length(draw_list) / 2 )
     } else {
         cols_value <- 2
     }
     # Draw plots
-    pdf( file = file.path( arguments$wd, paste0( "Plots from ", basename(arguments$wd), format(Sys.time(), " %Y-%m-%d"), ".pdf" ) ), width=14, height=14 )
+    pdf( file = file.path( arguments$wd, paste0( "Plots from ", filename, format(Sys.time(), " %Y-%m-%d"), ".pdf" ) ), width=14, height=14 )
     print(multiplot(plotlist = draw_list, cols = cols_value))
     dev.off()
     # Write output table to csv file
@@ -288,6 +382,67 @@ main <- function(args) {
 
 }
 
+
 if (getOption('run.main', default=TRUE)) {
    main(args)
 }
+
+
+##########################
+# DEVELOPMENT SECTION
+# aa <- DATA$data
+# unique_mutation <- unique(aa$mutation)
+# aa_mut <- data.frame()
+# aa_mut_one <- data.frame()
+# aa_mut_two <- data.frame()
+# for (umt in unique_mutation){
+#     selector <- aa[aa$mutation %in% umt, ]
+#     len_mut <- nrow(selector)
+#     if (len_mut == 2){
+#         aa_mut <- rbind(aa_mut, selector)
+#         aa_mut_one <- rbind(aa_mut_one, selector[1, ])
+#         aa_mut_two <- rbind(aa_mut_two, selector[2, ])
+#     }
+# }
+
+# scatter_plots <- function(V1, V2) {
+#     plot.list <- list()
+#     tmp_df <- data.frame("V1"=V1, "V2"=V2)
+#     corr_vector <- c()
+#     experiment <- "lib 29-36"
+#     for ( cor_method in c("pearson", "spearman") ) {
+#         corr_vector <- append( corr_vector, paste0( cor_method, ".cor = ", round( cor( V1, V2, method = cor_method, use = "pairwise.complete.obs" ), digits=2 ) ) )
+#     }
+#     if ( length(V1) == length(V2) ) {
+#         all_values <- paste0( "values = ", length(V1) )
+#     }
+#     label_text <- c(corr_vector, all_values)
+#     x.coord <- rep( max( V1, na.rm = T ) * 0.1, length(label_text) )
+#     y.coord <- seq( max( V2, na.rm = T ) * 0.8, by = -(3 * max( V2, na.rm = T ) / 100), length.out = length(label_text) )
+#     scplot <- ggplot( tmp_df, aes( V1, V2 )) + 
+#         geom_point(alpha = 5/10, colour = "#65A6D1", size = 3, na.rm = T) + 
+#         xlab( paste0( experiment, " barcode 1" ) ) + 
+#         ylab( paste0( experiment, " barcode 2" ) ) + 
+#         annotate( "text", 
+#             x = x.coord, 
+#             y = y.coord, 
+#             label = label_text, 
+#             hjust = 0,
+#             size = 5, 
+#             na.rm=T ) + 
+#         labs( title = paste0( "Scatter plot correlation\nbetween ", experiment, " replicate 1 and 2" ) ) + 
+#         theme_bw() + 
+#         theme(plot.title = element_text(size = 18),
+#             axis.title.x = element_text(size = 16), 
+#             axis.title.y = element_text(size = 16), 
+#             axis.text.x = element_text(size = 14), 
+#             axis.text.y = element_text(size = 14)
+#             )
+#     plot.list[[ experiment ]] <- scplot
+#     return(plot.list)
+# }
+
+# plots <- scatter_plots(aa_mut_one$expression_mn_control, aa_mut_two$expression_mn_control)
+# pdf( file = file.path( arguments$wd, paste0( "Experimental plot ", filename, format(Sys.time(), " %Y-%m-%d"), ".pdf" ) ), width=14, height=14 )
+# print(plots)
+# dev.off()

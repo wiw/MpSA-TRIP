@@ -1,12 +1,13 @@
-#C:\Python27\python.exe
 #!/usr/bin/env python
 # encoding: utf-8
-import os, string
+import os
+import string
 from itertools import islice
 from toolshed import nopen
 """
 **** PAIRED-END FUNCTIONS
 """
+
 
 def read_fastq(fq):
     r"""fastq parser that returns name, seq, and qual."""
@@ -19,13 +20,14 @@ def read_fastq(fq):
         else:
             raise EOFError("unexpected end of file")
         assert id1.startswith('@'),\
-                ">> Fastq out of sync at read:\n%s\n" % id1
+            ">> Fastq out of sync at read:\n%s\n" % id1
         assert id2.startswith('+'),\
-                ">> Fastq out of sync at read:\n%s\n" % id1
+            ">> Fastq out of sync at read:\n%s\n" % id1
         assert len(seq) == len(qual),\
-                ">> Sequence and Quality are not the same length \
-                for read:\n%s\n" % id1
+            ">> Sequence and Quality are not the same length \
+            for read:\n%s\n" % id1
         yield id1[1:-1], seq[:-1], qual[:-1]
+
 
 def fastqtodict(fastq, separator):
     """returns dict of read name to sequence"""
@@ -36,10 +38,12 @@ def fastqtodict(fastq, separator):
             fdict[name.split(separator)[0]] = [seq, qual]
     return fdict
 
+
 def reverseComplement(x):
-    complement = string.maketrans('ACGTNSRYMKWHBVD','TGCANSRYMKWHBVD')
+    complement = string.maketrans('ACGTNSRYMKWHBVD', 'TGCANSRYMKWHBVD')
     x = x.translate(complement)[::-1]
     return x
+
 
 def FastqJoinPaired(r1, r2, output_dir, gap_size, separator, mode="paired", reverse_complement=False):
     # set dictionary based on mode
