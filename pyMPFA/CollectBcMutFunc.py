@@ -325,19 +325,15 @@ def comm_fastq(bowtie_args, options):
                     comm_stat[pmi_item][item_label] = comm_stat[pmi_item].setdefault(item_label, 0) + 1
                     titles.setdefault(_item, []).append(t.split()[0])
         titles_sorted = sorted(titles.iteritems())
-        fst, snd = [files[0] for files in titles_sorted]
+        fst, snd = [files[1] for files in titles_sorted]
         common_list = set(fst) & set(snd)
         comm_stat[pmi_item].setdefault("comm", len(common_list))
         for _item in _sides:
             _tmp_file = os.path.join(os.path.dirname(_item), "tmp.fastq")
             with open(_item, "r") as handle, open(_tmp_file, "w") as t_handle:
-                i = 0
                 for t, s, q in FastqGeneralIterator(handle):
                     if t.split()[0] in common_list:
                         t_handle.write("@{}\n{}\n+\n{}\n".format(t, s, q))
-                        i += 1
-                        if i % 10 ** 4 == 0:
-                            print("Comm {}: {}".format(pmi_item, i))
             os.rename(_tmp_file, _item)
         supp.LogInfo("Complete {} 'comm' files".format(pmi_item))
     return comm_stat

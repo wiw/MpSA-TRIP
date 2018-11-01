@@ -16,6 +16,7 @@ import LegacyFuncHD as lf
 from Bio.SeqIO.QualityIO import FastqGeneralIterator
 from matplotlib import pyplot as plt
 from collections import OrderedDict
+from string import Template
 """
 **** SUPPORT FUNCTIONS
 """
