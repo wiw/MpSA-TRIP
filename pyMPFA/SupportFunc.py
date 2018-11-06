@@ -15,7 +15,7 @@ import pandas as pd
 import LegacyFuncHD as lf
 from Bio.SeqIO.QualityIO import FastqGeneralIterator
 from matplotlib import pyplot as plt
-from collections import OrderedDict
+from collections import OrderedDict, Counter
 from string import Template
 """
 **** SUPPORT FUNCTIONS
@@ -86,31 +86,33 @@ def jsonWrite(var_dict, outpath, outfilename):
 def EstimateCalculationTime(obj):
     if type(obj) == dict or type(obj) == list:
         l = float(len(obj))
-        velocity = 5*10**5
-        sec = (float(l**2)/2)/velocity
+        velocity = 5 * 10**5
+        sec = (float(l**2) / 2) / velocity
         now = datetime.datetime.now().strftime("%H:%M")
         if sec <= 60:
             t = str(float(sec)) + " sec. Current time: " + now
         elif sec <= 3600 and sec > 60:
-            t = str(float(sec)/(60)) + " min. Current time: " + now
-        elif sec <= 24*60**2 and sec > 3600:
-            t = str(float(sec)/(60**2)) + "h."
+            t = str(float(sec) / (60)) + " min. Current time: " + now
+        elif sec <= 24 * 60**2 and sec > 3600:
+            t = str(float(sec) / (60**2)) + "h."
         else:
-            t = str(float(sec)/(24*60**2)) + "d. Current time: " + now
+            t = str(float(sec) / (24 * 60**2)) + "d. Current time: " + now
         return t
     return "I don't estimate calculation time for this object. Sorry..."
 
 
 def makeStatFromBowtieAlign(bwtAlignerDict):
     LogInfo('Some statistics from bowtie aligner')
-    expr = regex.compile('[ ]*(?P<count>\\d.*) ((\\((?P<pct>[0-9\\.\\%].*)\\) .*aligned (?P<times>.*time.*|))|reads.*)')
+    expr = regex.compile(
+        '[ ]*(?P<count>\\d.*) ((\\((?P<pct>[0-9\\.\\%].*)\\) .*aligned (?P<times>.*time.*|))|reads.*)')
     for key in bwtAlignerDict:
         LogInfo("Bowtie align report for {}".format(key))
         for line in bwtAlignerDict[key]:
             m = expr.match(line)
             if m is not None:
                 if m.group('times') is not None:
-                    LogInfo("     Aligned {}: {} ({})".format(m.group('times'), m.group('count'), m.group('pct')))
+                    LogInfo("     Aligned {}: {} ({})".format(
+                        m.group('times'), m.group('count'), m.group('pct')))
                 else:
                     LogInfo("     {} input reads".format(m.group('count')))
 
@@ -194,7 +196,8 @@ def dict2html_list(any_dict):
 
             @unordered
             def make_dict_to_html_list(any_dict):
-                html_list = ["<li><strong>{}</strong> - {}</li>".format(k, replace_brackets(v)) for k, v in any_dict.items()]
+                html_list = ["<li><strong>{}</strong> - {}</li>".format(
+                    k, replace_brackets(v)) for k, v in any_dict.items()]
                 html_list = "".join(html_list)
                 return html_list
             return make_dict_to_html_list(any_dict)
@@ -212,7 +215,7 @@ def get_source_file(options):
 
 def extract_experiment_and_lib(options):
     # Regular expression splits text string by example: "trip-6_2_mapping" -> "trip_6_2", "mapping"
-    foo = regex.split('([a-z\-_0-9]*)_([a-z]*)', options['experiment_label'])
+    foo = regex.split('([a-z\\-_0-9]*)_([a-z]*)', options['experiment_label'])
     foo = [x for x in foo if len(x) != 0]
     return foo
 
@@ -232,7 +235,8 @@ def make_all_index_stat(options):
                     regexp = make_regexp(idx, idx_error)
                     match = regexp.match(seq)
                     if match is not None:
-                        output_stat[idx_error][idx] = output_stat[idx_error].setdefault(idx, 0) + 1
+                        output_stat[idx_error][idx] = output_stat[idx_error].setdefault(
+                            idx, 0) + 1
     return output_stat, reads_count
 
 
@@ -240,12 +244,15 @@ def format_all_index_stat_to_html(output_stat, reads_count, to_html=True):
     output_data = pd.DataFrame()
     pd.set_option('display.max_colwidth', -1)
     for idx_error, stat in output_stat.items():
-        pd_data = pd.DataFrame(stat.items(), columns=['index', str(idx_error)]).sort_values(by=['index'])
+        pd_data = pd.DataFrame(stat.items(), columns=[
+                               'index', str(idx_error)]).sort_values(by=['index'])
         if len(output_data) == 0:
             output_data = copy.deepcopy(pd_data)
         else:
-            output_data = output_data.merge(pd_data, left_on='index', right_on='index', how='outer')
-    output_data.loc['total'] = pd.Series(output_data.sum(), index=[str(x) for x in output_stat.keys()])
+            output_data = output_data.merge(
+                pd_data, left_on='index', right_on='index', how='outer')
+    output_data.loc['total'] = pd.Series(
+        output_data.sum(), index=[str(x) for x in output_stat.keys()])
     output_data.ix['total', 'index'] = reads_count
     if to_html:
         return output_data.to_html().replace("\n", "")
@@ -273,11 +280,13 @@ def count_non_barcoded_reads(options):
                     regex_string = regex.compile("{}({}){{s<=4}}{}{{s<=1}}{}{{s<=2}}"
                                                  .format(idx_illumina,
                                                          DEFAULT['const1'],
-                                                         reverse_idx_promotor(idx_promotor),
+                                                         reverse_idx_promotor(
+                                                             idx_promotor),
                                                          DEFAULT['const2']))
                     match = regex_string.match(seq)
                     if match is not None:
-                        non_barcoded_data[idx_illumina][idx_promotor] = non_barcoded_data[idx_illumina].setdefault(idx_promotor, 0) + 1
+                        non_barcoded_data[idx_illumina][idx_promotor] = non_barcoded_data[idx_illumina].setdefault(
+                            idx_promotor, 0) + 1
             c += 1
             if c % 10**4 == 0:
                 print("Current loaded {} reads".format(c))
@@ -287,34 +296,56 @@ def count_non_barcoded_reads(options):
 def collect_report_data(options):
     report_data = {}
     # Header section
-    report_data['experiment'], report_data['lib'] = extract_experiment_and_lib(options)
+    report_data['experiment'], report_data['lib'] = extract_experiment_and_lib(
+        options)
     report_data['date'] = datetime.datetime.now().strftime("%Y-%m-%d")
     # Options section
     report_data['options'] = dict2html_list(options)
     # De-multiplexing section
     # Generate html table with statistical data about splitting by ALL indexes in view of variable error count in indexes ${all_index_stat}
     output_stat, reads_count = make_all_index_stat(options)
-    report_data["all_index_stat"] = format_all_index_stat_to_html(output_stat, reads_count)
+    report_data["all_index_stat"] = format_all_index_stat_to_html(
+        output_stat, reads_count)
     # Generate html table with stat_data by using at the moment indexes.
     tmp = format_all_index_stat_to_html(output_stat, reads_count, False)
-    report_data['current_index_stat'] = tmp[tmp['index'].isin(options['indexList'].values())][["index", "0"]]
+    report_data['current_index_stat'] = tmp[tmp['index'].isin(
+        options['indexList'].values())][["index", "0"]]
+
+
+def parse_collection_data(collection_of_output_data):
+    add_to_report = {}
+    # Collect all the found four-letter sequences and make a frequency analysis of the occurrence of letters ATGC.
+    # Return html table
+
+    def stat_four_seq_data(idata):
+        output, first_key = {}, 'fwd'
+        for promotor_index, four_seq_data in idata[first_key].items():
+            output.setdefault(promotor_index, dict(Counter(four_seq_data)))
+        return output
+
+    def format_four_seq_data(sdata):
+        def wrapper_head(promotor_index, pandas_df):
+            return "<div><p>{}</p>{}</div>".format(promotor_index, pandas_df.replace("\n", ""))
+        output = {}
+        for promotor_index, stat_four_data in sdata.items():
+            tmp_df = pd.DataFrame(stat_four_data.items(), columns=[
+                                  'four_seq', 'count']).sort_values(by=['count'], ascending=False)
+            tmp_df = tmp_df.head(15)
+            tmp_df_html = tmp_df.to_html(index=False)
+            output.setdefault(promotor_index, wrapper_head(promotor_index, tmp_df_html))
+        return output
+    # Further use only files from 'paired_indexes'. Need to load path to this files to report
+    # #################### smth code
+    # Count length of genome from the fwd and rev reads and use the shortest
+    # #################### smth code
     # Reads count before/after comm by promotor index. Collect data in 'colb.main_paired' Return results as html table
     # #################### smth code
     # Bowtie statistics in table view $alignment_stat_table +  filtration statistics
     # #################### smth code
     # Finally statistics in $output_stat_table
     # #################### smth code
-
-
-def parse_collection_data(collection_of_output_data):
-    # Collect all the found four-letter sequences and make a frequency analysis of the occurrence of letters ATGC.
-    # Necessary intervention in the process of creating a dictionary bcDict. Return html table
-    # #################### smth code
-    # Further use only files from 'paired_indexes'. Need to load path to this files to report
-    # #################### smth code
-    # Count length of genome from the fwd and rev reads and use the shortest
-    # #################### smth code
-    pass
+    for replicate in collection_of_output_data:
+        add_to_report.setdefault('spacer_4freq', format_four_seq_data(stat_four_seq_data(collection_of_output_data[replicate])))
 
 
 def write_report_to_template(report_data, options):
