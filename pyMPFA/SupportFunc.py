@@ -103,7 +103,7 @@ def EstimateCalculationTime(obj):
 
 def makeStatFromBowtieAlign(bwtAlignerDict):
     LogInfo('Some statistics from bowtie aligner')
-    expr = regex.compile('[ ]*(?P<count>\d.*) ((\((?P<pct>[0-9\.\%].*)\) .*aligned (?P<times>.*time.*|))|reads.*)')
+    expr = regex.compile('[ ]*(?P<count>\\d.*) ((\\((?P<pct>[0-9\\.\\%].*)\\) .*aligned (?P<times>.*time.*|))|reads.*)')
     for key in bwtAlignerDict:
         LogInfo("Bowtie align report for {}".format(key))
         for line in bwtAlignerDict[key]:
@@ -270,10 +270,11 @@ def count_non_barcoded_reads(options):
             for idx_illumina in DEFAULT['idx_illumina']:
                 non_barcoded_data.setdefault(idx_illumina, {})
                 for idx_promotor in DEFAULT['idx_promotor']:
-                    regex_string = regex.compile("{}({}){{s<=4}}{}{{s<=1}}{}{{s<=2}}".format(idx_illumina,
-                                                                                             DEFAULT['const1'],
-                                                                                             reverse_idx_promotor(idx_promotor),
-                                                                                             DEFAULT['const2']))
+                    regex_string = regex.compile("{}({}){{s<=4}}{}{{s<=1}}{}{{s<=2}}"
+                                                 .format(idx_illumina,
+                                                         DEFAULT['const1'],
+                                                         reverse_idx_promotor(idx_promotor),
+                                                         DEFAULT['const2']))
                     match = regex_string.match(seq)
                     if match is not None:
                         non_barcoded_data[idx_illumina][idx_promotor] = non_barcoded_data[idx_illumina].setdefault(idx_promotor, 0) + 1
@@ -316,7 +317,12 @@ def parse_collection_data(collection_of_output_data):
     pass
 
 
-def main_report(collection_of_output_data, options):
-    report_data = collect_report_data(options)
+def write_report_to_template(report_data, options):
     # Safe substitute in template by the simple options. When this is used built-in dict - "options"
     pass
+
+
+def main_report(collection_of_output_data, options):
+    report_data = collect_report_data(options)
+    report_data.update(parse_collection_data(collection_of_output_data))
+    write_report_to_template(report_data, options)

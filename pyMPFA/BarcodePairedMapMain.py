@@ -47,7 +47,7 @@ def main():
         for pmi_item in options["pmi"]:
             resultDict[pmi_item] = relc.SelectTheMostProbableMutation(seqDict[pmi_item], options["mutationProbability"])
             csvFile = wrt.WriteResultsToFile(resultDict[pmi_item], bcDict[pmi_item], seqDict[pmi_item], os.path.join(options["workdir"], name), indexFile, customTxt=pmi_item)
-            supp.LogInfo('\                  Working in {}\n         Number of unique barcode: {}.\n\
+            supp.LogInfo('\n                  Working in {}\n         Number of unique barcode: {}.\n\
                        Number of unique combinations of barcode-mutation: {}\
                        '.format(pmi_item, len(bcDict[pmi_item]), len(resultDict[pmi_item])))
             collection_of_output_data[name].setdefault("csvFile", {})
