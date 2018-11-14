@@ -90,109 +90,7 @@
     <div class="container">
         <h3 id="g0.1.1">Used options:</h3>
         <blockquote class="long_string">
-
-            <strong>const_2Error</strong> - 1
-            <br>
-            <strong>reverse_barcode</strong> - True
-            <br>
-            <strong>indexList</strong> - {'trip6_2_m1': 'GGGATCCG', 'trip6_2_m2': 'TCAAGCAA'}
-            <br>
-            <strong>probability</strong> - 0.5
-            <br>
-            <strong>PdumpDir</strong> - /home/anton/backup/input/trip/RUN_2018-06-07/results/trip_6_2/1_S1_L001_R1_001_trip_6_2_mapping/Dump
-            <br>
-            <strong>fltExp</strong> - ['TCTAGACCCTCCGGATTACTTGTACAGCTCGTCCATGCCGAGAGTGATCCCGGCGGCGGTCACGA', 'AAGAGCTACCAACTCTTTTTCCGAAGGTAACTGGCTTCAGCAGAGCGCAGATACCAAATACTGTC', 'CTTTTTTTCTGCGCGTAATCTGCTGCTTGCAAACAAAAAAACCACCGCTACCAGCGGTGGTTTGT', 'TTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCTTGCAAACAAAAAAACCACCGCTACCAG']
-            <br>
-            <strong>const_1Error</strong> - 3
-            <br>
-            <strong>pmi</strong> - ['AGCTC', 'ACGTA', 'CTGCT', 'AGTCA', 'TCAAA', 'TTGAG', 'TCGCT']
-            <br>
-            <strong>mutationProbability</strong> - 0.95
-            <br>
-            <strong>rscript</strong> - /usr/bin/Rscript
-            <br>
-            <strong>readsValue</strong> - 2
-            <br>
-            <strong>const_3Error</strong> - 2
-            <br>
-            <strong>psmPy</strong> - /usr/local/bin/paired_sequence_match.py
-            <br>
-            <strong>regExpIndex</strong> - {'TCAAGCAA': '^(TCAAGCAA){s&lt;=0}(GTCACAAGGGCCGGCCACAACTC){s&lt;=3}', 'GGGATCCG': '^(GGGATCCG){s&lt;=0}(GTCACAAGGGCCGGCCACAACTC){s&lt;=3}'}
-            <br>
-            <strong>pmi_rev</strong> - ['GAGCT', 'TACGT', 'AGCAG', 'TGACT', 'TTTGA', 'CTCAA', 'AGCGA']
-            <br>
-            <strong>merge_indexes</strong> - False
-            <br>
-            <strong>mutationLength</strong> - 8
-            <br>
-            <strong>regExpBcMut_fwd</strong> - ^(?P&lt;barcode&gt;.*)([ATGC]{4})(?P&lt;pIndex&gt;GAGCT|TACGT|AGCAG|TGACT|TTTGA|CTCAA|AGCGA){s&lt;=1}(CTC){s&lt;=1}(?P&lt;genome&gt;GATC.*)
-            <br>
-            <strong>forward</strong> - /home/anton/backup/input/trip/RUN_2018-06-07/1_S1_L001_R1_001.fastq.gz
-            <br>
-            <strong>input</strong> - None
-            <br>
-            <strong>barcodeError</strong> - 2
-            <br>
-            <strong>make_barcode_library</strong> - False
-            <br>
-            <strong>const_3</strong> - gtacgtcacaatatgattatctttctagggttaa
-            <br>
-            <strong>const_2</strong> - ctc
-            <br>
-            <strong>const_1</strong> - gtcacaagggccggccacaactc
-            <br>
-            <strong>workdir</strong> - /home/anton/backup/input/trip/RUN_2018-06-07/results/trip_6_2/1_S1_L001_R1_001_trip_6_2_mapping
-            <br>
-            <strong>indexError</strong> - 0
-            <br>
-            <strong>const_4</strong> - gatc
-            <br>
-            <strong>gap_size</strong> - 0
-            <br>
-            <strong>combine_paired</strong> - False
-            <br>
-            <strong>barcodeLength</strong> - 18
-            <br>
-            <strong>regExpBc</strong> - ^(?P&lt;barcode&gt;.*)([ATGC]{4})(?P&lt;pIndex&gt;GAGCT|TACGT|AGCAG|TGACT|TTTGA|CTCAA|AGCGA){s&lt;=1}(CTC){s&lt;=1}
-            <br>
-            <strong>no_trim_index</strong> - False
-            <br>
-            <strong>rfplIndex</strong> - /home/anton/data/DAM/indexes/rfpl/rfpl
-            <br>
-            <strong>random_read</strong> - False
-            <br>
-            <strong>pmiSubst</strong> - 1
-            <br>
-            <strong>experiment_label</strong> - trip_6_2_mapping
-            <br>
-            <strong>r1</strong> - /home/anton/backup/input/trip/RUN_2018-06-07/1_S1_L001_R1_001.fastq.gz
-            <br>
-            <strong>reFilter</strong> - .*(GAGCT|TACGT|AGCAG|TGACT|TTTGA|CTCAA|AGCGA)([ATGC]{3}GATC)(TCTAGACCCTCCGGATTACTTGTACAGCTCGTCCATGCCGAGAGTGATCCCGGCGGCGGTCACGA|AAGAGCTACCAACTCTTTTTCCGAAGGTAACTGGCTTCAGCAGAGCGCAGATACCAAATACTGTC|CTTTTTTTCTGCGCGTAATCTGCTGCTTGCAAACAAAAAAACCACCGCTACCAGCGGTGGTTTGT|TTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCTTGCAAACAAAAAAACCACCGCTACCAG){e&lt;=5}.*
-            <br>
-            <strong>pmiLength</strong> - 5
-            <br>
-            <strong>bwIndex</strong> - /home/anton/data/DAM/indexes/dmel-r6.19/dmel-r6.19
-            <br>
-            <strong>reverse</strong> - /home/anton/backup/input/trip/RUN_2018-06-07/1_S1_L001_R2_001.fastq.gz
-            <br>
-            <strong>r2</strong> - /home/anton/backup/input/trip/RUN_2018-06-07/1_S1_L001_R2_001.fastq.gz
-            <br>
-            <strong>inputLocation</strong> - /home/anton/backup/input/trip/RUN_2018-06-07/results/trip_6_2
-            <br>
-            <strong>reverse_complement</strong> - True
-            <br>
-            <strong>separator</strong> -
-            <br>
-            <strong>mode</strong> - paired
-            <br>
-            <strong>output</strong> - /home/anton/backup/input/trip/RUN_2018-06-07/results/trip_6_2
-            <br>
-            <strong>input_file</strong> - /home/anton/backup/input/trip/RUN_2018-06-07/1_S1_L001_R1_001.fastq.gz
-            <br>
-            <strong>fltExp_Error</strong> - 5
-            <br>
-            <strong>regExpBcMut_rev</strong> - ^(GTACGTCACAATATGATTATCTTTCTAGGGTTAA){s&lt;=2}(?P&lt;genome&gt;.*)
-
+            $options
         </blockquote>
         <p></p>
         <h3 id="g0.1.2">Статистика количества ридов по всем индексам </h3>
@@ -220,37 +118,7 @@
                 <br>
             </div>
             <div>
-                <table cellspacing="0" border="1px" bordercolor="#aaaacc" width="100%">
-                    <tbody>
-                        <tr>
-
-                            <td>Index</td>
-
-                            <td>0 errors</td>
-
-                        </tr>
-                        <tr>
-
-                            <td>GGGATCCG
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                        </tr>
-                        <tr>
-
-                            <td>TCAAGCAA</td>
-                            <td>
-                                <br>
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-                </table>
+                ${current_index_stat}
                 Общее количество ридов в файле: $TotalReadsCount</div>
             <div>
                 <br>
@@ -349,7 +217,7 @@
             <p>Значащие части рида: <i>barcode</i>, <i>pIndex</i>, <i>genome</i></p>
             <ul>
 
-                <li>В начале рида есть неопределенное количество букв ("<i>barcode</i>"), после которых находится последовательность из четырех букв "<i>ATGC</i>" в любом сочетании и один любой индекс ("<i>pIndex</i>") из списка {pmi_rev}. Количество возможных замен: ${pmiSubst}.</li>
+                <li>В начале рида есть неопределенное количество букв ("<i>barcode</i>"), после которых находится последовательность из четырех букв "<i>ATGC</i>" в любом сочетании и один любой индекс ("<i>pIndex</i>") из списка ${pmi_rev}. Количество возможных замен: ${pmiSubst}.</li>
 
                 <li>Далее идет последовательность ${const_2}, допускается однонуклеотидная замена.</li>
 

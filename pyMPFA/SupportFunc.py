@@ -47,6 +47,19 @@ def GetTotalSeqRecords(input_file):
     return TotalSeqRecords
 
 
+def GetTotalSeqRecords_2(input_file):
+    '''
+    This function count of number strings in fastq file and return sequences number
+    '''
+    count = 0
+    if not input_file.endswith('gz'):
+        with open(input_file) as f:
+            for line in f.xreadlines():
+                count += 1
+        return count / 4
+    return 0
+
+
 def head(list_or_dict, start=0, n=10):
     start, n = int(start), int(int(start) + int(n))
     if type(list_or_dict) == dict:
@@ -214,7 +227,8 @@ def get_source_file(options):
 
 
 def extract_experiment_and_lib(options):
-    # Regular expression splits text string by example: "trip-6_2_mapping" -> "trip_6_2", "mapping"
+    # Regular expression splits text string by example: "trip-6_2_mapping" ->
+    # "trip_6_2", "mapping"
     foo = regex.split('([a-z\\-_0-9]*)_([a-z]*)', options['experiment_label'])
     foo = [x for x in foo if len(x) != 0]
     return foo
@@ -237,10 +251,12 @@ def make_all_index_stat(options):
                     if match is not None:
                         output_stat[idx_error][idx] = output_stat[idx_error].setdefault(
                             idx, 0) + 1
+            if reads_count % 10 ** 5 == 0:
+                print("Prepaired {} reads".format(reads_count))
     return output_stat, reads_count
 
 
-def format_all_index_stat_to_html(output_stat, reads_count, to_html=True):
+def format_all_index_stat(output_stat, reads_count):
     output_data = pd.DataFrame()
     pd.set_option('display.max_colwidth', -1)
     for idx_error, stat in output_stat.items():
@@ -254,8 +270,6 @@ def format_all_index_stat_to_html(output_stat, reads_count, to_html=True):
     output_data.loc['total'] = pd.Series(
         output_data.sum(), index=[str(x) for x in output_stat.keys()])
     output_data.ix['total', 'index'] = reads_count
-    if to_html:
-        return output_data.to_html().replace("\n", "")
     return output_data
 
 
@@ -302,14 +316,19 @@ def collect_report_data(options):
     # Options section
     report_data['options'] = dict2html_list(options)
     # De-multiplexing section
-    # Generate html table with statistical data about splitting by ALL indexes in view of variable error count in indexes ${all_index_stat}
+    # Generate html table with statistical data about splitting by ALL indexes
+    # in view of variable error count in indexes ${all_index_stat}
     output_stat, reads_count = make_all_index_stat(options)
-    report_data["all_index_stat"] = format_all_index_stat_to_html(
+    report_data["all_index_stat"] = format_all_index_stat(
         output_stat, reads_count)
     # Generate html table with stat_data by using at the moment indexes.
-    tmp = format_all_index_stat_to_html(output_stat, reads_count, False)
-    report_data['current_index_stat'] = tmp[tmp['index'].isin(
-        options['indexList'].values())][["index", "0"]]
+    report_data['current_index_stat'] = report_data["all_index_stat"][report_data[
+        "all_index_stat"]['index'].isin(options['indexList'].values())][["index", "0"]]
+    for index_stat in ["all_index_stat", "current_index_stat"]:
+        report_data[index_stat] = report_data[index_stat].to_html(
+            classes="table",  justify="center").replace("\n", "")
+    encoded_report_data = {k: v.encode('ascii', 'ignore') for k, v in report_data.items()}
+    return encoded_report_data
 
 
 def parse_collection_data(collection_of_output_data):
@@ -332,8 +351,13 @@ def parse_collection_data(collection_of_output_data):
                                   'four_seq', 'count']).sort_values(by=['count'], ascending=False)
             tmp_df = tmp_df.head(15)
             tmp_df_html = tmp_df.to_html(index=False)
-            output.setdefault(promotor_index, wrapper_head(promotor_index, tmp_df_html))
+            output.setdefault(promotor_index, wrapper_head(
+                promotor_index, tmp_df_html))
         return output
+    # Get reads count from current file
+    current_reads_data = {}
+    report_data["current_reads_count"] = dict2html_list(current_reads_data)
+    # ##########################
     # Further use only files from 'paired_indexes'. Need to load path to this files to report
     # #################### smth code
     # Count length of genome from the fwd and rev reads and use the shortest
@@ -345,15 +369,29 @@ def parse_collection_data(collection_of_output_data):
     # Finally statistics in $output_stat_table
     # #################### smth code
     for replicate in collection_of_output_data:
-        add_to_report.setdefault('spacer_4freq', format_four_seq_data(stat_four_seq_data(collection_of_output_data[replicate])))
+        add_to_report.setdefault('spacer_4freq', format_four_seq_data(
+            stat_four_seq_data(collection_of_output_data[replicate])))
 
 
 def write_report_to_template(report_data, options):
-    # Safe substitute in template by the simple options. When this is used built-in dict - "options"
-    pass
+    # Safe substitute in template by the simple options. When this is used
+    # built-in dict - "options"
+    all_subst, all_subst_data = [report_data, options], {}
+    for element in all_subst:
+        all_subst_data.update(element)
+    current = datetime.datetime.now().strftime("%Y_%m_%d")
+    html_template_name = "mapping_report.html.tpl"
+    html_output_name, tpl_ext = os.path.splitext(html_template_name)
+    html_output_name = "{}_{}_{}".format(
+        current, report_data['experiment'], html_output_name)
+    html_output_path = os.path.join(options["workdir"], html_output_name)
+    with open(html_template_name, "r") as tpl:
+        substitution = Template(tpl.read()).safe_substitute(all_subst_data)
+        with open(html_output_path, "w") as out:
+            out.write(substitution)
 
 
 def main_report(collection_of_output_data, options):
     report_data = collect_report_data(options)
-    report_data.update(parse_collection_data(collection_of_output_data))
+    # report_data.update(parse_collection_data(collection_of_output_data))
     write_report_to_template(report_data, options)
