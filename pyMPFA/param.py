@@ -16,7 +16,7 @@ mutationProbability = 0.95
 separator = " "
 probability = 0.5
 p_e_distance = 5000 # Max distance between paired-end reads into bowtie alignment
-expected_min_genome_len = 20 # Expected minimal genome length got by the sequence parsing
+expected_min_genome_len = 50 # Expected minimal genome length got by the sequence parsing
 
 # Path to Rscript
 rscript = '/usr/bin/Rscript'

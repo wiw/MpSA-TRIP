@@ -17,6 +17,9 @@ from Bio.SeqIO.QualityIO import FastqGeneralIterator
 from matplotlib import pyplot as plt
 from collections import OrderedDict, Counter
 from string import Template
+from functools import reduce  # forward compatibility for Python 3
+import operator
+
 """
 **** SUPPORT FUNCTIONS
 """
@@ -327,11 +330,21 @@ def collect_report_data(options):
     for index_stat in ["all_index_stat", "current_index_stat"]:
         report_data[index_stat] = report_data[index_stat].to_html(
             classes="table",  justify="center").replace("\n", "")
-    encoded_report_data = {k: v.encode('ascii', 'ignore') for k, v in report_data.items()}
+    # Count length of genome from the fwd and rev reads and use the shortest
+    report_data['exp_fwd_genome_len'] = str(options['expected_min_genome_len'])
+    encoded_report_data = {k: v.encode('ascii', 'ignore')
+                           for k, v in report_data.items()}
     return encoded_report_data
 
 
 def parse_collection_data(collection_of_output_data):
+    STRUCTURE = {'spacer_4freq': ['main_paired_stat', 'four_letters_seq_collection', 'fwd'],
+                 'current_reads_count': ['paired_indexes'],
+                 'comm_table': ['main_paired_stat', 'comm_stat'],
+                 'bowtie_table': ['main_paired_stat', 'bwt_aligner_stat'],
+                 'output_stat_table': ['resultDict']
+                 }
+
     add_to_report = {}
     # Collect all the found four-letter sequences and make a frequency analysis of the occurrence of letters ATGC.
     # Return html table
@@ -349,28 +362,47 @@ def parse_collection_data(collection_of_output_data):
         for promotor_index, stat_four_data in sdata.items():
             tmp_df = pd.DataFrame(stat_four_data.items(), columns=[
                                   'four_seq', 'count']).sort_values(by=['count'], ascending=False)
+            # Magic number - 15, first 15 elements from statistics
             tmp_df = tmp_df.head(15)
             tmp_df_html = tmp_df.to_html(index=False)
             output.setdefault(promotor_index, wrapper_head(
                 promotor_index, tmp_df_html))
         return output
+
+    def get_by_map(data_dict, map_list):
+        return reduce(operator.getitem, map_list, data_dict)
+
     # Get reads count from current file
-    current_reads_data = {}
-    report_data["current_reads_count"] = dict2html_list(current_reads_data)
-    # ##########################
-    # Further use only files from 'paired_indexes'. Need to load path to this files to report
-    # #################### smth code
-    # Count length of genome from the fwd and rev reads and use the shortest
-    # #################### smth code
+    def get_current_reads_data(cdata):
+        output = {}
+        for path in cdata.values():
+            output.setdefault(path, str(GetTotalSeqRecords_2(path)))
+        return output
+
     # Reads count before/after comm by promotor index. Collect data in 'colb.main_paired' Return results as html table
-    # #################### smth code
+    # #################### smth code  comm_table  comm_difference
+
     # Bowtie statistics in table view $alignment_stat_table +  filtration statistics
-    # #################### smth code
+    # #################### smth code  bowtie_table
+
     # Finally statistics in $output_stat_table
-    # #################### smth code
+    # #################### smth code   output_stat_table
     for replicate in collection_of_output_data:
-        add_to_report.setdefault('spacer_4freq', format_four_seq_data(
-            stat_four_seq_data(collection_of_output_data[replicate])))
+        # spacer_4freq
+        four_seq_data_counting = stat_four_seq_data(get_by_map(
+            collection_of_output_data, [replicate] + STRUCTURE['spacer_4freq']))
+        add_to_report.setdefault(
+            "{}_{}".format("spacer_4freq", replicate), format_four_seq_data(four_seq_data_counting))
+        # current_reads_data
+        current_reads_data = get_current_reads_data(get_by_map(
+            collection_of_output_data, [replicate] + STRUCTURE['current_reads_count']))
+        add_to_report.setdefault("{}_{}".format(
+            "current_reads_data", replicate), dict2html_list(current_reads_data))
+        # comm
+        comm_data - get_by_map(collection_of_output_data, [replicate] + STRUCTURE['comm_table'])
+        
+        # bowtie_table
+        # output_stat_table
 
 
 def write_report_to_template(report_data, options):
