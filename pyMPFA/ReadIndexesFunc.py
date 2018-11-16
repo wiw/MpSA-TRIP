@@ -6,7 +6,7 @@ import random
 import os
 from Bio.SeqIO.QualityIO import FastqGeneralIterator
 from toolshed import nopen
-from SupportFunc import GetTotalSeqRecords
+from SupportFunc import get_sequence_count
 """
 **** READ INDEXES FUNCTIONS
 """
@@ -15,7 +15,7 @@ from SupportFunc import GetTotalSeqRecords
 def SplitFastqByIndexes(input_file, indexFile, index, indexError, const_1, const_1Error, regExpIndex, no_trim):
     # print("    Processing index: '{}' ...".format(index))
     regIndex = regex.compile(regExpIndex[index])
-    records = GetTotalSeqRecords(input_file)
+    records = get_sequence_count(input_file)
     bar = progressbar.ProgressBar(maxval=records, widgets=[progressbar.Bar(left='<', marker='.', right='>')]).start()
     t = 0
     with open(indexFile, "w") as handle:
@@ -34,7 +34,7 @@ def SplitFastqByIndexes(input_file, indexFile, index, indexError, const_1, const
 
 def RandomReadIndexes(indexFile, indexFileRand, probability):
     # print("    Random read indexFile: '{}' ...".format(os.path.basename(indexFile)))
-    records = GetTotalSeqRecords(indexFile)
+    records = get_sequence_count(indexFile)
     bar = progressbar.ProgressBar(maxval=records, widgets=[progressbar.Bar(left='<', marker='.', right='>')]).start()
     t = 0
     randomSeq = [random.random() < probability for x in xrange(records)]
@@ -49,7 +49,7 @@ def RandomReadIndexes(indexFile, indexFileRand, probability):
 
 def filterShadyReads(indexFile, reFilter, indexFiltFile):
     regFilter = regex.compile(reFilter)
-    records = GetTotalSeqRecords(indexFile)
+    records = get_sequence_count(indexFile)
     bar = progressbar.ProgressBar(maxval=records, widgets=[progressbar.Bar(left='<', marker='.', right='>')]).start()
     t = 0
     with open(indexFiltFile, "w") as handle:
@@ -61,7 +61,7 @@ def filterShadyReads(indexFile, reFilter, indexFiltFile):
                 seqStr = [title, seq, qual]
                 handle.write("@{}\n{}\n+\n{}\n".format(*seqStr))
     bar.finish()
-    filt_records = GetTotalSeqRecords(indexFiltFile)
+    filt_records = get_sequence_count(indexFiltFile)
     output = (records, filt_records)
     return output
 

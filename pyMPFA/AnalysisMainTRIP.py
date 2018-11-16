@@ -101,7 +101,7 @@ def mean(numbers):
     try:
         return float(sum(numbers)) / max(len(numbers), 1)
     except:
-        supp.LogErr("Undefined error in function {}".format(inspect.stack()[0][3]))
+        supp.log_error("Undefined error in function {}".format(inspect.stack()[0][3]))
 
 
 mapd, normd, exprd = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Mapping_A1-4/Dump", "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Norm_A10-13/Dump", "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Expr_A20-23/Dump"
@@ -125,31 +125,31 @@ mainBioDict, mainMergeDict = {}, {}
 
 try:
     for element in mainDict:
-        supp.LogInfo(element)
+        supp.log_info(element)
         for replicate in mainDict[element]:
-            supp.LogInfo(replicate)
+            supp.log_info(replicate)
             label, bio, tech = replicate.split('-')[0], replicate.split('-')[1], replicate.split('-')[2]
             for bio_replicate in [1, 2]:
                 for pmi in pmiDict:
                     if int(bio) == bio_replicate:
-                        supp.LogInfo("Technician replicate {} - {}: {}".format(replicate, pmiDict[pmi], len(mainDict[element][replicate][pmi])))
+                        supp.log_info("Technician replicate {} - {}: {}".format(replicate, pmiDict[pmi], len(mainDict[element][replicate][pmi])))
                         if int(tech) == 1:
                             if element == 'map':
                                 mainBioDict[(label, bio, pmi)] = [k for k, v in mainDict[element][replicate][pmi].items() if k in mainDict[element][replicate[:-1] + '2'][pmi] and v[0] == mainDict[element][replicate[:-1] + '2'][pmi][k][0]]
                             else:
                                 mainBioDict[(label, bio, pmi)] = [key for key in mainDict[element][replicate][pmi] if key in mainDict[element][replicate[:-1] + '2'][pmi]]
-                            supp.LogInfo("Biological replicate {} - {}: {}".format(label + '-' + bio, pmiDict[pmi], len(mainBioDict[(label, bio, pmi)])))
+                            supp.log_info("Biological replicate {} - {}: {}".format(label + '-' + bio, pmiDict[pmi], len(mainBioDict[(label, bio, pmi)])))
 except:
-    supp.LogErr("Unhandled error!")
+    supp.log_error("Unhandled error!")
 
 try:
     for replicate in ['1', '2']:
         label = '18-' + replicate
         for pmi in pmiDict:
             mainMergeDict[(label, pmi)] = [k for k in mainBioDict[('m18', replicate, pmi)] if k in mainBioDict[('n18', replicate, pmi)]]
-            supp.LogInfo("Merge count {} - {}: {}".format(label, pmiDict[pmi], len(mainMergeDict[(label, pmi)])))
+            supp.log_info("Merge count {} - {}: {}".format(label, pmiDict[pmi], len(mainMergeDict[(label, pmi)])))
 except:
-    supp.LogErr("Unhandled error in step {} {}".format(replicate, pmiDict[pmi]))
+    supp.log_error("Unhandled error in step {} {}".format(replicate, pmiDict[pmi]))
 
 mainMergeDictFile = os.path.join(mapd, "mainMergeDict.csv")
 with open(mainMergeDictFile, "wb") as handle:
@@ -179,7 +179,7 @@ with open(mainMergeDictFile, "wb") as handle:
 # A20-23 expression index
 # indexList = {"e18-1-1":"GGTATGTT", "e18-1-2":"GAGGGACC", "e18-2-1":"TAGCTCTA", "e18-2-2":"TAATTGCG"}
 
-# a14, a15, a16 = GetTotalSeqRecords
+# a14, a15, a16 = get_sequence_count
 gatc_path = '/home/anton/data/R-script/R-counts/GATCs_dm6.txt'
 gatcDict = {}
 with open(gatc_path, 'r') as handle:
@@ -190,7 +190,7 @@ with open(gatc_path, 'r') as handle:
         else:
             gatcDict[motif[0]].extend(motif[1:])
 
-supp.LogInfo("\nMatch GATC's\n")
+supp.log_info("\nMatch GATC's\n")
 unmatched_bc_gatcs = {}
 for exp in mainDict['map']:
     for pmi in mainDict['map'][exp]:
@@ -212,9 +212,9 @@ for exp in mainDict['map']:
                         unmatched_bc_gatcs[exp] = [k]
                     else:
                         unmatched_bc_gatcs[exp].append(k)
-        # supp.LogInfo("{}, {}. All gatcs: {}, unmatched gatcs: {}".format(exp, pmi, len(mainDict['map'][exp][pmi]), unmatch_count))
+        # supp.log_info("{}, {}. All gatcs: {}, unmatched gatcs: {}".format(exp, pmi, len(mainDict['map'][exp][pmi]), unmatch_count))
 
-# supp.LogInfo("\nAlign in one genome position in mainBioDict\n")
+# supp.log_info("\nAlign in one genome position in mainBioDict\n")
 # for pmi in pmiDict:
 #     for bcOne in mainBioDict[('m18', '1', pmi)]:
 
@@ -225,7 +225,7 @@ with open(gatc_mismatch_file, "w") as handle:
     for title, seq, qual in FastqGeneralIterator(nopen(picks.input_file)):
         counter += 1
         if counter % 1000 == 0:
-            supp.LogInfo("Prepared {} reads".format(counter))
+            supp.log_info("Prepared {} reads".format(counter))
         for repl in param.indexList:
             expr_repl = regex.compile("^{}.*".format(param.indexList[repl]))
             match_repl = expr_repl.match(seq)
@@ -352,6 +352,6 @@ def count_hybrids():
         index = indexList[item]
         indexFile = os.path.join(workdir, item, "index_{}.fastq".format(index.upper()))
         csv_file = WriteResultsToFile(lib_resultDict[item], lib_bcDict[item], lib_seqDict[item], lib_statDict, os.path.join(workdir, item), indexFile, customTxt="with_hybrids_pct")
-        supp.LogInfo("Report write to {}\nHybrids pct: {}".format(csv_file, hybrids_summary))
+        supp.log_info("Report write to {}\nHybrids pct: {}".format(csv_file, hybrids_summary))
 
 count_hybrids()

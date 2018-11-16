@@ -129,33 +129,33 @@ def CheckArgs(args):
                     if os.path.isabs(args.output):
                         variableSet["inputLocation"] = args.output
                     else:
-                        supp.LogErr("\nPlease specify the absolute path to the OUTPUT folder\n")
+                        supp.log_error("\nPlease specify the absolute path to the OUTPUT folder\n")
                 else:
                     variableSet["inputLocation"] = os.path.dirname(variableSet["input_file"])
-                    supp.LogErr("\nYou are not specify path to OUTPUT folder!\n\nThe result of the work will be recorded in the folder with the source file!\n")
+                    supp.log_error("\nYou are not specify path to OUTPUT folder!\n\nThe result of the work will be recorded in the folder with the source file!\n")
             else:
-                supp.LogErr("\nPlease specify the absolute path to the fastq file!\n")
+                supp.log_error("\nPlease specify the absolute path to the fastq file!\n")
         except:
-            supp.LogErr("\nYou are in {} mode!\n\nPlease choose ONE fastq file with argument \"--input (-i) ...\"!\n\nExit programm...\n".format(args.mode))
+            supp.log_error("\nYou are in {} mode!\n\nPlease choose ONE fastq file with argument \"--input (-i) ...\"!\n\nExit programm...\n".format(args.mode))
             raise EOFError
     else:
         try:
             if os.path.isabs(args.forward):
                 variableSet["r1"] = args.forward
             else:
-                supp.LogErr("\nPlease specify the absolute path to the forward fastq file!\n")
+                supp.log_error("\nPlease specify the absolute path to the forward fastq file!\n")
             if os.path.isabs(args.forward):
                 variableSet["r2"] = args.reverse
             else:
-                supp.LogErr("\nPlease specify the absolute path to the reversed fastq file!\n")
+                supp.log_error("\nPlease specify the absolute path to the reversed fastq file!\n")
             if args.output:
                 if os.path.isabs(args.output):
                     variableSet["inputLocation"] = args.output
                 else:
-                    supp.LogErr("\nPlease specify the absolute path to the OUTPUT folder\n")
+                    supp.log_error("\nPlease specify the absolute path to the OUTPUT folder\n")
             else:
                 variableSet["inputLocation"] = os.path.dirname(args.forward)
-                supp.LogErr("\nYou are not specify path to OUTPUT folder!\n\nThe result of the work will be recorded in the folder with the source file!\n")
+                supp.log_error("\nYou are not specify path to OUTPUT folder!\n\nThe result of the work will be recorded in the folder with the source file!\n")
         except:
             if args.mode == "paired":
                 modeKeyword = args.mode
@@ -163,12 +163,12 @@ def CheckArgs(args):
                 modeKeyword = "single forward"
             else:
                 modeKeyword = "single reversed"
-            supp.LogErr("\nYou are in \"{}\" mode!\n\n\
+            supp.log_error("\nYou are in \"{}\" mode!\n\n\
                 Please choose TWO fastq file with arguments \"--forward (-f) ... --reverse (-r) ...\"!\n\n\
                 Exit programm...\n".format(modeKeyword))
             raise EOFError
         if args.combine_paired:
-            supp.LogInfo('''\n            All checks are completed!
+            supp.log_info('''\n            All checks are completed!
             Start working with paired reads...\n\n''')
             variableSet["input_file"] = pend.FastqJoinPaired(variableSet["r1"],
                                                              variableSet["r2"],
@@ -177,23 +177,23 @@ def CheckArgs(args):
                                                              separator=param.separator,
                                                              mode=args.mode,
                                                              reverse_complement=args.reverse_complement)
-            supp.LogInfo('''\n End of combine reads...\n\n''')
+            supp.log_info('''\n End of combine reads...\n\n''')
     # make fake input_file for paired mode
     if args.mode == "paired":
         if variableSet.get("input_file") is None and variableSet.get("r1") is not None:
             variableSet["input_file"] = variableSet["r1"]
-    supp.LogInfo('''\n            START MAIN PROGRAMM!\n
+    supp.log_info('''\n            START MAIN PROGRAMM!\n
     author: Anton V. Ivankin\n
     e-mail: anton.ivankin.gmail.com\n
     source: github.com/.....\n\n
     #####################################\n
     Total reads count in your file: {} reads.\n
-    Start splitting source file by index.\n\n'''.format(supp.GetTotalSeqRecords(variableSet["input_file"])))
+    Start splitting source file by index.\n\n'''.format(supp.get_sequence_count(variableSet["input_file"])))
     if args.experiment_label:
         variableSet["workdir"] = os.path.join(variableSet["inputLocation"], os.path.basename(variableSet["input_file"]).split(".")[0]+"_{}".format(args.experiment_label))
     else:
         variableSet["workdir"] = os.path.join(variableSet["inputLocation"], os.path.basename(variableSet["input_file"]).split(".")[0])
-    supp.LogInfo("You are working directory in {}\n".format(variableSet["workdir"]))
+    supp.log_info("You are working directory in {}\n".format(variableSet["workdir"]))
     variableSet["PdumpDir"] = os.path.join(variableSet["workdir"], "Dump")
     if not os.path.exists(variableSet["PdumpDir"]):
         os.makedirs(variableSet["PdumpDir"])
@@ -209,7 +209,7 @@ def main(args):
     (result, wrongImport) = CheckModules(MODULES)
     if result:
         import param
-        supp.LogInfo("        Parameters loaded successfully!\n\
+        supp.log_info("        Parameters loaded successfully!\n\
             indexes: {}\n\
             index error: {}\n\
             barcode error: {}\n\
@@ -241,7 +241,7 @@ def main(args):
                      param.const_3Error,
                      ', '.join([i for i in param.regExpIndex.values()])))
     else:
-        supp.LogErr("Attention! Not all the necessary files are in the folder with the program. \
+        supp.log_error("Attention! Not all the necessary files are in the folder with the program. \
             Please place '{}' into directory '{}' with the program.".format(wrongImport, os.getcwd()))
     variableSet = CheckArgs(args)
     variableSet.update(vars(args))
@@ -250,11 +250,11 @@ def main(args):
         if args.merge_indexes:
             if args.make_barcode_library:
                 # scriptPy = "BarcodeLibraryMergeMain.py"
-                supp.LogErr("This options is not avalable now...")
+                supp.log_error("This options is not avalable now...")
                 pass
             else:
                 # scriptPy = "BarcodeMutationMergeMain.py"
-                supp.LogErr("This options is not avalable now...")
+                supp.log_error("This options is not avalable now...")
                 pass
         else:
             if args.make_barcode_library:
@@ -269,13 +269,13 @@ def main(args):
     elif variableSet["mode"] == "paired":
         if args.make_barcode_library:
             # scriptPy = "BarcodePairedLibMain.py"
-            supp.LogErr("This options is not avalable now...")
+            supp.log_error("This options is not avalable now...")
             pass
         else:
             scriptPy = "BarcodePairedMapMain.py"
     else:
         # scriptPy = "AnotherCrazyFile.py"
-        supp.LogErr("This options is not avalable now...")
+        supp.log_error("This options is not avalable now...")
         pass
     cmd = ["python", scriptPy]
     subprocess.call(cmd)
@@ -299,7 +299,7 @@ if __name__ == "__main__":
 #     print("\n\nEnd splitting.\n\n#####################################\n")
 #     print('''Processing on: '{}'.\n
 # Total reads in file '{}': {} reads.\n
-# Generate dictionary of barcodes.\n'''.format(os.path.basename(indexFile), os.path.basename(indexFile), GetTotalSeqRecords(indexFile)))
+# Generate dictionary of barcodes.\n'''.format(os.path.basename(indexFile), os.path.basename(indexFile), get_sequence_count(indexFile)))
 #     if args.make_barcode_library:
 #         if args.merge_indexes:
 #             bcList.extend(CollectBarcode(indexFile, param.barcodeLength, param.readsValue, param.barcodeError, param.const_2.upper(), param.const_2Error, param.regExpBc, args.merge_indexes, args.reverse_barcode))

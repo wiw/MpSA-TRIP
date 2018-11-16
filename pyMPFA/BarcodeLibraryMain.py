@@ -24,27 +24,27 @@ def main():
             indexFileRand = os.path.join(picks.workdir, name, "random_index_{}.fastq".format(index.upper()))
             rind.RandomReadIndexes(indexFile, indexFileRand, param.probability)
             indexFile = indexFileRand
-        supp.LogInfo("End splitting.")
-        supp.LogInfo('''Processing on: '{}'.\n
+        supp.log_info("End splitting.")
+        supp.log_info('''Processing on: '{}'.\n
     Total reads in file '{}': {} reads.\n
-    Generate dictionary of barcodes.\n'''.format(os.path.basename(indexFile), os.path.basename(indexFile), supp.GetTotalSeqRecords(indexFile)))
+    Generate dictionary of barcodes.\n'''.format(os.path.basename(indexFile), os.path.basename(indexFile), supp.get_sequence_count(indexFile)))
         bcDict = colb.CollectBarcode(indexFile, param.barcodeLength, param.readsValue, param.barcodeError, param.const_2.upper(), param.const_2Error, param.regExpBc, picks.merge_indexes, picks.reverse_barcode)
         pickle_dump_file = Pdump(bcDict, name + "_bcDict", picks.PdumpDir)
         length_of_bcdict = supp.make_histogramm_plot(pickle_dump_file)
         if len(bcDict) <= 10**5:
-            supp.LogInfo("        Checking barcodes ... Estimated time: ~ {}".format(supp.EstimateCalculationTime(bcDict)))
+            supp.log_info("        Checking barcodes ... Estimated time: ~ {}".format(supp.estimate_calculation_time(bcDict)))
             chkb.mainCheckBarcodeInDict(bcDict, param.barcodeError)
         csvFile = wrt.WriteBcDictToFile(bcDict, os.path.join(picks.workdir, name), indexFile)
         csvFile_R = wrt.SimpleCsvWriter(None, bcDict, os.path.join(picks.workdir, name), indexFile)
-        supp.LogInfo('''        I had select the {} unique barcodes.\nResults writing to file '{}'in your working directory: '{}'\nDump files:\nbarcodes dictionary: {}\n'''.format(length_of_bcdict, csvFile, os.path.join(picks.workdir, name), pickle_dump_file))
+        supp.log_info('''        I had select the {} unique barcodes.\nResults writing to file '{}'in your working directory: '{}'\nDump files:\nbarcodes dictionary: {}\n'''.format(length_of_bcdict, csvFile, os.path.join(picks.workdir, name), pickle_dump_file))
         if os.path.exists(param.rscript):
             pathToScript = os.path.join(os.getcwd(), "trip_Rstat.R")
             option = [csvFile_R, os.path.dirname(csvFile_R), index]
             cmd = [param.rscript, pathToScript] + option
             subprocess.call(cmd)
         else:
-            supp.LogInfo("You do not have installed R-session, or you incorrectly specified the path to the Rscript.\nStatistics on barcodes will not be displayed.")
-        supp.LogInfo("End processing with: '{}'.\n\n".format(os.path.basename(indexFile)))
+            supp.log_info("You do not have installed R-session, or you incorrectly specified the path to the Rscript.\nStatistics on barcodes will not be displayed.")
+        supp.log_info("End processing with: '{}'.\n\n".format(os.path.basename(indexFile)))
 
 if __name__ == "__main__":
     main()

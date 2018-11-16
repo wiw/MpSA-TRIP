@@ -38,9 +38,9 @@ def mainCheckBarcodeInDict(bcDict, barcodeError):
         t += 1
     bar.finish()
     if stat == 0:
-        supp.LogInfo("        I did not find errors in the analysis. All barcodes are correct.\n")
+        supp.log_info("        I did not find errors in the analysis. All barcodes are correct.\n")
     else:
-        supp.LogInfo("        There were {} errors. Do not worry, they are already deleted.\n".format(stat))
+        supp.log_info("        There were {} errors. Do not worry, they are already deleted.\n".format(stat))
 
 
 def checkPMI(_pmi, pmi_item, options):

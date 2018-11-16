@@ -3,7 +3,7 @@
 # encoding: utf-8
 
 import os, pickle, param, picks, itertools
-from SupportFunc import GetTotalSeqRecords, simpleWrite, head
+from SupportFunc import get_sequence_count, simple_write, head
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn2
 # import progressbar, csv, Levenshtein, regex, string, argparse, random, subprocess
@@ -43,10 +43,10 @@ def Pload(name, folder):
 workdir = picks.workdir
 indexName = {k:os.path.join(workdir, k, "index_{}.fastq".format(v)) for k,v in param.indexList.items()}
 dump = picks.PdumpDir
-FRC = {k:GetTotalSeqRecords(v) for k,v in indexName.items()}
+FRC = {k:get_sequence_count(v) for k, v in indexName.items()}
 
 # load bcDict from pickle
-simpleWrite(FRC, dump, "frc.txt")
+simple_write(FRC, dump, "frc.txt")
 n1 = {k:sum([i[1] for i in v]) for k, v in Pload(FRC.keys()[3] + "_bcDict", dump).items()}
 n2 = {k:sum([i[1] for i in v]) for k, v in Pload(FRC.keys()[2] + "_bcDict", dump).items()}
 e1 = {k:sum([i[1] for i in v]) for k, v in Pload(FRC.keys()[1] + "_bcDict", dump).items()}
@@ -60,7 +60,7 @@ for comb in variations:
         if i not in data[comb[1]].keys():
             data[comb[1]][i] = "NA"
 for k, v in data.items():
-    simpleWrite(v, dump, k + ".txt")
+    simple_write(v, dump, k + ".txt")
 
 # load resultDict from pickle for bc_mut combinations 0.95/0.8 CutOff
 # m1 = Pload(FRC.keys()[0] + "_resultDict", dump)
@@ -81,7 +81,7 @@ for comb in mvariations:
         if i in mdata[comb[1]]:
             if not mapRes.get(i[0]):
                 mapRes[i[0]] = i[1]
-simpleWrite(mapRes, dump, "mp.txt")
+simple_write(mapRes, dump, "mp.txt")
 
 # make Venn diagramm for mapping replicates 0.95/0.8 CutOff
 plt.figure(figsize=(10,10))
@@ -106,17 +106,17 @@ dumpE = os.path.join(exprdir, "Dump")
 dumpN = os.path.join(normdir, "Dump")
 dumpM = os.path.join(mapdir, "Dump")
 
-FRCE = {k:GetTotalSeqRecords(v) for k,v in indexNameE.items()}
-FRCN = {k:GetTotalSeqRecords(v) for k,v in indexNameN.items()}
+FRCE = {k:get_sequence_count(v) for k, v in indexNameE.items()}
+FRCN = {k:get_sequence_count(v) for k, v in indexNameN.items()}
 
-FRCM = {k:GetTotalSeqRecords(v) for k,v in indexNameM.items()}
-FRCMF = {"f"+k:GetTotalSeqRecords(v) for k,v in indexNameMF.items()}
+FRCM = {k:get_sequence_count(v) for k, v in indexNameM.items()}
+FRCMF = {"f"+k:get_sequence_count(v) for k, v in indexNameMF.items()}
 
 # load bcDict from pickle
-simpleWrite(FRCE, dumpE, "frce.txt")
-simpleWrite(FRCN, dumpN, "frcn.txt")
-simpleWrite(FRCM, dumpM, "frcm.txt")
-simpleWrite(FRCMF, dumpM, "frcmf.txt")
+simple_write(FRCE, dumpE, "frce.txt")
+simple_write(FRCN, dumpN, "frcn.txt")
+simple_write(FRCM, dumpM, "frcm.txt")
+simple_write(FRCMF, dumpM, "frcmf.txt")
 
 popName = {"pop1":["e18-1-1", "e18-1-2", "n18-1-1", "n18-1-2"], "pop2":["e18-2-1", "e18-2-2", "n18-2-1", "n18-2-2"]}
 
@@ -150,7 +150,7 @@ for p in popName:
                 dump = dumpE
             else:
                 dump = dumpN
-            simpleWrite(data[p][i][y], dump, "{}_{}.txt".format(i, y))
+            simple_write(data[p][i][y], dump, "{}_{}.txt".format(i, y))
 
 # make Venn diagramm for technician replicate
 
@@ -174,7 +174,7 @@ for p in mapName:
 for p in mapName:
     for i in mapdata[p]:
         for y in mapdata[p][i]:
-            simpleWrite(mapdata[p][i][y], dumpM, "{}_{}.txt".format(i, y))
+            simple_write(mapdata[p][i][y], dumpM, "{}_{}.txt".format(i, y))
 
 ################
 # GENOME v.2
@@ -188,12 +188,12 @@ indexNameN = {k:os.path.join(normdir, k, "index_{}.fastq".format(v)) for k,v in 
 dumpE = os.path.join(exprdir, "Dump")
 dumpN = os.path.join(normdir, "Dump")
 
-FRCE = {k:GetTotalSeqRecords(v) for k,v in indexNameE.items()}
-FRCN = {k:GetTotalSeqRecords(v) for k,v in indexNameN.items()}
+FRCE = {k:get_sequence_count(v) for k, v in indexNameE.items()}
+FRCN = {k:get_sequence_count(v) for k, v in indexNameN.items()}
 
 # load bcDict from pickle
-simpleWrite(FRCE, dumpE, "frce.txt")
-simpleWrite(FRCN, dumpN, "frcn.txt")
+simple_write(FRCE, dumpE, "frce.txt")
+simple_write(FRCN, dumpN, "frcn.txt")
 
 popName = {"p18-1":["e18-1-1", "e18-1-2", "n18-1-1", "n18-1-2"], "p18-2":["e18-2-1", "e18-2-2", "n18-2-1", "n18-2-2"]}
 expName = []
@@ -234,7 +234,7 @@ for exp in dataMerged:
         countDict[exp][pi] = len(dataMerged[exp][pi])
 
 for exp in countDict:
-    simpleWrite(countDict[exp], dumpE, "{}_count.txt".format(exp))
+    simple_write(countDict[exp], dumpE, "{}_count.txt".format(exp))
 
 
 # Aligning dict between them
@@ -252,4 +252,4 @@ for exp in dataMerged:
             dump = dumpE
         else:
             dump = dumpN
-        simpleWrite(dataMerged[exp][pi], dump, "{}_{}.txt".format(exp, pi))
+        simple_write(dataMerged[exp][pi], dump, "{}_{}.txt".format(exp, pi))

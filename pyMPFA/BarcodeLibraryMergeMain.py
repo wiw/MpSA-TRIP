@@ -34,7 +34,7 @@ NOT FINISHED!
 #         print("\n\nEnd splitting.\n\n#####################################\n")
 #         print('''Processing on: '{}'.\n
 #     Total reads in file '{}': {} reads.\n
-#     Generate dictionary of barcodes.\n'''.format(os.path.basename(indexFile), os.path.basename(indexFile), supp.GetTotalSeqRecords(indexFile)))
+#     Generate dictionary of barcodes.\n'''.format(os.path.basename(indexFile), os.path.basename(indexFile), supp.get_sequence_count(indexFile)))
 #         bcDict = colb.CollectBarcode(indexFile, param.barcodeLength, param.readsValue, param.barcodeError, param.const_2.upper(), param.const_2Error, param.regExpBc, picks.merge_indexes, picks.reverse_barcode)
 #         Pdump(bcDict, os.path.join(PdumpDir, "bcDict"))
 #         if len(bcDict) <= 10**5:

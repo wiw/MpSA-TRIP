@@ -25,20 +25,20 @@ def main():
             indexFileRand = os.path.join(picks.workdir, name, "random_index_{}.fastq".format(index.upper()))
             rind.RandomReadIndexes(indexFile, indexFileRand, param.probability)
             indexFile = indexFileRand
-        supp.LogInfo("\n\nEnd splitting.\n\n#####################################\n")
+        supp.log_info("\n\nEnd splitting.\n\n#####################################\n")
         # readsStat[name] = rind.filterShadyReads(indexFile, param.reFilter, indexFiltFile)
         # indexFile = indexFiltFile
-        # supp.LogInfo("Filter before: {}, after: {}\n indexFile - {}, indexFiltFile - {}".format(readsStat[name][0], readsStat[name][1], indexFile, indexFiltFile))
-        supp.LogInfo('''Processing on: '{}'.\n
+        # supp.log_info("Filter before: {}, after: {}\n indexFile - {}, indexFiltFile - {}".format(readsStat[name][0], readsStat[name][1], indexFile, indexFiltFile))
+        supp.log_info('''Processing on: '{}'.\n
         Total reads in file '{}': {} reads.\n
-        Generate dictionary of barcodes.\n'''.format(os.path.basename(indexFile), os.path.basename(indexFile), supp.GetTotalSeqRecords(indexFile)))
+        Generate dictionary of barcodes.\n'''.format(os.path.basename(indexFile), os.path.basename(indexFile), supp.get_sequence_count(indexFile)))
         bcDictPI = colb.CollectBarcodeGenome(indexFile, param.barcodeLength, param.readsValue, param.barcodeError, param.const_2.upper(), param.const_2Error, param.regExpBc, picks.merge_indexes, picks.reverse_barcode, param.pmi, param.pmiLength, param.pmiSubst)
         Pdump(bcDictPI, name + "_bcDictPI", picks.PdumpDir)
         # Pdump(readsStat, name + "_readsStat", picks.PdumpDir)
         for pI in bcDictPI:
             csvFile = wrt.WriteBcDictToFile(bcDictPI[pI], os.path.join(picks.workdir, name), indexFile, pI)
             # csvFile_R = wrt.SimpleCsvWriter(None, bcDictPI[pI], os.path.join(picks.workdir, name), indexFile, pI)
-            supp.LogInfo('''        I had select the {} unique barcodes.\n
+            supp.log_info('''        I had select the {} unique barcodes.\n
             Results writing to file '{}'
             in your working directory: '{}'\n'''.format(len(bcDictPI[pI]), csvFile, os.path.join(picks.workdir, name)))
             # if os.path.exists(param.rscript):
@@ -48,7 +48,7 @@ def main():
             #     subprocess.call(cmd)
             # else:
             #     print("You do not have installed R-session, or you incorrectly specified the path to the Rscript.\nStatistics on barcodes will not be displayed.")
-        supp.LogInfo("End processing with: '{}'.\n\n".format(os.path.basename(indexFile)))
+        supp.log_info("End processing with: '{}'.\n\n".format(os.path.basename(indexFile)))
 
 if __name__ == "__main__":
     main()

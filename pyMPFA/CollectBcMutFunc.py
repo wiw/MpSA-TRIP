@@ -23,7 +23,7 @@ def CollectBarcodeMutation(indexFile, barcodeLength, mutationLength, readsValue,
     bcList, bcMutList = [], []
     non_matched_reads = os.path.join(os.path.dirname(
         indexFile), "undef_{}".format(os.path.basename(indexFile)))
-    records = supp.GetTotalSeqRecords(indexFile)
+    records = supp.get_sequence_count(indexFile)
     bar = progressbar.ProgressBar(maxval=records, widgets=[
                                   progressbar.Bar(left='<', marker='.', right='>')]).start()
     t = 0
@@ -54,7 +54,7 @@ def CollectBarcodeMutation(indexFile, barcodeLength, mutationLength, readsValue,
     # print("        Total founded barcodes: {} items.\nAnd total combinations barcode-mutation: {} items".format(len(bcCount), len(bcMutCount)))
     bcDict = SelectionReliableBarcode(bcCount, readsValue, barcodeError)
     if len(bcDict) <= 10**5:
-        # print("        Checking barcodes ... Estimated time: ~ {}".format(supp.EstimateCalculationTime(bcDict)))
+        # print("        Checking barcodes ... Estimated time: ~ {}".format(supp.estimate_calculation_time(bcDict)))
         mainCheckBarcodeInDict(bcDict, barcodeError)
     seqDict = SelectionReliableBarcodeMutation(bcMutCount, bcDict)
     return (bcDict, seqDict)
@@ -62,7 +62,7 @@ def CollectBarcodeMutation(indexFile, barcodeLength, mutationLength, readsValue,
 
 def CollectBarcode(indexFile, barcodeLength, readsValue, barcodeError, const_2, const_2Error, regExpBc, mergeBC, reverseBC):
     bcList = []
-    records = supp.GetTotalSeqRecords(indexFile)
+    records = supp.get_sequence_count(indexFile)
     bar = progressbar.ProgressBar(maxval=records, widgets=[
                                   progressbar.Bar(left='<', marker='.', right='>')]).start()
     t = 0
@@ -86,7 +86,7 @@ def CollectBarcode(indexFile, barcodeLength, readsValue, barcodeError, const_2, 
     bcCount = Counter(bcList)
     bcDict = SelectionReliableBarcode(bcCount, readsValue, barcodeError)
     if len(bcDict) <= 10**5:
-        # print("        Checking barcodes ... Estimated time: ~ {}".format(supp.EstimateCalculationTime(bcDict)))
+        # print("        Checking barcodes ... Estimated time: ~ {}".format(supp.estimate_calculation_time(bcDict)))
         mainCheckBarcodeInDict(bcDict, barcodeError)
     return bcDict
 
@@ -118,7 +118,7 @@ def CollectBarcodeMutationGenome(indexFile,
         pmiWD = os.path.join(os.path.dirname(indexFile), pmiItem)
         pmiFile = os.path.join(pmiWD, pmiItem + ".fastq")
         countAllRds, countConst3, countLess20 = 0, 0, 0
-        supp.LogInfo("  Collect from promotor index {}".format(pmiItem))
+        supp.log_info("  Collect from promotor index {}".format(pmiItem))
         if not os.path.exists(pmiWD):
             os.makedirs(pmiWD)
         with nopen(indexFile) as handle, open(pmiFile, "w") as pmiHandle:
@@ -153,7 +153,7 @@ def CollectBarcodeMutationGenome(indexFile,
                                         "@{}\n{}\n+\n{}\n".format(*seqStr))
                                 else:
                                     countLess20 += 1
-        supp.LogInfo("      All reads: {} // Reads with GENOME length less 20 bp: {} // Reads with CONST_3 (20bp): {}".format(
+        supp.log_info("      All reads: {} // Reads with GENOME length less 20 bp: {} // Reads with CONST_3 (20bp): {}".format(
             countAllRds, countLess20, countConst3))
         bcCount = Counter(bcListDict[pmiItem])
         bcDictTmp[pmiItem] = SelectionReliableBarcode(
@@ -162,7 +162,7 @@ def CollectBarcodeMutationGenome(indexFile,
             mainCheckBarcodeInDict(bcDictTmp[pmiItem], barcodeError)
         alignDict[pmiItem], bwtAlignerDict = AlignReadsToGenome(
             pmiFile, pmiWD, pmiItem, bwIndex, rfplIndex)
-        supp.makeStatFromBowtieAlign(bwtAlignerDict)
+        supp.make_stat_from_bowtie(bwtAlignerDict)
         mergeList = [(bcGenomeListDict[pmiItem][k], alignDict[pmiItem][k])
                      for k in bcGenomeListDict[pmiItem] if k in alignDict[pmiItem]]
         mergeListCount = dict(Counter(mergeList))
@@ -213,7 +213,7 @@ def AlignReadsToGenome(pmiFile, pmiWD, pmiItem, bwIndex, rfplIndex):
 def CollectBarcodeGenome(indexFile, barcodeLength, readsValue, barcodeError, const_2, const_2Error, regExpBc, mergeBC, reverseBC, pmi, pmiLength, pmiSubst):
     bcListDict = {p: [] for p in pmi}
     bcDictPI = {}
-    records = supp.GetTotalSeqRecords(indexFile)
+    records = supp.get_sequence_count(indexFile)
     bar = progressbar.ProgressBar(maxval=records, widgets=[
                                   progressbar.Bar(left='<', marker='.', right='>')]).start()
     t = 0
@@ -243,7 +243,7 @@ def CollectBarcodeGenome(indexFile, barcodeLength, readsValue, barcodeError, con
         bcDictPI[pI] = SelectionReliableBarcode(
             bcCount, readsValue, barcodeError)
         if len(bcDictPI[pI]) <= 10**5 and len(bcDictPI[pI]) > 0:
-            # print("        Checking barcodes for promotor index {} ... Estimated time: ~ {}".format(pI, supp.EstimateCalculationTime(bcDictPI[pI])))
+            # print("        Checking barcodes for promotor index {} ... Estimated time: ~ {}".format(pI, supp.estimate_calculation_time(bcDictPI[pI])))
             mainCheckBarcodeInDict(bcDictPI[pI], barcodeError)
     return bcDictPI
 
@@ -257,13 +257,13 @@ def CollectBarcodeMutationGenomePaired(paired_indexes, options):
     collected_data, bowtie_args = {}, {}
     where_is_title, four_letters_seq_collection = {}, {}
     for side in ["fwd", "rev"]:
-        supp.LogInfo("  Use {} reads".format(side))
+        supp.log_info("  Use {} reads".format(side))
         side_path = paired_indexes[side]
         collected_data.setdefault(side, {})
         bowtie_args.setdefault(side, {})
         expr = regex.compile(options["regExpBcMut_" + side])
         for pmi_item in options["pmi"]:
-            supp.LogInfo("  Collect from promotor index {}".format(pmi_item))
+            supp.log_info("  Collect from promotor index {}".format(pmi_item))
             pmi_wd = os.path.join(os.path.dirname(side_path), pmi_item)
             pmi_file = os.path.join(pmi_wd, side + "_" + pmi_item + ".fastq")
             bowtie_args[side].setdefault(pmi_item, pmi_file)
@@ -383,7 +383,7 @@ def comm_fastq(bowtie_args, options):
                     if t.split()[0] in common_list:
                         t_handle.write("@{}\n{}\n+\n{}\n".format(t, s, q))
             os.rename(_tmp_file, _item)
-        supp.LogInfo("Complete {} 'comm' files".format(pmi_item))
+        supp.log_info("Complete {} 'comm' files".format(pmi_item))
     return comm_stat
 
 
@@ -394,7 +394,7 @@ def AlignReadsToGenomePaired(bowtie_args, options):
     tmp_stat = {}
     bwt_aligner_stat = {}
     for pmi_item in options["pmi"]:
-        supp.LogInfo("Start align paired-end {} file".format(pmi_item))
+        supp.log_info("Start align paired-end {} file".format(pmi_item))
         fwd, rev = [bowtie_args[side][pmi_item] for side in ["fwd", "rev"]]
         wd = os.path.dirname(fwd)
         genome_data.setdefault(pmi_item, {})

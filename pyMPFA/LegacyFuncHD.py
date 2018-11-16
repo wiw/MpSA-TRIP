@@ -176,7 +176,7 @@ def fastq_parse(CONFIG):
     regexp = make_regexp(CONFIG)
     bc_data = {}
     if os.path.isfile(source_data):
-        reads_count = supp.GetTotalSeqRecords(source_data)
+        reads_count = supp.get_sequence_count(source_data)
         print("Fastq file: {}; reads count: {}".format(source_data, reads_count))
         with open_input(source_data) as fastq:
             read_number = 0
