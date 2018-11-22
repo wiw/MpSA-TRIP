@@ -1,10 +1,12 @@
-#C:\Python27\python.exe
+# C:\Python27\python.exe
 #!/usr/bin/env python
 # encoding: utf-8
-import random, Levenshtein
+import random
+import Levenshtein
 """
 **** MAKE RANDOM SEQUENCES FUNCTIONS
 """
+
 
 def RandomSeqGenerator(count, length):
     y = 1
@@ -19,6 +21,7 @@ def RandomSeqGenerator(count, length):
         y += 1
     return seqList
 
+
 def CheckRandomSeq(seqList):
     chk = []
     for i in seqList:
@@ -29,6 +32,7 @@ def CheckRandomSeq(seqList):
                 else:
                     chk.append(True)
     return chk
+
 
 def mainRandom(count, length):
     seq = RandomSeqGenerator(count, length)

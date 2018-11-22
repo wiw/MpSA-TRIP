@@ -18,15 +18,19 @@ from json2html import *
 from collections import OrderedDict
 
 CONFIG = {
-    "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-06-07/results/trip6_2",
-    "content": ["expression", "normalization", "mapping"],
-    "statistics_output": "/home/anton/backup/input/trip/RUN_2018-06-07/results/statistics/trip6_2",
+    "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-06-07/results/trip_6_2",
+    "content": ["expression", "normalization"],
+    "exception": {
+        "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-06-07/results/trip_6_2__prob_80",
+        "content": ["mapping"],
+    },
+    "statistics_output": "/home/anton/backup/input/trip/RUN_2018-06-07/results/statistics/trip_6_2__prob_80",
     "rscript": "/usr/bin/Rscript",
     "output_control": "control.json",
     "output_data": "data.json",
     "output_rpl_count": "rpl_count.json",
     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
-    "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
+    "pympfa_src": "/home/anton/data/TRIP/pyMPFA",
 }
 
 if not os.path.exists(CONFIG["statistics_output"]):
@@ -51,13 +55,15 @@ def reformatting_data(data):
     for pmi_item in pmi:
         new_data.setdefault(pmi_item, {})
         for experiment_set_item in experiment_set:
-            new_data[pmi_item].setdefault(experiment_set_item, data[experiment_set_item][pmi_item])
+            new_data[pmi_item].setdefault(
+                experiment_set_item, data[experiment_set_item][pmi_item])
     return new_data, pmi
 
 
 def make_filename(CONFIG, item):
     now = datetime.datetime.now().strftime("%Y_%m_%d")
-    fn = os.path.join(CONFIG["statistics_output"], "{}_report_{}.html".format(now, item))
+    fn = os.path.join(CONFIG["statistics_output"],
+                      "{}_report_{}.html".format(now, item))
     return fn
 
 
@@ -69,9 +75,11 @@ def main(CONFIG):
     data, indexes = reformatting_data(data)
     # aligning and reads counting
     for pmi_item in indexes:
-        map_norm_1_2_data, expr_1_2_data = alm.align_map_norm_count_expr(data[pmi_item], CONFIG)
+        map_norm_1_2_data, expr_1_2_data = alm.align_map_norm_count_expr(
+            data[pmi_item], CONFIG)
         mapped_ratio_data = alm.align_map_vs_norm_replicates(map_norm_1_2_data)
-        mapped_norm_expression_data = alm.align_mapped_ratio_vs_expr_replicates(mapped_ratio_data, expr_1_2_data)
+        mapped_norm_expression_data = alm.align_mapped_ratio_vs_expr_replicates(
+            mapped_ratio_data, expr_1_2_data)
         REPORT = {
             "output_rpl_count": OrderedDict(sorted({k: v for k, v in output_rpl_count}.items())),
             "data": OrderedDict(sorted(data[pmi_item].items())),
@@ -87,15 +95,18 @@ def main(CONFIG):
         alm.make_report(REPORT, CONFIG, label=pmi_item)
         try:
             for _out in OUTPUT:
-                json_output = os.path.join(CONFIG["statistics_output"], pmi_item, CONFIG[_out])
+                json_output = os.path.join(
+                    CONFIG["statistics_output"], pmi_item, CONFIG[_out])
                 if not os.path.exists(os.path.dirname(json_output)):
                     os.makedirs(os.path.dirname(json_output))
                 alm.dump_to_json(OUTPUT[_out], json_output)
-                Logger.info("{} {} write succesful! ^_^".format(pmi_item, _out))
+                Logger.info(
+                    "{} {} write succesful! ^_^".format(pmi_item, _out))
         except:
             Logger.exception("{} {} write failed! >_<".format(pmi_item, _out))
         # Run biological analysis in R implementation
         alm.biological_sense(CONFIG, use_method="trip", label=pmi_item)
+
 
 if __name__ == '__main__':
     main(CONFIG)

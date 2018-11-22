@@ -16,7 +16,8 @@ def SplitFastqByIndexes(input_file, indexFile, index, indexError, const_1, const
     # print("    Processing index: '{}' ...".format(index))
     regIndex = regex.compile(regExpIndex[index])
     records = get_sequence_count(input_file)
-    bar = progressbar.ProgressBar(maxval=records, widgets=[progressbar.Bar(left='<', marker='.', right='>')]).start()
+    bar = progressbar.ProgressBar(maxval=records, widgets=[
+                                  progressbar.Bar(left='<', marker='.', right='>')]).start()
     t = 0
     with open(indexFile, "w") as handle:
         for title, seq, qual in FastqGeneralIterator(nopen(input_file)):
@@ -35,7 +36,8 @@ def SplitFastqByIndexes(input_file, indexFile, index, indexError, const_1, const
 def RandomReadIndexes(indexFile, indexFileRand, probability):
     # print("    Random read indexFile: '{}' ...".format(os.path.basename(indexFile)))
     records = get_sequence_count(indexFile)
-    bar = progressbar.ProgressBar(maxval=records, widgets=[progressbar.Bar(left='<', marker='.', right='>')]).start()
+    bar = progressbar.ProgressBar(maxval=records, widgets=[
+                                  progressbar.Bar(left='<', marker='.', right='>')]).start()
     t = 0
     randomSeq = [random.random() < probability for x in xrange(records)]
     with open(indexFileRand, "w") as handle:
@@ -50,7 +52,8 @@ def RandomReadIndexes(indexFile, indexFileRand, probability):
 def filterShadyReads(indexFile, reFilter, indexFiltFile):
     regFilter = regex.compile(reFilter)
     records = get_sequence_count(indexFile)
-    bar = progressbar.ProgressBar(maxval=records, widgets=[progressbar.Bar(left='<', marker='.', right='>')]).start()
+    bar = progressbar.ProgressBar(maxval=records, widgets=[
+                                  progressbar.Bar(left='<', marker='.', right='>')]).start()
     t = 0
     with open(indexFiltFile, "w") as handle:
         for title, seq, qual in FastqGeneralIterator(nopen(indexFile)):
@@ -68,7 +71,8 @@ def filterShadyReads(indexFile, reFilter, indexFiltFile):
 
 def SplitFastqByIndexesPaired(index, indexFile, options):
     _filename, _ext = os.path.splitext(os.path.basename(indexFile))
-    indexFile_rev = os.path.join(os.path.dirname(indexFile), "{}_rev{}".format(_filename, _ext))
+    indexFile_rev = os.path.join(os.path.dirname(
+        indexFile), "{}_rev{}".format(_filename, _ext))
     regIndex = regex.compile(options["regExpIndex"][index])
     _index_titles = set()
     with open(indexFile, "w") as f_handle:
@@ -80,7 +84,8 @@ def SplitFastqByIndexesPaired(index, indexFile, options):
                 if options["no_trim_index"]:
                     seqStr = [f_title, f_seq, f_qual]
                 else:
-                    seqStr = [f_title, f_seq[len(match[0]):], f_qual[len(match[0]):]]
+                    seqStr = [
+                        f_title, f_seq[len(match[0]):], f_qual[len(match[0]):]]
                 f_handle.write("@{}\n{}\n+\n{}\n".format(*seqStr))
     with open(indexFile_rev, "w") as r_handle:
         for r_title, r_seq, r_qual in FastqGeneralIterator(nopen(options["r2"])):

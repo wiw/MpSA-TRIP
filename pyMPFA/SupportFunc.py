@@ -338,7 +338,7 @@ def collect_report_data(options):
         "all_index_stat"]['index'].isin(options['indexList'].values())][["index", "0"]]
     for index_stat in ["all_index_stat", "current_index_stat"]:
         report_data[index_stat] = report_data[index_stat].to_html(
-            classes="table", justify="center").replace("\n", "")
+            classes=["table", "table-hover", "table-sm"], justify="center").replace("\n", "")
     # Count length of genome from the fwd and rev reads and use the shortest
     report_data['exp_fwd_genome_len'] = str(options['expected_min_genome_len'])
     encoded_report_data = {k: v.encode('ascii', 'ignore')
@@ -351,7 +351,9 @@ def parse_collection_data(collection_of_output_data):
                  'current_reads_count': ['paired_indexes'],
                  'comm_table': ['main_paired_stat', 'comm_stat'],
                  'bowtie_table': ['main_paired_stat', 'bwt_aligner_stat'],
-                 'output_stat_table': ['resultDict']
+                 'output_stat_table': {'genuine bc': ['bcDict'],
+                                       'genuine bc & genome combinations': ['seqDict'],
+                                       'genuine "bc & genome" combinations after filter': ['resultDict']},
                  }
 
     add_to_report = {}
@@ -360,8 +362,8 @@ def parse_collection_data(collection_of_output_data):
     # Return html table
 
     def stat_four_seq_data(idata):
-        output, first_key = {}, 'fwd'
-        for promotor_index, four_seq_data in idata[first_key].items():
+        output= {}
+        for promotor_index, four_seq_data in idata.items():
             output.setdefault(promotor_index, dict(Counter(four_seq_data)))
         return output
 
@@ -369,15 +371,15 @@ def parse_collection_data(collection_of_output_data):
         def wrapper_head(promotor_index, pandas_df):
             return "<div><p>{}</p>{}</div>".format(promotor_index, pandas_df.replace("\n", ""))
 
-        output = {}
+        output = ""
         for promotor_index, stat_four_data in sdata.items():
             tmp_df = pd.DataFrame(stat_four_data.items(), columns=[
                 'four_seq', 'count']).sort_values(by=['count'], ascending=False)
             # Magic number - 15, first 15 elements from statistics
             tmp_df = tmp_df.head(15)
-            tmp_df_html = tmp_df.to_html(index=False, classes="table", justify="center")
-            output.setdefault(promotor_index, wrapper_head(
-                promotor_index, tmp_df_html))
+            tmp_df_html = tmp_df.to_html(
+                index=False, classes=["table", "table-hover", "table-sm"], justify="center")
+            output += wrapper_head(promotor_index, tmp_df_html)
         return output
 
     def get_by_map(data_dict, map_list):
@@ -393,7 +395,6 @@ def parse_collection_data(collection_of_output_data):
     # Reads count before/after comm by promotor index. Collect data in 'colb.main_paired' Return results as html table
     # #################### smth code  comm_table  comm_difference
     def main_comm_stat(comm_tables):
-
         def format_comm_stat(comm_item, fst_column_name):
             tmp_df = pd.DataFrame(comm_item.items()).T
             tmp_df.columns = ['fwd', 'comm', 'rev']
@@ -409,31 +410,102 @@ def parse_collection_data(collection_of_output_data):
         for promotor_index, tables in comm_tables.items():
             comm_list.append(format_comm_stat(tables, promotor_index))
         merged_comm = merge_comm_stat(comm_list)
-        merged_comm_html = merged_comm.to_html(index=False, classes="table", justify="center")
+        merged_comm_html = merged_comm.to_html(
+            index=False, classes=["table", "table-hover", "table-sm"], justify="center")
         return merged_comm_html
 
     # Bowtie statistics in table view $alignment_stat_table +  filtration statistics
-    # ################### smth code  bowtie_table
+    # TODO: promotor index split by "_" -> bowtie stat parse "aligned
+    # concordantly 0 times" & "aligned concordantly exactly 1 time" & "aligned
+    # concordantly >1 times" -> to dict -> to dataFrame -> concat
+
+    def main_bowtie_stat(bowtie_table):
+        def parse_bowtie_log(log, regexp_compiled):
+            output = []
+            for line in log:
+                match = regexp_compiled.match(line)
+                if match is not None:
+                    count, pct = match.group('count'), match.group('pct')
+                    output.append([int(count), float(pct)])
+            return output
+
+        def collect_bowtie_log(bowtie_table):
+            regexp = regex.compile(
+                '^([ ].*?)(?P<count>[0-9].*) \\((?P<pct>[\\.0-9].*)%\\) .* concordantly (?P<header>[a-z0-9 >].*)$')
+            collect_result = {}
+            promotor_counter = 0
+            for promotor_index, bowtie_output in bowtie_table.items():
+                parse_result = parse_bowtie_log(bowtie_output, regexp)
+                _sum = [sum(x) for x in zip(*parse_result)]
+                promotor_index = promotor_index.split("_")[0]
+                output_parse_result = [promotor_index] + parse_result
+                output_parse_result.append(_sum)
+                collect_result.setdefault(
+                    promotor_counter, output_parse_result)
+                promotor_counter += 1
+            return collect_result
+
+        def format_bowtie_log(collect_result):
+            pd_table = pd.DataFrame(collect_result.values())
+            pd_table.columns = ['promotor index', 'aligned conc. 0 times',
+                                'aligned conc. exactly 1 time', 'aligned conc. >1 times', 'summary']
+            bowtie_html = pd_table.to_html(
+                index=False, classes=["table", "table-hover", "table-sm"], justify="center")
+            return bowtie_html
+        collect_result = collect_bowtie_log(bowtie_table)
+        bowtie_html = format_bowtie_log(collect_result)
+        return bowtie_html
 
     # Finally statistics in $output_stat_table
     # #################### smth code   output_stat_table
+    def main_output_stat(collection_of_output_data, replicate):
+        set_of_columns = ['genuine bc', 'genuine bc & genome combinations',
+                          'genuine "bc & genome" combinations after filter']
+        output_table = pd.DataFrame(columns=set_of_columns)
+        for synonim, name_of_dict in structure['output_stat_table'].items():
+            received_data = get_by_map(collection_of_output_data, [
+                                       replicate] + name_of_dict)
+            for promotor_index, actual_data in received_data.items():
+                output_table.at[promotor_index, synonim] = len(actual_data)
+        output_table['promotor_index'] = output_table.index
+        output_table = output_table[['promotor_index'] + set_of_columns]
+        output_to_html = output_table.to_html(
+            index=False, classes=["table", "table-hover", "table-sm"], justify="center")
+        return output_to_html
+
+    replicate_count = 1
     for replicate in collection_of_output_data:
         # spacer_4freq
         four_seq_data_counting = stat_four_seq_data(get_by_map(
             collection_of_output_data, [replicate] + structure['spacer_4freq']))
+        four_seq_data_counting_html = format_four_seq_data(
+            four_seq_data_counting)
         add_to_report.setdefault(
-            "{}_{}".format("spacer_4freq", replicate), format_four_seq_data(four_seq_data_counting))
+            "{}_{}".format("spacer_4freq", replicate_count), four_seq_data_counting_html)
         # current_reads_data
         current_reads_data = get_current_reads_data(get_by_map(
             collection_of_output_data, [replicate] + structure['current_reads_count']))
+        current_reads_data_html = dict2html_list(current_reads_data)
         add_to_report.setdefault("{}_{}".format(
-            "current_reads_data", replicate), dict2html_list(current_reads_data))
+            "current_reads_data", replicate_count), current_reads_data_html)
         # comm
-        comm_data = main_comm_stat(get_by_map(collection_of_output_data, [
+        comm_table = main_comm_stat(get_by_map(collection_of_output_data, [
             replicate] + structure['comm_table']))
-
+        add_to_report.setdefault("{}_{}".format(
+            "comm_table", replicate_count), comm_table)
         # bowtie_table
+        bowtie_table = main_bowtie_stat(get_by_map(collection_of_output_data, [
+                                        replicate] + structure['bowtie_table']))
+        add_to_report.setdefault("{}_{}".format(
+            "bowtie_table", replicate_count), bowtie_table)
         # output_stat_table
+        output_table = main_output_stat(collection_of_output_data, replicate)
+        add_to_report.setdefault("{}_{}".format(
+            "output_table", replicate_count), output_table)
+        replicate_count += 1
+    encoded_add_to_report_data = {k: v.encode('ascii', 'ignore')
+                           for k, v in add_to_report.items()}
+    return encoded_add_to_report_data
 
 
 def write_report_to_template(report_data, options):
@@ -456,5 +528,5 @@ def write_report_to_template(report_data, options):
 
 def main_report(collection_of_output_data, options):
     report_data = collect_report_data(options)
-    # report_data.update(parse_collection_data(collection_of_output_data))
+    report_data.update(parse_collection_data(collection_of_output_data))
     write_report_to_template(report_data, options)

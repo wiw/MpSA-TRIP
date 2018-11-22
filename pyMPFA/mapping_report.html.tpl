@@ -119,7 +119,9 @@
             </div>
             <div>
                 ${current_index_stat}
-                Общее количество ридов в файле: $TotalReadsCount</div>
+                Общее количество ридов в файлах: 
+             <div><h3>Реплика 1</h3>${current_reads_data_1}</div>
+        <div><h3>Реплика 2</h3>${current_reads_data_2}</div></div>
             <div>
                 <br>
             </div>
@@ -249,60 +251,15 @@
         <p></p>
         <hr>
         <div>Частотный анализ 4-х нуклеотидной последовательности:</div>
-        <div>${spacer_4freq}</div>
+        <blockquote class="blockquote"><p class="mb-2">*** Представлены только первые 15 (пятнадцать) четырехнуклеотидных последовательностей</p></blockquote>
+        <div><h3>Реплика 1</h3>${spacer_4freq_1}</div>
+        <div><h3>Реплика 2</h3>${spacer_4freq_2}</div>
         <hr>
         <p><span style="text-indent: 2em; font-size: 1rem; line-height: 1.5;">В вышеописанном алгоритме сначала обрабатываются прямые риды, а потом обратные. При этом не все прямые и обратные риды проходят установленные фильтры. Это приводит к тому, что возникает разница в количестве прямых и обратных ридов. Для парного выравнивания последовательностей на геном необходимо, чтобы количество прямых и обратных ридов совпадало и пары ридов были согласованы. Для этого заголовки прямых и обратных ридов снова загружаются в память и сравниваются между собой, оставляя только общие заголовки. Сформированный список общих заголовков используется устранения несогласованности между данными с прямыми и обратными ридами.</span>
             <br>
         </p>
-        <table cellspacing="0" border="1px" bordercolor="#aaaacc" width="100%">
-            <tbody>
-                <tr>
-
-                    <td>
-                        <br>
-                    </td>
-
-                    <td>
-                        прямые риды
-                    </td>
-
-                    <td>
-                        обратные риды
-                    </td>
-                </tr>
-
-                <tr>
-
-                    <td>
-                        до согласования
-                    </td>
-
-                    <td>
-                        <br>
-                    </td>
-
-                    <td>
-                        <br>
-                    </td>
-                </tr>
-                <tr>
-
-                    <td>
-                        после согласования
-                    </td>
-
-                    <td>
-                        <br>
-                    </td>
-
-                    <td>
-                        <br>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p>
-            Количество ридов потерянных на этом этапе:&nbsp;<span style="font-family: sans-serif;">${comm_difference}</span></p>
+        <div><h3>Реплика 1</h3>${comm_table_1}</div>
+        <div><h3>Реплика 2</h3>${comm_table_2}</div>
         <h3 id="g0.1.5">III. Выравнивание на геном</h3>
         <p>Для выравнивания на геном использовалась программа Bowtie2 со следующими параметрами:</p>
         <blockquote>
@@ -332,93 +289,12 @@
 
             </ul>
             <p><b>Statistic of alignment and filtering:</b></p>
-            <table cellspacing="0" border="1px" bordercolor="#aaaacc" width="100%">
-                <tbody>
-                    <tr>
-                        <td>&nbsp;Illumina index fst</td>
-                        <td>alignment (результат работы Bowtie2)</td>
-                        <td>filtering (сортировка и фильтрация после выравнивания)</td>
-                    </tr>
-                    <tr>
-                        <td>promotor index fst</td>
-                        <td>
-                            <br>
-                        </td>
-                        <td>
-                            <br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>&gt;1 align&nbsp;
-                            <br>
-                        </td>
-                        <td>
-                            <br>
-                        </td>
-                        <td rowspan="3">
-                            <br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1 align&nbsp;
-                            <br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>0 align&nbsp;
-                            <br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>promotor index snd</td>
-                        <td>
-                            <br>
-                        </td>
-                        <td>
-                            <br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>&gt;1 align</td>
-                        <td>
-                            <br>
-                        </td>
-                        <td rowspan="3">
-                            <br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1 align</td>
-                    </tr>
-                    <tr>
-                        <td>0 align</td>
-                    </tr>
-                    <tr>
-                        <td><span style="font-family: sans-serif;">Illumina index snd</span>&nbsp;
-                            <br>
-                        </td>
-                        <td>
-                            <br>
-                        </td>
-                        <td>
-                            <br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>...etc</td>
-                        <td>
-                            <br>
-                        </td>
-                        <td>
-                            <br>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div><h3>Реплика 1</h3>${bowtie_table_1}</div>
+        <div><h3>Реплика 2</h3>${bowtie_table_2}</div>
             <p><span style="text-indent: 2em; font-size: 1rem; line-height: 1.5;">
 <br>
 </span></p>
-            <p><span style="text-indent: 2em; font-size: 1rem; line-height: 1.5;">Полученные данные конвертируются в текстовый файл ("bed"-формат, ${bed_file_path}), который затем загружается в память. Загруженный файл содержит в себе выровненные пары прямых и обратных ридов</span>
+            <p><span style="text-indent: 2em; font-size: 1rem; line-height: 1.5;">Полученные данные конвертируются в текстовый файл ("bed"-формат), который затем загружается в память. Загруженный файл содержит в себе выровненные пары прямых и обратных ридов</span>
                 <br>
             </p>
             <code class="long_string">
@@ -445,112 +321,8 @@
                     <li>Далее на основании предыдущего пункта, для каждого истинного баркода производится поиск наиболее вероятной геномной координаты. Частота встречаемости, которой должна быть не ниже порога $mutationProbability от общей частоты встречаемости всех геномных координат в пределах этого истинного баркода</li>
                 </ul>
                 <p></p>
-                <table cellspacing="0" border="1px" bordercolor="#aaaacc" width="100%">
-                    <tbody>
-                        <tr>
-
-                            <td><span style="font-family: sans-serif;">Illumina index fst</span>
-                                <br>
-                            </td>
-
-                            <td>reads count</td>
-
-                            <td>effective reads count<b>***</b></td>
-
-                            <td>unique barcode</td>
-
-                            <td><span style="font-family: sans-serif;">unique barcode with genome alignment</span>
-                                <br>
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td><span style="font-family: sans-serif;">Promotor index one</span>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td><span style="font-family: sans-serif;">Promotor index two</span>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td><span style="font-family: sans-serif;">Promotor index three</span>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td>...etc.</td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-
-                            <td>
-                                <br>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div><h3>Реплика 1</h3>${output_table_1}</div>
+        <div><h3>Реплика 2</h3>${output_table_2}</div>
                 <blockquote>
 
                     <div class="remark">***</div>

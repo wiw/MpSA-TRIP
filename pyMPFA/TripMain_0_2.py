@@ -33,7 +33,8 @@ def load_main_config(config_path):
             return config
     else:
         raise IOError
-        Logger.exception("Don't load config file from '{}'".format(config_path))
+        Logger.exception(
+            "Don't load config file from '{}'".format(config_path))
 
 
 def SaveDictToPy(dictVar, filename):
@@ -71,14 +72,16 @@ MODULES = ["PairedEndFunc", "SupportFunc", "ReadIndexesFunc", "CollectBcMutFunc"
 
 
 def ParseArguments():
-    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--input", "-i", help="fastq file for TRIP experiment")
     p.add_argument("--forward", "-f", help="mapping forward fastq")
     p.add_argument("--reverse", "-r", help="mapping reverse fastq")
     p.add_argument("--mode", "-m", choices=["single", "paired", "fwd", "rev", "genome"],
                    default="single", help="prints <mode> to stdout where \
                         R1 is equivalent to reads without a pair in R2 [%(default)s]")
-    p.add_argument("--output", "-o", help="Set location of output folder. Use absolute path!")
+    p.add_argument("--output", "-o",
+                   help="Set location of output folder. Use absolute path!")
     p.add_argument("--no_trim_index", "-T", action="store_true", help="Don't trim indexes with first concatenated \
                                                                 constant part. Trim by default. \
                                                                 If you use this option, be sure to check \
@@ -89,13 +92,19 @@ def ParseArguments():
                                      then please specify gap size in b.p. Default value is [%(default)s]")
     p.add_argument("--experiment_label", "-l", help="A label that is added to the name of the working folder \
                                                         to separate your experiments.")
-    p.add_argument("--random_read", "-R", action="store_true", help="Random read by sequence file.")
-    p.add_argument("--make_barcode_library", "-B", action="store_true", help="Make only barcode library.")
-    p.add_argument("--merge_indexes", "-M", action="store_true", help="Merge data into one table for all available indexes")
-    p.add_argument("--reverse_barcode", "-rb", action="store_true", help="Reverse your barcode if you use reversed reads or barcodes")
-    p.add_argument("--combine_paired", "-C", action="store_true", help="Merge paired end sequences")
+    p.add_argument("--random_read", "-R", action="store_true",
+                   help="Random read by sequence file.")
+    p.add_argument("--make_barcode_library", "-B",
+                   action="store_true", help="Make only barcode library.")
+    p.add_argument("--merge_indexes", "-M", action="store_true",
+                   help="Merge data into one table for all available indexes")
+    p.add_argument("--reverse_barcode", "-rb", action="store_true",
+                   help="Reverse your barcode if you use reversed reads or barcodes")
+    p.add_argument("--combine_paired", "-C", action="store_true",
+                   help="Merge paired end sequences")
     args = p.parse_args()
     return args
+
 
 """
 **** CHECK ARGUMENTS
@@ -115,7 +124,8 @@ def CheckModules(MODULES):
         wrongImport = ""
     else:
         result = False
-        wrongImport = ", ".join([i + ".py" for i in report if report[i] == False])
+        wrongImport = ", ".join(
+            [i + ".py" for i in report if report[i] == False])
     return (result, wrongImport)
 
 
@@ -129,33 +139,42 @@ def CheckArgs(args):
                     if os.path.isabs(args.output):
                         variableSet["inputLocation"] = args.output
                     else:
-                        supp.log_error("\nPlease specify the absolute path to the OUTPUT folder\n")
+                        supp.log_error(
+                            "\nPlease specify the absolute path to the OUTPUT folder\n")
                 else:
-                    variableSet["inputLocation"] = os.path.dirname(variableSet["input_file"])
-                    supp.log_error("\nYou are not specify path to OUTPUT folder!\n\nThe result of the work will be recorded in the folder with the source file!\n")
+                    variableSet["inputLocation"] = os.path.dirname(
+                        variableSet["input_file"])
+                    supp.log_error(
+                        "\nYou are not specify path to OUTPUT folder!\n\nThe result of the work will be recorded in the folder with the source file!\n")
             else:
-                supp.log_error("\nPlease specify the absolute path to the fastq file!\n")
+                supp.log_error(
+                    "\nPlease specify the absolute path to the fastq file!\n")
         except:
-            supp.log_error("\nYou are in {} mode!\n\nPlease choose ONE fastq file with argument \"--input (-i) ...\"!\n\nExit programm...\n".format(args.mode))
+            supp.log_error(
+                "\nYou are in {} mode!\n\nPlease choose ONE fastq file with argument \"--input (-i) ...\"!\n\nExit programm...\n".format(args.mode))
             raise EOFError
     else:
         try:
             if os.path.isabs(args.forward):
                 variableSet["r1"] = args.forward
             else:
-                supp.log_error("\nPlease specify the absolute path to the forward fastq file!\n")
+                supp.log_error(
+                    "\nPlease specify the absolute path to the forward fastq file!\n")
             if os.path.isabs(args.forward):
                 variableSet["r2"] = args.reverse
             else:
-                supp.log_error("\nPlease specify the absolute path to the reversed fastq file!\n")
+                supp.log_error(
+                    "\nPlease specify the absolute path to the reversed fastq file!\n")
             if args.output:
                 if os.path.isabs(args.output):
                     variableSet["inputLocation"] = args.output
                 else:
-                    supp.log_error("\nPlease specify the absolute path to the OUTPUT folder\n")
+                    supp.log_error(
+                        "\nPlease specify the absolute path to the OUTPUT folder\n")
             else:
                 variableSet["inputLocation"] = os.path.dirname(args.forward)
-                supp.log_error("\nYou are not specify path to OUTPUT folder!\n\nThe result of the work will be recorded in the folder with the source file!\n")
+                supp.log_error(
+                    "\nYou are not specify path to OUTPUT folder!\n\nThe result of the work will be recorded in the folder with the source file!\n")
         except:
             if args.mode == "paired":
                 modeKeyword = args.mode
@@ -172,7 +191,8 @@ def CheckArgs(args):
             Start working with paired reads...\n\n''')
             variableSet["input_file"] = pend.FastqJoinPaired(variableSet["r1"],
                                                              variableSet["r2"],
-                                                             output_dir=variableSet["inputLocation"],
+                                                             output_dir=variableSet[
+                                                                 "inputLocation"],
                                                              gap_size=args.gap_size,
                                                              separator=param.separator,
                                                              mode=args.mode,
@@ -190,14 +210,18 @@ def CheckArgs(args):
     Total reads count in your file: {} reads.\n
     Start splitting source file by index.\n\n'''.format(supp.get_sequence_count(variableSet["input_file"])))
     if args.experiment_label:
-        variableSet["workdir"] = os.path.join(variableSet["inputLocation"], os.path.basename(variableSet["input_file"]).split(".")[0]+"_{}".format(args.experiment_label))
+        variableSet["workdir"] = os.path.join(variableSet["inputLocation"], os.path.basename(
+            variableSet["input_file"]).split(".")[0] + "_{}".format(args.experiment_label))
     else:
-        variableSet["workdir"] = os.path.join(variableSet["inputLocation"], os.path.basename(variableSet["input_file"]).split(".")[0])
-    supp.log_info("You are working directory in {}\n".format(variableSet["workdir"]))
+        variableSet["workdir"] = os.path.join(variableSet["inputLocation"], os.path.basename(
+            variableSet["input_file"]).split(".")[0])
+    supp.log_info("You are working directory in {}\n".format(
+        variableSet["workdir"]))
     variableSet["PdumpDir"] = os.path.join(variableSet["workdir"], "Dump")
     if not os.path.exists(variableSet["PdumpDir"]):
         os.makedirs(variableSet["PdumpDir"])
     return variableSet
+
 
 """
 **** RUN FUNCTION
@@ -280,75 +304,10 @@ def main(args):
     cmd = ["python", scriptPy]
     subprocess.call(cmd)
 
+
 if __name__ == "__main__":
     args = ParseArguments()
     if args.input or args.forward or args.reverse:
         main(args)
     else:
         print("You are in incorrect mode. Use '-h' then to get help.")
-
-# if args.merge_indexes: bcList = []
-# for index in param.indexList:
-#     indexFile = os.path.join(workdir, "index_{}.fastq".format(index.upper()))
-#     if not os.path.exists(indexFile) or os.stat(indexFile).st_size == 0:
-#         rind.SplitFastqByIndexes(input_file, indexFile, index.upper(), param.indexError, param.const_1.upper(), param.const_1Error, param.regExpIndex, args.no_trim_index)
-#     if args.random_read:
-#         indexFileRand = os.path.join(workdir, "random_index_{}.fastq".format(index.upper()))
-#         rind.RandomReadIndexes(indexFile, indexFileRand, param.probability)
-#         indexFile = indexFileRand
-#     print("\n\nEnd splitting.\n\n#####################################\n")
-#     print('''Processing on: '{}'.\n
-# Total reads in file '{}': {} reads.\n
-# Generate dictionary of barcodes.\n'''.format(os.path.basename(indexFile), os.path.basename(indexFile), get_sequence_count(indexFile)))
-#     if args.make_barcode_library:
-#         if args.merge_indexes:
-#             bcList.extend(CollectBarcode(indexFile, param.barcodeLength, param.readsValue, param.barcodeError, param.const_2.upper(), param.const_2Error, param.regExpBc, args.merge_indexes, args.reverse_barcode))
-#         else:
-#             bcDict = CollectBarcode(indexFile, param.barcodeLength, param.readsValue, param.barcodeError, param.const_2.upper(), param.const_2Error, param.regExpBc, args.merge_indexes, args.reverse_barcode)
-#             # mainCheckBarcodeInDict(bcDict, param.barcodeError)
-#             csvFile = WriteBcDictToFile(bcDict, workdir, indexFile)
-#             csvFile_R = SimpleCsvWriter(None, bcDict, workdir, indexFile)
-#             print('''        I had select the {} unique barcodes.\n
-#         Results writing to file '{}'
-#         in your working directory: '{}'\n'''.format(len(bcDict), csvFile, workdir))
-#     else:
-#         (bcDict, seqDict) = CollectBarcodeMutation(indexFile, param.barcodeLength, param.mutationLength, param.readsValue, param.barcodeError, param.const_2.upper(), param.const_3.upper(), param.const_2Error, param.const_3Error, param.regExpBcMut, args.reverse_barcode)
-#         print('''        I have get a {} unique barcodes.\n
-#     Generate  dictionary of <<Barcode vs mutation>>.\n'''.format(len(bcDict)))
-#         print('''        Unique combinations of barcode-mutation: {} items.\n
-#     Select the very probable mutations.\n'''.format(len(seqDict)))
-#         resultDict = SelectTheMostProbableMutation(seqDict, param.mutationProbability)
-#         csvFile = WriteResultsToFile(resultDict, bcDict, seqDict, workdir, indexFile)
-#         csvFile_R = SimpleCsvWriter(resultDict, bcDict, workdir, indexFile)
-#         print('''        I had select the {} unique mutations.\n
-#     Results writing to file '{}'
-#     in your working directory: '{}'\n'''.format(len(resultDict), csvFile, workdir))
-#     if not args.merge_indexes:
-#         if os.path.exists(param.rscript):
-#             pathToScript = os.path.join(os.getcwd(), "trip_Rstat_{}.R".format(index))
-#             option = [csvFile_R, os.path.dirname(csvFile_R), index]
-#             cmd = [param.rscript, pathToScript] + option
-#             subprocess.call(cmd)
-#         else:
-#             print("You do not have installed R-session, or you incorrectly specified the path to the Rscript.\nStatistics on barcodes will not be displayed.")
-#     print("End processing with: '{}'.\n\n".format(os.path.basename(indexFile)))
-# if args.merge_indexes:
-#     bcCount = Counter(bcList)
-#     if args.temp_option:
-#         pass
-#     else:
-#         indexMerged = "_".join(param.indexList)
-#         bcDict = SelectionReliableBarcode(bcCount, param.readsValue, param.barcodeError)
-#         # mainCheckBarcodeInDict(bcDict, param.barcodeError)
-#         csvFile = WriteBcDictToFile(bcDict, workdir, indexFile)
-#         csvFile_R = SimpleCsvWriter(None, bcDict, workdir, indexFile)
-#         print('''        I had select the {} unique barcodes.\n
-#         Results writing to file '{}'
-#         in your working directory: '{}'\n'''.format(len(bcDict), csvFile, workdir))
-#         if os.path.exists(param.rscript):
-#             pathToScript = os.path.join(os.getcwd(), "trip_Rstat_{}.R".format(index))
-#             option = [csvFile_R, os.path.dirname(csvFile_R), indexMerged]
-#             cmd = [param.rscript, pathToScript] + option
-#             subprocess.call(cmd)
-#         else:
-#             print("You do not have installed R-session, or you incorrectly specified the path to the Rscript.\nStatistics on barcodes will not be displayed.")

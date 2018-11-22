@@ -1,8 +1,9 @@
-#C:\Python27\python.exe
+# C:\Python27\python.exe
 #!/usr/bin/env python
 # encoding: utf-8
 
-import os, subprocess
+import os
+import subprocess
 import SupportFunc as supp
 import ReadIndexesFunc as rind
 import CollectBcMutFunc as colb
@@ -15,7 +16,6 @@ from MainTrip_0_2 import Pload, Pdump
 workdir = Pload("variableSet")["workdir"]
 input_file = Pload("variableSet")["input_file"]
 PdumpDir = Pload("variableSet")["PdumpDir"]
-
 
 
 '''

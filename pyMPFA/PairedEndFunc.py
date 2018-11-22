@@ -53,8 +53,9 @@ def FastqJoinPaired(r1, r2, output_dir, gap_size, separator, mode="paired", reve
     else:
         fastqdict = fastqtodict(r2, separator)
         fastq = r1
-    gap_bind, gap_qual = "N"*int(gap_size), "*"*int(gap_size)
-    p_out, unq_out = os.path.join(output_dir, "output_paired.fastq"), os.path.join(output_dir, "output_unique.fastq")
+    gap_bind, gap_qual = "N" * int(gap_size), "*" * int(gap_size)
+    p_out, unq_out = os.path.join(output_dir, "output_paired.fastq"), os.path.join(
+        output_dir, "output_unique.fastq")
     with nopen(fastq) as fq:
         with open(p_out, "w") as handle_p:
             with open(unq_out, "w") as handle_unq:
@@ -66,9 +67,11 @@ def FastqJoinPaired(r1, r2, output_dir, gap_size, separator, mode="paired", reve
                         cqual = fastqdict.get(name)[1]
                         if reverse_complement:
                             cseq = reverseComplement(cseq)
-                        handle_p.write("@{}\n{}{}{}\n+\n{}{}{}\n".format(name, seq, gap_bind, cseq, qual, gap_qual, cqual))
+                        handle_p.write(
+                            "@{}\n{}{}{}\n+\n{}{}{}\n".format(name, seq, gap_bind, cseq, qual, gap_qual, cqual))
                     except KeyError:
                         # without pairs
                         if not mode == "paired":
-                            handle_unq.write("@{}\n{}\n+\n{}\n".format(name, seq, qual))
+                            handle_unq.write(
+                                "@{}\n{}\n+\n{}\n".format(name, seq, qual))
     return p_out

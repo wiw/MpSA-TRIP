@@ -9,20 +9,25 @@ import csv
 
 def WriteResultsToFile(resultDict, bcDict, seqDict, workdir, indexFile, customTxt=''):
     indexString = os.path.basename(indexFile).split(".")[0].split("_")[1]
-    csvFile = os.path.join(workdir, "{}_barcode-mutation_count_{}.csv".format(indexString, customTxt))
+    csvFile = os.path.join(
+        workdir, "{}_barcode-mutation_count_{}.csv".format(indexString, customTxt))
     with open(csvFile, "wb") as handle:
-        fieldnames = ['Barcode', 'Mutation', 'MutationCount', 'BCSequence', 'BCSequenceCount', 'MutatedBCassociatedWith', 'MutationVariants', 'Frequency', 'LostBarcodes']
+        fieldnames = ['Barcode', 'Mutation', 'MutationCount', 'BCSequence', 'BCSequenceCount',
+                      'MutatedBCassociatedWith', 'MutationVariants', 'Frequency', 'LostBarcodes']
         writer = csv.DictWriter(handle, fieldnames=fieldnames, delimiter='\t')
         writer.writeheader()
         for barcodeID in resultDict:
             BCSequence = ""
             BCSequenceCount = ""
             BCSequence = '\n'.join(str(x[0]) for x in bcDict[barcodeID]) + "\n"
-            BCSequenceCount = '\n'.join(str(x[1]) for x in bcDict[barcodeID]) + "\n"
+            BCSequenceCount = '\n'.join(str(x[1])
+                                        for x in bcDict[barcodeID]) + "\n"
             TotalBCSequence = sum([x[1] for x in bcDict[barcodeID]])
             if barcodeID in seqDict[barcodeID]:
-                MutVarForUnqBc = '\n'.join(str(x[0]) for x in seqDict[barcodeID][barcodeID])
-                CountMutForUnqBc = '\n'.join(str(x[1]) for x in seqDict[barcodeID][barcodeID])
+                MutVarForUnqBc = '\n'.join(
+                    str(x[0]) for x in seqDict[barcodeID][barcodeID])
+                CountMutForUnqBc = '\n'.join(
+                    str(x[1]) for x in seqDict[barcodeID][barcodeID])
                 TotalMutForUncBc = len(seqDict[barcodeID][barcodeID])
             else:
                 MutVarForUnqBc = "none"
@@ -39,10 +44,10 @@ def WriteResultsToFile(resultDict, bcDict, seqDict, workdir, indexFile, customTx
                     MutatedBarcodes = ""
                     for bc in wtd.keys():
                         countMut = len(wtd[bc])
-                        if bc == wtd.keys()[len(wtd.keys())-1]:
-                            MutatedBarcodes += str(bc)+"\n"*(countMut-1)
+                        if bc == wtd.keys()[len(wtd.keys()) - 1]:
+                            MutatedBarcodes += str(bc) + "\n" * (countMut - 1)
                         else:
-                            MutatedBarcodes += str(bc)+"\n"*countMut
+                            MutatedBarcodes += str(bc) + "\n" * countMut
                 else:
                     MutatedBarcodes = Frequency = AssociatedMutations = ""
             else:
@@ -53,16 +58,17 @@ def WriteResultsToFile(resultDict, bcDict, seqDict, workdir, indexFile, customTx
                 'MutationCount': resultDict[barcodeID][1],
                 'BCSequence': BCSequence,
                 'BCSequenceCount': BCSequenceCount,
-                'MutatedBCassociatedWith': barcodeID+"\n"*TotalMutForUncBc+MutatedBarcodes,
-                'MutationVariants': MutVarForUnqBc+"\n"+AssociatedMutations,
-                'Frequency': CountMutForUnqBc+"\n"+Frequency,
-                'LostBarcodes': TotalBCSequence-resultDict[barcodeID][1]})
+                'MutatedBCassociatedWith': barcodeID + "\n" * TotalMutForUncBc + MutatedBarcodes,
+                'MutationVariants': MutVarForUnqBc + "\n" + AssociatedMutations,
+                'Frequency': CountMutForUnqBc + "\n" + Frequency,
+                'LostBarcodes': TotalBCSequence - resultDict[barcodeID][1]})
     return os.path.basename(csvFile)
 
 
 def WriteBcDictToFile(bcDict, workdir, indexFile, customTxt=''):
     indexString = os.path.basename(indexFile).split(".")[0].split("_")[1]
-    csvFile = os.path.join(workdir, "{}_barcodeDictionary_{}.csv".format(indexString, customTxt))
+    csvFile = os.path.join(
+        workdir, "{}_barcodeDictionary_{}.csv".format(indexString, customTxt))
     with open(csvFile, "wb") as handle:
         fieldnames = ['Barcode', 'BCSequence', 'BCSequenceCount']
         writer = csv.DictWriter(handle, fieldnames=fieldnames, delimiter='\t')
@@ -71,7 +77,8 @@ def WriteBcDictToFile(bcDict, workdir, indexFile, customTxt=''):
             BCSequence = ""
             BCSequenceCount = ""
             BCSequence = '\n'.join(str(x[0]) for x in bcDict[barcodeID]) + "\n"
-            BCSequenceCount = '\n'.join(str(x[1]) for x in bcDict[barcodeID]) + "\n"
+            BCSequenceCount = '\n'.join(str(x[1])
+                                        for x in bcDict[barcodeID]) + "\n"
             writer.writerow({
                 'Barcode': barcodeID,
                 'BCSequence': BCSequence,
@@ -81,7 +88,8 @@ def WriteBcDictToFile(bcDict, workdir, indexFile, customTxt=''):
 
 def SimpleCsvWriter(resultDict, bcDict, workdir, indexFile, customTxt=''):
     indexString = os.path.basename(indexFile).split(".")[0].split("_")[1]
-    csvFile = os.path.join(workdir, "{}_for_R_statistics{}.csv".format(indexString, customTxt))
+    csvFile = os.path.join(
+        workdir, "{}_for_R_statistics{}.csv".format(indexString, customTxt))
     if resultDict is None:
         resultDict = bcDict
     with open(csvFile, "wb") as handle:

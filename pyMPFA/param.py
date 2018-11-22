@@ -1,5 +1,5 @@
 # A1-4 mapping index
-indexList = {"trip6_2_m1":"GGGATCCG", "trip6_2_m2":"TCAAGCAA"}
+indexList = {"trip6_1_m1":"TTCGGAGT", "trip6_1_m2":"ACTCATTT"}
 all_indexes = ["AGTCGCCG", "TAAACATC", "ACAATTCG", "TACTTGTC", "GTACCGTT", "GCCACATA", "CCTATGGT", "AACGTCGC", "TTCGGAGT", "ACTCATTT", "GGGATCCG", "TCAAGCAA", "AGGCAGCA", "AGCTTTCT", "GGTATGTT", "GAGGGACC", "TAGCTCTA", "TAATTGCG", "GAAATGGG", "TCGAGACT"]
 # promotor index
 pmi = ['AGCTC', 'ACGTA', 'CTGCT', 'AGTCA', 'TCAAA', 'TTGAG', 'TCGCT']
@@ -12,7 +12,7 @@ barcodeLength = 18
 pmiLength = 5
 mutationLength = 8
 readsValue = 2
-mutationProbability = 0.95
+mutationProbability = 0.80
 separator = " "
 probability = 0.5
 p_e_distance = 5000 # Max distance between paired-end reads into bowtie alignment

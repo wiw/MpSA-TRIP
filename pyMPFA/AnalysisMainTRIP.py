@@ -1,8 +1,13 @@
-#C:\Python27\python.exe
+# C:\Python27\python.exe
 #!/usr/bin/env python
 # encoding: utf-8
 
-import param, csv, os, picks, regex, inspect
+import param
+import csv
+import os
+import picks
+import regex
+import inspect
 import SupportFunc as supp
 from TripMain_0_2 import Pload
 from Bio.SeqIO.QualityIO import FastqGeneralIterator
@@ -29,34 +34,40 @@ supp.setup_logging()
 
 def WriteResultsToFile(resultDict, bcDict, seqDict, statDict, workdir, indexFile, customTxt=''):
     indexString = os.path.basename(indexFile).split(".")[0].split("_")[1]
-    csvFile = os.path.join(workdir, "{}_barcode-mutation_count_{}.csv".format(indexString, customTxt))
+    csvFile = os.path.join(
+        workdir, "{}_barcode-mutation_count_{}.csv".format(indexString, customTxt))
     with open(csvFile, "wb") as handle:
         fieldnames = ['Barcode',
-                    'Mutation',
-                    'MutationCount',
-                    'BCSequence',
-                    'BCSequenceCount',
-                    'MutatedBCassociatedWith',
-                    'MutationVariants',
-                    'Frequency',
-                    'LostBarcodes',
-                    'ProbableMutations',
-                    'theirFrequency',
-                    'HybridsPortion']
+                      'Mutation',
+                      'MutationCount',
+                      'BCSequence',
+                      'BCSequenceCount',
+                      'MutatedBCassociatedWith',
+                      'MutationVariants',
+                      'Frequency',
+                      'LostBarcodes',
+                      'ProbableMutations',
+                      'theirFrequency',
+                      'HybridsPortion']
         writer = csv.DictWriter(handle, fieldnames=fieldnames, delimiter='\t')
         writer.writeheader()
         for barcodeID in resultDict:
             BCSequence = ""
             BCSequenceCount = ""
             BCSequence = '\n'.join(str(x[0]) for x in bcDict[barcodeID]) + "\n"
-            BCSequenceCount = '\n'.join(str(x[1]) for x in bcDict[barcodeID]) + "\n"
+            BCSequenceCount = '\n'.join(str(x[1])
+                                        for x in bcDict[barcodeID]) + "\n"
             TotalBCSequence = sum([x[1] for x in bcDict[barcodeID]])
-            ProbableMutations = '\n'.join(str(k) for k in statDict[barcodeID]['mutations'])
-            theirFrequency = '\n'.join(str(v) for v in statDict[barcodeID]['mutations'].values())
+            ProbableMutations = '\n'.join(
+                str(k) for k in statDict[barcodeID]['mutations'])
+            theirFrequency = '\n'.join(
+                str(v) for v in statDict[barcodeID]['mutations'].values())
             HybridsPortion = str(statDict[barcodeID]['hybrids'] * 100) + "%"
             if barcodeID in seqDict[barcodeID]:
-                MutVarForUnqBc = '\n'.join(str(x[0]) for x in seqDict[barcodeID][barcodeID])
-                CountMutForUnqBc = '\n'.join(str(x[1]) for x in seqDict[barcodeID][barcodeID])
+                MutVarForUnqBc = '\n'.join(
+                    str(x[0]) for x in seqDict[barcodeID][barcodeID])
+                CountMutForUnqBc = '\n'.join(
+                    str(x[1]) for x in seqDict[barcodeID][barcodeID])
                 TotalMutForUncBc = len(seqDict[barcodeID][barcodeID])
             else:
                 MutVarForUnqBc = "none"
@@ -73,10 +84,10 @@ def WriteResultsToFile(resultDict, bcDict, seqDict, statDict, workdir, indexFile
                     MutatedBarcodes = ""
                     for bc in wtd.keys():
                         countMut = len(wtd[bc])
-                        if bc == wtd.keys()[len(wtd.keys())-1]:
-                            MutatedBarcodes += str(bc)+"\n"*(countMut-1)
+                        if bc == wtd.keys()[len(wtd.keys()) - 1]:
+                            MutatedBarcodes += str(bc) + "\n" * (countMut - 1)
                         else:
-                            MutatedBarcodes += str(bc)+"\n"*countMut
+                            MutatedBarcodes += str(bc) + "\n" * countMut
                 else:
                     MutatedBarcodes = Frequency = AssociatedMutations = ""
             else:
@@ -87,10 +98,10 @@ def WriteResultsToFile(resultDict, bcDict, seqDict, statDict, workdir, indexFile
                 'MutationCount': resultDict[barcodeID][1],
                 'BCSequence': BCSequence,
                 'BCSequenceCount': BCSequenceCount,
-                'MutatedBCassociatedWith': barcodeID+"\n"*TotalMutForUncBc+MutatedBarcodes,
-                'MutationVariants': MutVarForUnqBc+"\n"+AssociatedMutations,
-                'Frequency': CountMutForUnqBc+"\n"+Frequency,
-                'LostBarcodes': TotalBCSequence-resultDict[barcodeID][1],
+                'MutatedBCassociatedWith': barcodeID + "\n" * TotalMutForUncBc + MutatedBarcodes,
+                'MutationVariants': MutVarForUnqBc + "\n" + AssociatedMutations,
+                'Frequency': CountMutForUnqBc + "\n" + Frequency,
+                'LostBarcodes': TotalBCSequence - resultDict[barcodeID][1],
                 'ProbableMutations': ProbableMutations,
                 'theirFrequency': theirFrequency,
                 'HybridsPortion': HybridsPortion})
@@ -101,14 +112,16 @@ def mean(numbers):
     try:
         return float(sum(numbers)) / max(len(numbers), 1)
     except:
-        supp.log_error("Undefined error in function {}".format(inspect.stack()[0][3]))
+        supp.log_error("Undefined error in function {}".format(
+            inspect.stack()[0][3]))
 
 
 mapd, normd, exprd = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Mapping_A1-4/Dump", "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Norm_A10-13/Dump", "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_Genome_Expr_A20-23/Dump"
 
 namesList = ["18-1-1", "18-1-2", "18-2-1", "18-2-2"]
 
-mlist, nlist, elist = ["m" + i for i in namesList], ["n" + i for i in namesList], ["e" + i for i in namesList]
+mlist, nlist, elist = ["m" + i for i in namesList], ["n" +
+                                                     i for i in namesList], ["e" + i for i in namesList]
 
 bc, res = "bcDictPI", "resultDictPI"
 pmi_syn = ["HexA", "Hsp70", "MtnA", "PCNA", "Pyk", "Tbp", "Promoterless"]
@@ -117,8 +130,8 @@ pmiDict = dict(zip(param.pmi, pmi_syn))
 mapBCDict, normBCDict, mapResDict = {}, {}, {}
 for item in namesList:
     # mapBCDict["m"+item] = Pload("m"+item+"_"+bc, mapd)
-    normBCDict["n"+item] = Pload("n"+item+"_"+bc, normd)
-    mapResDict["m"+item] = Pload("m"+item+"_"+res, mapd)
+    normBCDict["n" + item] = Pload("n" + item + "_" + bc, normd)
+    mapResDict["m" + item] = Pload("m" + item + "_" + res, mapd)
 
 mainDict = {"map": mapResDict, "norm": normBCDict}
 mainBioDict, mainMergeDict = {}, {}
@@ -128,17 +141,22 @@ try:
         supp.log_info(element)
         for replicate in mainDict[element]:
             supp.log_info(replicate)
-            label, bio, tech = replicate.split('-')[0], replicate.split('-')[1], replicate.split('-')[2]
+            label, bio, tech = replicate.split(
+                '-')[0], replicate.split('-')[1], replicate.split('-')[2]
             for bio_replicate in [1, 2]:
                 for pmi in pmiDict:
                     if int(bio) == bio_replicate:
-                        supp.log_info("Technician replicate {} - {}: {}".format(replicate, pmiDict[pmi], len(mainDict[element][replicate][pmi])))
+                        supp.log_info("Technician replicate {} - {}: {}".format(
+                            replicate, pmiDict[pmi], len(mainDict[element][replicate][pmi])))
                         if int(tech) == 1:
                             if element == 'map':
-                                mainBioDict[(label, bio, pmi)] = [k for k, v in mainDict[element][replicate][pmi].items() if k in mainDict[element][replicate[:-1] + '2'][pmi] and v[0] == mainDict[element][replicate[:-1] + '2'][pmi][k][0]]
+                                mainBioDict[(label, bio, pmi)] = [k for k, v in mainDict[element][replicate][pmi].items(
+                                ) if k in mainDict[element][replicate[:-1] + '2'][pmi] and v[0] == mainDict[element][replicate[:-1] + '2'][pmi][k][0]]
                             else:
-                                mainBioDict[(label, bio, pmi)] = [key for key in mainDict[element][replicate][pmi] if key in mainDict[element][replicate[:-1] + '2'][pmi]]
-                            supp.log_info("Biological replicate {} - {}: {}".format(label + '-' + bio, pmiDict[pmi], len(mainBioDict[(label, bio, pmi)])))
+                                mainBioDict[(label, bio, pmi)] = [
+                                    key for key in mainDict[element][replicate][pmi] if key in mainDict[element][replicate[:-1] + '2'][pmi]]
+                            supp.log_info("Biological replicate {} - {}: {}".format(
+                                label + '-' + bio, pmiDict[pmi], len(mainBioDict[(label, bio, pmi)])))
 except:
     supp.log_error("Unhandled error!")
 
@@ -146,10 +164,13 @@ try:
     for replicate in ['1', '2']:
         label = '18-' + replicate
         for pmi in pmiDict:
-            mainMergeDict[(label, pmi)] = [k for k in mainBioDict[('m18', replicate, pmi)] if k in mainBioDict[('n18', replicate, pmi)]]
-            supp.log_info("Merge count {} - {}: {}".format(label, pmiDict[pmi], len(mainMergeDict[(label, pmi)])))
+            mainMergeDict[(label, pmi)] = [k for k in mainBioDict[(
+                'm18', replicate, pmi)] if k in mainBioDict[('n18', replicate, pmi)]]
+            supp.log_info("Merge count {} - {}: {}".format(label,
+                                                           pmiDict[pmi], len(mainMergeDict[(label, pmi)])))
 except:
-    supp.log_error("Unhandled error in step {} {}".format(replicate, pmiDict[pmi]))
+    supp.log_error("Unhandled error in step {} {}".format(
+        replicate, pmiDict[pmi]))
 
 mainMergeDictFile = os.path.join(mapd, "mainMergeDict.csv")
 with open(mainMergeDictFile, "wb") as handle:
@@ -171,7 +192,8 @@ with open(mainMergeDictFile, "wb") as handle:
             two.extend(diff)
             iterable = range(len(one))
         for item in iterable:
-            writer.writerow({"Replicate 1": one[item], "Replicate 2": two[item]})
+            writer.writerow(
+                {"Replicate 1": one[item], "Replicate 2": two[item]})
 
 # A10-13 normalization index
 # indexList = {"n18-1-1":"AGTCGCCG", "n18-1-2":"TAAACATC", "n18-2-1":"ACAATTCG", "n18-2-2":"TACTTGTC"}
@@ -198,7 +220,8 @@ for exp in mainDict['map']:
         for k, v in mainDict['map'][exp][pmi].items():
             chrom, coord, direction = v[0][0], v[0][1], v[0][2]
             if direction == "-":
-                coord_list = [coord, str(int(coord) + 1), str(int(coord) - 1),  str(int(coord) + 4), str(int(coord) - 4)]
+                coord_list = [coord, str(
+                    int(coord) + 1), str(int(coord) - 1),  str(int(coord) + 4), str(int(coord) - 4)]
                 if sum([1 for x in coord_list if x not in gatcDict[chrom]]) == 5:
                     # unmatch_count += 1
                     if unmatched_bc_gatcs.get(exp) is None:
@@ -231,7 +254,8 @@ with open(gatc_mismatch_file, "w") as handle:
             match_repl = expr_repl.match(seq)
             if match_repl is not None:
                 for barcode in unmatched_bc_gatcs[repl]:
-                    expr = regex.compile("({})({}){{s<={}}}{}.*".format(param.indexList[repl].upper(), param.const_1.upper(), str(param.const_1Error), reverseComplement(barcode)))
+                    expr = regex.compile("({})({}){{s<={}}}{}.*".format(param.indexList[repl].upper(
+                    ), param.const_1.upper(), str(param.const_1Error), reverseComplement(barcode)))
                     match = regex.search(expr, seq)
                     if match is not None:
                         seqStr = [title, seq, qual]
@@ -304,6 +328,12 @@ workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutP
 # lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
 # workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/1_S1_L001_R1_001_Lib_33-40_mapping"
 
+
+indexList = {"25_32_m2": "GGACAACG", "25_32_m1": "CAAGATAA", "25_32_conv_m1": "TTCGGAGT", "25_32_conv_m2": "ACTCATTT"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_95__bcError_2/Lib_25-32/1_S1_L001_R1_001_Lib_25-32_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_95__bcError_2/Lib_25-32/1_S1_L001_R1_001_Lib_25-32_mapping"
+
+
 control_barcodes = {"wt1": ["TTCCAAGTGCAGGTTAGGCG", "TTACGCAT"],
                     "wt2": ["TGTGTACGGCTTGCTCTCAA", "TTACGCAT"],
                     "dc3": ["GAGCCCGGATCCACTCCAAG", "TTAGCATG"],
@@ -314,9 +344,9 @@ similarity = 1
 
 def count_hybrids():
     for item in indexList:
-        lib_bcDict[item] = Pload(item+"_bcDict", lib_mapping_dump)
-        lib_seqDict[item] = Pload(item+"_seqDict", lib_mapping_dump)
-        lib_resultDict[item] = Pload(item+"_resultDict", lib_mapping_dump)
+        lib_bcDict[item] = Pload(item + "_bcDict", lib_mapping_dump)
+        lib_seqDict[item] = Pload(item + "_seqDict", lib_mapping_dump)
+        lib_resultDict[item] = Pload(item + "_resultDict", lib_mapping_dump)
         lib_statDict, hybrids_summary_stat = {}, []
         for bc in lib_resultDict[item]:
             main_mutation_seq = lib_resultDict[item][bc][0]
@@ -329,18 +359,22 @@ def count_hybrids():
             # x[1]: this is count of this mutation
             # The element of temp_mutation is tuple: ('mutation', count)
             # '''
-            temp_mutation = dict(Counter([x[0] for x in temp_mutation for _ in range(x[1])]))
+            temp_mutation = dict(
+                Counter([x[0] for x in temp_mutation for _ in range(x[1])]))
             temp_statistic[main_mutation_seq] = temp_mutation[main_mutation_seq]
             for mutations in temp_mutation:
                 if mutations != main_mutation_seq:
-                    distance = Levenshtein.distance(main_mutation_seq, mutations)
+                    distance = Levenshtein.distance(
+                        main_mutation_seq, mutations)
                     if distance <= similarity:
                         temp_statistic[main_mutation_seq] += temp_mutation[mutations]
                     else:
                         temp_statistic[mutations] = temp_mutation[mutations]
-            hybrid_portion = round(1 - (float(max(temp_statistic.values())) / float(sum(temp_statistic.values()))), 6)
+            hybrid_portion = round(
+                1 - (float(max(temp_statistic.values())) / float(sum(temp_statistic.values()))), 6)
             hybrids_summary_stat.append(hybrid_portion)
-            lib_statDict[bc] = dict(hybrids=hybrid_portion, mutations=temp_statistic)
+            lib_statDict[bc] = dict(
+                hybrids=hybrid_portion, mutations=temp_statistic)
         hybrids_summary = str(round(mean(hybrids_summary_stat) * 100, 4)) + "%"
         # plt.figure(figsize=(10, 10))
         # plt.title("Histogram density plot for hybrids portion in {}".format(item))
@@ -350,8 +384,12 @@ def count_hybrids():
         # sns.kdeplot(x)
         # plt.savefig(os.path.join(lib_mapping_dump, "Histogram density plot for hybrids portion in {}.pdf".format(item)), fmt='pdf')
         index = indexList[item]
-        indexFile = os.path.join(workdir, item, "index_{}.fastq".format(index.upper()))
-        csv_file = WriteResultsToFile(lib_resultDict[item], lib_bcDict[item], lib_seqDict[item], lib_statDict, os.path.join(workdir, item), indexFile, customTxt="with_hybrids_pct")
-        supp.log_info("Report write to {}\nHybrids pct: {}".format(csv_file, hybrids_summary))
+        indexFile = os.path.join(
+            workdir, item, "index_{}.fastq".format(index.upper()))
+        csv_file = WriteResultsToFile(lib_resultDict[item], lib_bcDict[item], lib_seqDict[item], lib_statDict, os.path.join(
+            workdir, item), indexFile, customTxt="with_hybrids_pct")
+        supp.log_info("Report write to {}\nHybrids pct: {}".format(
+            csv_file, hybrids_summary))
+
 
 count_hybrids()

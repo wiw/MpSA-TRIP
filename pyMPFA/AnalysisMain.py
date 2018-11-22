@@ -18,27 +18,27 @@ from string import Template
 from json2html import *
 from collections import OrderedDict
 # Configuration dictionary for lib 29-36 with bcread=3, bcmut_probability=0.8
-CONFIG = {
-    "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_29-36",
-    "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
-    "exception": {
-      "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_29-36",
-      "content": ["mapping"]
-    },
-    "control": {
-        "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
-        "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
-        "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
-        "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
-    },
-    "statistics_output": "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_29-36_bcRead_3__bcmutProb_80_bmc_genomics",
-    "rscript": "/usr/bin/Rscript",
-    "output_control": "control.json",
-    "output_data": "data.json",
-    "output_rpl_count": "rpl_count.json",
-    "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
-    "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
-}
+# CONFIG = {
+#     "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_29-36",
+#     "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
+#     "exception": {
+#         "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_29-36",
+#         "content": ["mapping"]
+#     },
+#     "control": {
+#         "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
+#         "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
+#         "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
+#         "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
+#     },
+#     "statistics_output": "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_29-36_bcRead_3__bcmutProb_80_bmc_genomics",
+#     "rscript": "/usr/bin/Rscript",
+#     "output_control": "control.json",
+#     "output_data": "data.json",
+#     "output_rpl_count": "rpl_count.json",
+#     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
+#     "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
+# }
 # Config for lib 33-40 Run from 2018-10-19
 # CONFIG = {
 #     "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_33-40",
@@ -66,6 +66,28 @@ CONFIG = {
 # lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping/Dump"
 # workdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping"
 
+# Configuration dictionary for lib 29-36 with bcread=3, bcmut_probability=0.8
+CONFIG = {
+    "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_25-32",
+    "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
+    "exception": {
+        "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_95__bcError_2/Lib_25-32",
+        "content": ["mapping"]
+    },
+    "control": {
+        "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
+        "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
+        "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
+        "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
+    },
+    "statistics_output": "/home/anton/backup/input/trip/RUN_2018-11-20/results/statistics/Lib_25-32__bcRead_3__bcMutProb_95__bcError_2",
+    "rscript": "/usr/bin/Rscript",
+    "output_control": "control.json",
+    "output_data": "data.json",
+    "output_rpl_count": "rpl_count.json",
+    "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
+    "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
+}
 
 if not os.path.exists(CONFIG["statistics_output"]):
     os.makedirs(CONFIG["statistics_output"])
@@ -128,7 +150,8 @@ def load_pickle(CONFIG):
         out = []
         for fastq in glob(path_to_rpl):
             count = get_records(fastq)
-            match = re.match(".*_([a-z])(?P<repl>[0-9])", os.path.basename(os.path.dirname(fastq)))
+            match = re.match(".*_([a-z])(?P<repl>[0-9])",
+                             os.path.basename(os.path.dirname(fastq)))
             if match is not None:
                 replicate_id = item + "_" + match.group("repl")
             else:
@@ -137,11 +160,14 @@ def load_pickle(CONFIG):
         return out
     for item in CONFIG["content"]:
         regex0 = re.compile(".*" + item)
-        replicate_dir = filter(regex0.match, os.listdir(CONFIG["experiment_dir"]))[0]
+        replicate_dir = filter(
+            regex0.match, os.listdir(CONFIG["experiment_dir"]))[0]
         path_to = os.path.join(CONFIG["experiment_dir"], replicate_dir, "Dump")
-        path_to_rpl = os.path.join(CONFIG["experiment_dir"], replicate_dir, "**/index*.fastq")
+        path_to_rpl = os.path.join(
+            CONFIG["experiment_dir"], replicate_dir, "**/index*.fastq")
         if re.search("control.*", item) is None:
-            rpl_count_data.extend(search_counting_replicates(item, path_to_rpl))
+            rpl_count_data.extend(
+                search_counting_replicates(item, path_to_rpl))
         if item in ("control_m", "mapping"):
             what_is_pickle = "resultDict"
         else:
@@ -160,7 +186,8 @@ def load_pickle(CONFIG):
             else:
                 all_data[filename] = pickle_opener(f)
     if CONFIG.get("exception") is not None and bool(CONFIG["exception"]):
-        exception_all_data, exception_control_data, exception_rpl_count_data = load_pickle(CONFIG["exception"])
+        exception_all_data, exception_control_data, exception_rpl_count_data = load_pickle(
+            CONFIG["exception"])
         all_data.update(exception_all_data)
         control_data.update(exception_control_data)
         rpl_count_data.extend(exception_rpl_count_data)
@@ -182,12 +209,14 @@ def get_control_count(CONFIG, control):
         for alias, bc in CONFIG["control"].items():
             try:
                 if re.search("control_m.*", item) is None:
-                    counter = sum([count for mutated_bc, count in control[item][bc]])
+                    counter = sum(
+                        [count for mutated_bc, count in control[item][bc]])
                 else:
                     counter = convert_and_count_map(control[item][bc])
             except KeyError:
                 counter = 0
-                Logger.exception("Barcode {} for alias {} is not found".format(bc, alias))
+                Logger.exception(
+                    "Barcode {} for alias {} is not found".format(bc, alias))
             compiled_control[item][alias] = counter
     return compiled_control
 
@@ -200,7 +229,8 @@ def align_map_norm_count_expr(data, CONFIG):
     def _get_sets(CONFIG):
         sets = [i for i in CONFIG["content"] if not re.search("control", i)]
         if CONFIG.get("exception") is not None and bool(CONFIG["exception"]):
-            sets_add = [i for i in CONFIG["exception"]["content"] if not re.search("control", i)]
+            sets_add = [i for i in CONFIG["exception"]
+                        ["content"] if not re.search("control", i)]
             sets.extend(sets_add)
         return sets
     sets = _get_sets(CONFIG)
@@ -213,12 +243,18 @@ def align_map_norm_count_expr(data, CONFIG):
             for repl in get_replicates:
                 tmp = {bc: mut[0] for bc, mut in data[repl].items()}
                 fmt_map_data[repl] = tmp
-            if len(get_replicates) == 2:
+            if len(get_replicates) == 2:  # intersect two replicates
                 first, second = get_replicates
-                unique_mapping = [comb for comb in fmt_map_data[first].viewitems() if comb in fmt_map_data[second].viewitems()]
-            elif len(get_replicates) == 3:
+                unique_mapping = [comb for comb in fmt_map_data[first].viewitems(
+                ) if comb in fmt_map_data[second].viewitems()]
+            elif len(get_replicates) == 3:  # intersect three replicates
                 first, second, third = get_replicates
-                unique_mapping = [comb for comb in fmt_map_data[first].viewitems() if comb in fmt_map_data[second].viewitems() and comb in fmt_map_data[third].viewitems()]
+                unique_mapping = [comb for comb in fmt_map_data[first].viewitems(
+                ) if comb in fmt_map_data[second].viewitems() and comb in fmt_map_data[third].viewitems()]
+            elif len(get_replicates) == 4:  # intersect four replicates
+                first, second, third, fourth = get_replicates
+                unique_mapping = [comb for comb in fmt_map_data[first].viewitems(
+                ) if comb in fmt_map_data[second].viewitems() and comb in fmt_map_data[third].viewitems() and comb in fmt_map_data[fourth].viewitems()]
             unique_mapping_data = {bc: mut for bc, mut in unique_mapping}
             map_norm_1_2_data[experiment] = unique_mapping_data
         # For normalization - compare replicates with each other and return common barcodes, but with its own value in each replica
@@ -230,14 +266,17 @@ def align_map_norm_count_expr(data, CONFIG):
                 for bc, value in data[first].viewitems():
                     if bc in data[second]:
                         map_norm_1_2_data[first][bc] = _get_count(value)
-                        map_norm_1_2_data[second][bc] = _get_count(data[second][bc])
+                        map_norm_1_2_data[second][bc] = _get_count(
+                            data[second][bc])
             elif len(get_replicates) == 3:
                 first, second, third = get_replicates
                 for bc, value in data[first].viewitems():
                     if bc in data[second] and bc in data[third]:
                         map_norm_1_2_data[first][bc] = _get_count(value)
-                        map_norm_1_2_data[second][bc] = _get_count(data[second][bc])
-                        map_norm_1_2_data[third][bc] = _get_count(data[third][bc])
+                        map_norm_1_2_data[second][bc] = _get_count(
+                            data[second][bc])
+                        map_norm_1_2_data[third][bc] = _get_count(
+                            data[third][bc])
         # For expression - don't compare replicates, instead, we count the reads for each barcode considering mutated barcodes
         if experiment == "expression":
             for repl in get_replicates:
@@ -250,7 +289,8 @@ def align_map_norm_count_expr(data, CONFIG):
 def align_map_vs_norm_replicates(map_norm_1_2_data):
     mapped_ratio_data = {}
     _tmp_norm_keys, union_norm_data = [], {}
-    normalization_sets = [i for i in map_norm_1_2_data.keys() if re.search("normalization", i)]
+    normalization_sets = [
+        i for i in map_norm_1_2_data.keys() if re.search("normalization", i)]
     # Get union keys from both normalization replicates
     for repl in normalization_sets:
         _tmp_norm_keys.extend(map_norm_1_2_data[repl].keys())
@@ -277,7 +317,8 @@ def align_mapped_ratio_vs_expr_replicates(mapped_ratio_data, expr_1_2_data):
         for repl in expr_1_2_data:
             # If barcode exists in expression data then associated with him expression data, but ...
             if bc in expr_1_2_data[repl]:
-                mapped_norm_expression_data[bc].update({repl: expr_1_2_data[repl][bc]})
+                mapped_norm_expression_data[bc].update(
+                    {repl: expr_1_2_data[repl][bc]})
             else:
                 # if not, then barcode assigned ZERO.
                 mapped_norm_expression_data[bc].update({repl: 0})
@@ -297,17 +338,23 @@ def make_report(REPORT, CONFIG, label=False):
                 if len(mutation_dict_existance) == 1:
                     mutation_dict = mutation_dict_existance[0]
                     for _key, _value in mutation_dict.items():
-                        eff_count.append(sum([_count for _string, _count in _value]))
+                        eff_count.append(
+                            sum([_count for _string, _count in _value]))
         return sum(eff_count)
     # path to template and set filename
-    name, ext_one, ext_two = os.path.basename(CONFIG["html_template"]).split(".")
+    name, ext_one, ext_two = os.path.basename(
+        CONFIG["html_template"]).split(".")
     current = datetime.datetime.now().strftime("%Y_%m_%d")
     if label is not False:
-        path_to_html_report = os.path.join(CONFIG["statistics_output"], label, current + "_" + label + "_" + name + "." + ext_one)
-        write_to_report = dict(library=" ".join([label, os.path.basename(CONFIG["experiment_dir"])]))
+        path_to_html_report = os.path.join(
+            CONFIG["statistics_output"], label, current + "_" + label + "_" + name + "." + ext_one)
+        write_to_report = dict(library=" ".join(
+            [label, os.path.basename(CONFIG["experiment_dir"])]))
     else:
-        path_to_html_report = os.path.join(CONFIG["statistics_output"], current + "_" + name + "." + ext_one)
-        write_to_report = dict(library=os.path.basename(CONFIG["experiment_dir"]))
+        path_to_html_report = os.path.join(
+            CONFIG["statistics_output"], current + "_" + name + "." + ext_one)
+        write_to_report = dict(
+            library=os.path.basename(CONFIG["experiment_dir"]))
     if not os.path.exists(os.path.dirname(path_to_html_report)):
         os.makedirs(os.path.dirname(path_to_html_report))
     # Make tables for report
@@ -317,26 +364,32 @@ def make_report(REPORT, CONFIG, label=False):
             if element in ["data", "map_norm_1_2_data", "expr_1_2_data"]:
                 _tmp = {}
                 for experiment in REPORT[element]:
-                    _tmp.setdefault(experiment, len(REPORT[element][experiment]))
+                    _tmp.setdefault(experiment, len(
+                        REPORT[element][experiment]))
                 source_for_json = OrderedDict(sorted(_tmp.items()))
             if element in ["output_rpl_count", "output_control_data"]:
                 source_for_json = REPORT[element]
             if element in ["mapped_ratio_data", "mapped_norm_expression_data"]:
                 source_for_json = len(REPORT[element])
-            write_to_report[element] = json2html.convert(json=source_for_json, table_attributes="class=\"table table-bordered table-hover\"")
+            write_to_report[element] = json2html.convert(
+                json=source_for_json, table_attributes="class=\"table table-bordered table-hover\"")
         _t_tmp = {}
         for item in REPORT["data"]:
-            _t_tmp.setdefault(item, count_effective_reads(REPORT["data"], item))
+            _t_tmp.setdefault(
+                item, count_effective_reads(REPORT["data"], item))
         _source_for_json = OrderedDict(sorted(_t_tmp.items()))
-        write_to_report["effective_reads_count"] = json2html.convert(json=_source_for_json, table_attributes="class=\"table table-bordered table-hover\"")
+        write_to_report["effective_reads_count"] = json2html.convert(
+            json=_source_for_json, table_attributes="class=\"table table-bordered table-hover\"")
         with open(CONFIG["html_template"], "rb") as handle:
-            _for_substitute = Template(handle.read()).safe_substitute(write_to_report)
+            _for_substitute = Template(
+                handle.read()).safe_substitute(write_to_report)
             with open(path_to_html_report, "wb") as out_file:
                 out_file.write(_for_substitute)
 
 
 def biological_sense(CONFIG, use_method="mpsa", label=False):
-    pathToScript = os.path.join(CONFIG["pympfa_src"], "StatAnalysisMain_fork.R")
+    pathToScript = os.path.join(
+        CONFIG["pympfa_src"], "StatAnalysisMain_fork.R")
     option = [use_method]
     for item in ["statistics_output", "output_control", "output_data", "output_rpl_count"]:
         ins = label if label is not False else ""
@@ -372,7 +425,8 @@ def main(CONFIG):
     # aligning and reads counting
     map_norm_1_2_data, expr_1_2_data = align_map_norm_count_expr(data, CONFIG)
     mapped_ratio_data = align_map_vs_norm_replicates(map_norm_1_2_data)
-    mapped_norm_expression_data = align_mapped_ratio_vs_expr_replicates(mapped_ratio_data, expr_1_2_data)
+    mapped_norm_expression_data = align_mapped_ratio_vs_expr_replicates(
+        mapped_ratio_data, expr_1_2_data)
     # prepare to report & make report
     REPORT = {
         "output_rpl_count": OrderedDict(sorted({k: v for k, v in output_rpl_count}.items())),
@@ -392,12 +446,14 @@ def main(CONFIG):
     # write output data to json
     try:
         for _out in OUTPUT:
-            dump_to_json(OUTPUT[_out], os.path.join(CONFIG["statistics_output"], CONFIG[_out]))
+            dump_to_json(OUTPUT[_out], os.path.join(
+                CONFIG["statistics_output"], CONFIG[_out]))
             Logger.info("{} write succesful! ^_^".format(_out))
     except:
         Logger.exception("{} write failed! >_<".format(_out))
     # Run biological analysis in R implementation
     # biological_sense(CONFIG)      # disabled
+
 
 if __name__ == '__main__':
     main(CONFIG)
