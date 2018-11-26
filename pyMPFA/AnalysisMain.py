@@ -68,10 +68,10 @@ from collections import OrderedDict
 
 # Configuration dictionary for lib 29-36 with bcread=3, bcmut_probability=0.8
 CONFIG = {
-    "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_25-32",
+    "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_80__bcError_2/Lib_37-44",
     "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
     "exception": {
-        "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_95__bcError_2/Lib_25-32",
+        "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_37-44",
         "content": ["mapping"]
     },
     "control": {
@@ -80,7 +80,7 @@ CONFIG = {
         "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
         "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
     },
-    "statistics_output": "/home/anton/backup/input/trip/RUN_2018-11-20/results/statistics/Lib_25-32__bcRead_3__bcMutProb_95__bcError_2",
+    "statistics_output": "/home/anton/backup/input/trip/RUN_2018-11-20/results/statistics/Lib_37-44__bcRead_2__bcMutProb_50__bcError_2",
     "rscript": "/usr/bin/Rscript",
     "output_control": "control.json",
     "output_data": "data.json",
