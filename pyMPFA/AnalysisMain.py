@@ -18,11 +18,38 @@ from string import Template
 from json2html import *
 from collections import OrderedDict
 # Configuration dictionary for lib 29-36 with bcread=3, bcmut_probability=0.8
+CONFIG = {
+    "experiment_dir": "/home/anton/backup/input/trip/"
+    "RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_29-36",
+    "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
+    "exception": {
+        "experiment_dir": "/home/anton/backup/input/trip/"
+        "RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_29-36",
+        "content": ["mapping"]
+    },
+    "control": {
+        "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
+        "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
+        "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
+        "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
+    },
+    "statistics_output": "/home/anton/backup/input/trip/"
+    "RUN_2018-11-20/results/statistics/Lib_29-36_bcRead_2__bcMutProb_50__bcError_2",
+    "rscript": "/usr/bin/Rscript",
+    "output_control": "control.json",
+    "output_data": "data.json",
+    "output_rpl_count": "rpl_count.json",
+    "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
+    "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
+}
+
+
+# Config for lib 33-40 Run from 2018-10-19
 # CONFIG = {
-#     "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_29-36",
+#     "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_33-40",
 #     "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
 #     "exception": {
-#         "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_29-36",
+#         "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40",
 #         "content": ["mapping"]
 #     },
 #     "control": {
@@ -31,29 +58,7 @@ from collections import OrderedDict
 #         "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
 #         "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
 #     },
-#     "statistics_output": "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_29-36_bcRead_3__bcmutProb_80_bmc_genomics",
-#     "rscript": "/usr/bin/Rscript",
-#     "output_control": "control.json",
-#     "output_data": "data.json",
-#     "output_rpl_count": "rpl_count.json",
-#     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
-#     "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
-# }
-# Config for lib 33-40 Run from 2018-10-19
-# CONFIG = {
-#     "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_33-40",
-#     "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
-#     "exception": {
-#       "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/article_bmc_genomics/Lib_33-40",
-#       "content": ["mapping"]
-#     },
-#     "control": {
-#         "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
-#         "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
-#         "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
-#         "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
-#     },
-#     "statistics_output": "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_33-40_bmc_genomics",
+#     "statistics_output": "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_33-40_bcRead_2__bcMutProb_50__bcError_2",
 #     "rscript": "/usr/bin/Rscript",
 #     "output_control": "control.json",
 #     "output_data": "data.json",
@@ -67,27 +72,27 @@ from collections import OrderedDict
 # workdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping"
 
 # Configuration dictionary for lib 29-36 with bcread=3, bcmut_probability=0.8
-CONFIG = {
-    "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_80__bcError_2/Lib_37-44",
-    "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
-    "exception": {
-        "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_37-44",
-        "content": ["mapping"]
-    },
-    "control": {
-        "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
-        "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
-        "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
-        "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
-    },
-    "statistics_output": "/home/anton/backup/input/trip/RUN_2018-11-20/results/statistics/Lib_37-44__bcRead_2__bcMutProb_50__bcError_2",
-    "rscript": "/usr/bin/Rscript",
-    "output_control": "control.json",
-    "output_data": "data.json",
-    "output_rpl_count": "rpl_count.json",
-    "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
-    "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
-}
+# CONFIG = {
+#     "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_80__bcError_2/Lib_37-44",
+#     "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
+#     "exception": {
+#         "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_37-44",
+#         "content": ["mapping"]
+#     },
+#     "control": {
+#         "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
+#         "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
+#         "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
+#         "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
+#     },
+#     "statistics_output": "/home/anton/backup/input/trip/RUN_2018-11-20/results/statistics/Lib_37-44__bcRead_2__bcMutProb_50__bcError_2",
+#     "rscript": "/usr/bin/Rscript",
+#     "output_control": "control.json",
+#     "output_data": "data.json",
+#     "output_rpl_count": "rpl_count.json",
+#     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
+#     "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
+# }
 
 if not os.path.exists(CONFIG["statistics_output"]):
     os.makedirs(CONFIG["statistics_output"])
@@ -112,7 +117,7 @@ def dump_to_json(obj, output_file):
     try:
         with open(output_file, "w") as handle:
             json.dump(obj, handle)
-    except:
+    except IOError:
         Logger.exception("Doesn't write to {}".format(output_file))
 
 
@@ -238,7 +243,8 @@ def align_map_norm_count_expr(data, CONFIG):
     fmt_map_data = {}
     for experiment in sets:
         get_replicates = [i for i in data.keys() if re.search(experiment, i)]
-        # For mapping - compare replicates with each other and return common combinations in set (bc, seq)
+        # For mapping - compare replicates with each other
+        # and return common combinations in set (bc, seq)
         if experiment == "mapping":
             for repl in get_replicates:
                 tmp = {bc: mut[0] for bc, mut in data[repl].items()}
@@ -249,15 +255,23 @@ def align_map_norm_count_expr(data, CONFIG):
                 ) if comb in fmt_map_data[second].viewitems()]
             elif len(get_replicates) == 3:  # intersect three replicates
                 first, second, third = get_replicates
-                unique_mapping = [comb for comb in fmt_map_data[first].viewitems(
-                ) if comb in fmt_map_data[second].viewitems() and comb in fmt_map_data[third].viewitems()]
+                data_1 = fmt_map_data[first].viewitems()
+                data_2 = fmt_map_data[second].viewitems()
+                data_3 = fmt_map_data[third].viewitems()
+                unique_mapping = [
+                    comb for comb in data_1 if comb in data_2 and comb in data_3]
             elif len(get_replicates) == 4:  # intersect four replicates
                 first, second, third, fourth = get_replicates
-                unique_mapping = [comb for comb in fmt_map_data[first].viewitems(
-                ) if comb in fmt_map_data[second].viewitems() and comb in fmt_map_data[third].viewitems() and comb in fmt_map_data[fourth].viewitems()]
+                data_1 = fmt_map_data[first].viewitems()
+                data_2 = fmt_map_data[second].viewitems()
+                data_3 = fmt_map_data[third].viewitems()
+                data_4 = fmt_map_data[fourth].viewitems()
+                unique_mapping = [comb for comb in data_1
+                                  if comb in data_2 and comb in data_3 and comb in data_4]
             unique_mapping_data = {bc: mut for bc, mut in unique_mapping}
             map_norm_1_2_data[experiment] = unique_mapping_data
-        # For normalization - compare replicates with each other and return common barcodes, but with its own value in each replica
+        # For normalization - compare replicates with each other and return common
+        # barcodes, but with its own value in each replica
         if experiment == "normalization":
             for repl in get_replicates:
                 map_norm_1_2_data.setdefault(repl, {})
@@ -277,7 +291,8 @@ def align_map_norm_count_expr(data, CONFIG):
                             data[second][bc])
                         map_norm_1_2_data[third][bc] = _get_count(
                             data[third][bc])
-        # For expression - don't compare replicates, instead, we count the reads for each barcode considering mutated barcodes
+        # For expression - don't compare replicates, instead, we count the reads
+        # for each barcode considering mutated barcodes
         if experiment == "expression":
             for repl in get_replicates:
                 expr_1_2_data.setdefault(repl, {})
@@ -315,7 +330,8 @@ def align_mapped_ratio_vs_expr_replicates(mapped_ratio_data, expr_1_2_data):
     for bc, value in mapped_ratio_data.items():
         mapped_norm_expression_data.setdefault(bc, value)
         for repl in expr_1_2_data:
-            # If barcode exists in expression data then associated with him expression data, but ...
+            # If barcode exists in expression data then associated with him expression
+            # data, but ...
             if bc in expr_1_2_data[repl]:
                 mapped_norm_expression_data[bc].update(
                     {repl: expr_1_2_data[repl][bc]})
@@ -449,7 +465,7 @@ def main(CONFIG):
             dump_to_json(OUTPUT[_out], os.path.join(
                 CONFIG["statistics_output"], CONFIG[_out]))
             Logger.info("{} write succesful! ^_^".format(_out))
-    except:
+    except IOError:
         Logger.exception("{} write failed! >_<".format(_out))
     # Run biological analysis in R implementation
     # biological_sense(CONFIG)      # disabled

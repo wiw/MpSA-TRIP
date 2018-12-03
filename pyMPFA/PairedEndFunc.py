@@ -67,8 +67,8 @@ def FastqJoinPaired(r1, r2, output_dir, gap_size, separator, mode="paired", reve
                         cqual = fastqdict.get(name)[1]
                         if reverse_complement:
                             cseq = reverseComplement(cseq)
-                        handle_p.write(
-                            "@{}\n{}{}{}\n+\n{}{}{}\n".format(name, seq, gap_bind, cseq, qual, gap_qual, cqual))
+                        to_write = [name, seq, gap_bind, cseq, qual, gap_qual, cqual]
+                        handle_p.write("@{}\n{}{}{}\n+\n{}{}{}\n".format(*to_write))
                     except KeyError:
                         # without pairs
                         if not mode == "paired":

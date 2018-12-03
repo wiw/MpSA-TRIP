@@ -45,13 +45,16 @@ def load_logging_config(path):
             config = json.load(f)
         logging.config.dictConfig(config)
     except:
-        logging.basicConfig(filename=None, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y.%m.%d %H:%M:%S')
+        logging.basicConfig(filename=None, level=logging.INFO,
+                            format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y.%m.%d %H:%M:%S')
 
 
 def parse_arguments():
     try:
-        p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-        p.add_argument("--config", "-c", default="./config.json", help="Path to config file")
+        p = argparse.ArgumentParser(
+            description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+        p.add_argument("--config", "-c", default="./config.json",
+                       help="Path to config file")
         args = p.parse_args()
         # args = p.parse_args(["--config", "./config_trip.json"])
         return args
@@ -87,7 +90,7 @@ def select_file(config, experiment):
 
 def reverseComplement(x):
     try:
-        complement = string.maketrans('ACGTNSRYMKWHBVD','TGCANSRYMKWHBVD')
+        complement = string.maketrans('ACGTNSRYMKWHBVD', 'TGCANSRYMKWHBVD')
         if type(x) == unicode:
             complement = complement.decode("latin-1")
         revx = x.translate(complement)[::-1]
@@ -95,6 +98,7 @@ def reverseComplement(x):
     except:
         Logger.exception("Don't reverse string. Return initial value")
         return x
+
 
 def regexp_maker(option, config, mod_read_structure=None):
     try:
@@ -120,31 +124,38 @@ def regexp_maker(option, config, mod_read_structure=None):
                         const_seq, const_err = const_seq.upper(), str(const_err)
                         regexp += "({}){{s<={}}}".format(const_seq, const_err)
                     if key == "sub_index":
-                        sub_index_str = [v.upper() for k,v in config["content"][experiment][key].items()]
+                        sub_index_str = [v.upper() for k, v in config["content"][
+                            experiment][key].items()]
                         if config["content"][experiment]["barcode_reversed"]:
                             sub_index_str = [reverseComplement(x) for x in sub_index_str]
                         sub_index_str = "|".join(sub_index_str)
-                        sub_index_error = str(config["core"]["error"].get("sub_index_error", "0"))
-                        regexp += "(?P<sub_index>{}){{s<={}}}".format(sub_index_str, sub_index_error)
+                        sub_index_error = str(
+                            config["core"]["error"].get("sub_index_error", "0"))
+                        regexp += "(?P<sub_index>{}){{s<={}}}".format(sub_index_str,
+                                                                      sub_index_error)
                     if key == "barcode":
-                        barcode_length = ",".join([str(int(round(config["core"]["length"]["barcode_length"] * x, 0))) for x in [0.9, 1.1]])
+                        barcode_length = ",".join(
+                            [str(int(round(config["core"]["length"]["barcode_length"] * x, 0))) for x in [0.9, 1.1]])
                         regexp += "(?P<barcode>[ATGC]{{{}}})".format(barcode_length)
             except:
                 Logger.exception("Error with make key {]".format(key))
             try:
                 if key == "sequence":
                     if config["project"] == "TRIP":
-                        key_position_number = [i for i, x in enumerate(config["content"][experiment]["read_structure"]) if x == key][0]
+                        key_position_number = [i for i, x in enumerate(
+                            config["content"][experiment]["read_structure"]) if x == key][0]
                         if key_position_number == len(config["content"][experiment]["read_structure"]) - 1:
                             regexp += "(?P<sequence_1>.*)"
                             return regexp
                         else:
-                            mod_read_structure = config["content"][experiment]["read_structure"][key_position_number + 1:]
+                            mod_read_structure = config["content"][experiment][
+                                "read_structure"][key_position_number + 1:]
                             after_seq = regexp_maker(option, config, mod_read_structure)
                             regexp += "(((?P<sequence_0>.*){}.*)|(?P<sequence_1>.*))".format(after_seq)
                             return regexp
                     else:
-                        sequence_length = str(config["core"]["length"].get("mutation_length", "8"))
+                        sequence_length = str(
+                            config["core"]["length"].get("mutation_length", "8"))
                         regexp += "(?P<sequence>.{{{}}})".format(sequence_length)
             except:
                 Logger.exception("Error with make regexp for 'sequence' key")
@@ -152,6 +163,7 @@ def regexp_maker(option, config, mod_read_structure=None):
         return regexp
     except:
         Logger.exception("Undefined error in 'regexp_maker'")
+
 
 def check_sub_index(dubbio_idx, config_sub_index, config_sub_index_error):
     try:
@@ -172,6 +184,7 @@ stat_dict = {
     }
 }
 
+
 def collect_grains(option, config, stat_dict):
     main_dict = {}
     with open_input(option["input"]) as handle:
@@ -179,36 +192,47 @@ def collect_grains(option, config, stat_dict):
             match = option["regexp"].match(seq)
             stat_dict["counter"]["all_reads"] += 1
             if match is not None:
-                mgroup = {k:v for k,v in match.groupdict().items() if v is not None}
+                mgroup = {k: v for k, v in match.groupdict().items() if v is not None}
                 mgroup = OrderedDict(sorted(mgroup.items()))
                 if mgroup.get("sub_index") is not None:
-                    mgroup["sub_index"] = reverseComplement(mgroup["sub_index"]) if config["content"][experiment]["barcode_reversed"] else mgroup["sub_index"]
-                    mgroup["sub_index"] = check_sub_index(mgroup["sub_index"], config["content"][experiment]["sub_index"], config["core"]["error"]["sub_index_error"])
-                    # 
+                    mgroup["sub_index"] = reverseComplement(mgroup["sub_index"]) if config["content"][
+                        experiment]["barcode_reversed"] else mgroup["sub_index"]
+                    mgroup["sub_index"] = check_sub_index(mgroup["sub_index"], config["content"][experiment][
+                                                          "sub_index"], config["core"]["error"]["sub_index_error"])
+                    #
                     stat_dict["counter"].setdefault("matched_barcodes_by_sub_index", {})
-                    stat_dict["counter"]["matched_barcodes_by_sub_index"].setdefault(mgroup["sub_index"], 0)
-                    stat_dict["counter"]["matched_barcodes_by_sub_index"][mgroup["sub_index"]] += 1
-                    # 
-                    main_dict[mgroup["barcode"]].setdefault("sub_index", []).append(mgroup["sub_index"])
+                    stat_dict["counter"]["matched_barcodes_by_sub_index"].setdefault(mgroup[
+                                                                                     "sub_index"], 0)
+                    stat_dict["counter"]["matched_barcodes_by_sub_index"][
+                        mgroup["sub_index"]] += 1
+                    #
+                    main_dict[mgroup["barcode"]].setdefault(
+                        "sub_index", []).append(mgroup["sub_index"])
                     if mgroup.get("barcode") is not None:
                         stat_dict["counter"].setdefault("all_matched_barcodes", 0)
                         stat_dict["counter"]["all_matched_barcodes"] += 1
-                        # 
-                        mgroup["barcode"] = reverseComplement(mgroup["barcode"]) if config["content"][experiment]["barcode_reversed"] else mgroup["barcode"]
+                        #
+                        mgroup["barcode"] = reverseComplement(mgroup["barcode"]) if config["content"][experiment][
+                            "barcode_reversed"] else mgroup["barcode"]
                         main_dict.setdefault(mgroup["barcode"], {"count": 0})
                         main_dict[mgroup["barcode"]]["count"] += 1
-                    sequence_key = [regex.search("sequence.*", k) for k in mgroup.keys() if regex.search("sequence.*", k) is not None]
+                    sequence_key = [regex.search(
+                        "sequence.*", k) for k in mgroup.keys() if regex.search("sequence.*", k) is not None]
                     if not sequence_key:
                         for value in sequence_key:
                             if value is not None:
                                 extracted_seq = mgroup[value.group()]
                                 if config["project"] == "TRIP":
                                     try:
-                                        start, end = regex.search(extracted_seq, seq).span()
-                                        extracted_seq = (title, extracted_seq, qual[start:end])
+                                        start, end = regex.search(
+                                            extracted_seq, seq).span()
+                                        extracted_seq = (
+                                            title, extracted_seq, qual[start:end])
                                     except:
-                                        Logger.exception("Don't try read {} for TRIP project".format(title))
-                                main_dict[mgroup["barcode"]].setdefault("sequence", []).append(extracted_seq)
+                                        Logger.exception(
+                                            "Don't try read {} for TRIP project".format(title))
+                                main_dict[mgroup["barcode"]].setdefault(
+                                    "sequence", []).append(extracted_seq)
     return main_dict
 
 # def main(args):
@@ -227,7 +251,7 @@ try:
                 THIS_VAR_NAME_NEED_TO_BE_CHANGE = load_pickle(f)
                 Logger.info("Data '{}' has been loaded from pickle file".format(f))
                 continue
-            
+
             for idx_name, idx_seq in config["content"][experiment]["index"].items():
 dict_name = "{}_{}".format(experiment, idx_name)
 cur_option = {
@@ -238,11 +262,12 @@ cur_option = {
 }
 cur_option["regexp"] = regex.compile(regexp_maker(cur_option, config))
 main_dict[dict_name] = collect_grains(cur_option, config, stat_dict)
-            # MpSA: collect barcodes; combinations of barcode-mutation; check probability bc-mut; write result
-            # TRIP: collect barcodes; combinations of: barcode-name_read, name_read-genome, name_read-genome_mapping and barcode-genome_mapping; check probability bc-gm; write result
+# MpSA: collect barcodes; combinations of barcode-mutation; check probability bc-mut; write result
+# TRIP: collect barcodes; combinations of: barcode-name_read,
+# name_read-genome, name_read-genome_mapping and barcode-genome_mapping;
+# check probability bc-gm; write result
 except:
     Logger.exception("Undefined IOError!")
-
 
 
 if __name__ == "__main__":

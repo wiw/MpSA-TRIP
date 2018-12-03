@@ -221,7 +221,7 @@ for exp in mainDict['map']:
             chrom, coord, direction = v[0][0], v[0][1], v[0][2]
             if direction == "-":
                 coord_list = [coord, str(
-                    int(coord) + 1), str(int(coord) - 1),  str(int(coord) + 4), str(int(coord) - 4)]
+                    int(coord) + 1), str(int(coord) - 1), str(int(coord) + 4), str(int(coord) - 4)]
                 if sum([1 for x in coord_list if x not in gatcDict[chrom]]) == 5:
                     # unmatch_count += 1
                     if unmatched_bc_gatcs.get(exp) is None:
@@ -328,11 +328,13 @@ workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutP
 # lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
 # workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/1_S1_L001_R1_001_Lib_33-40_mapping"
 
+indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping"
 
 # indexList = {"25_32_m2": "GGACAACG", "25_32_m1": "CAAGATAA", "25_32_conv_m1": "TTCGGAGT", "25_32_conv_m2": "ACTCATTT"}
 # lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_95__bcError_2/Lib_25-32/1_S1_L001_R1_001_Lib_25-32_mapping/Dump"
 # workdir = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_95__bcError_2/Lib_25-32/1_S1_L001_R1_001_Lib_25-32_mapping"
-
 
 
 # indexList = {"25_32_m2": "GGACAACG", "25_32_m1": "CAAGATAA", "25_32_m3": "TTCGGAGT", "25_32_m4": "ACTCATTT"}
@@ -340,10 +342,17 @@ workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutP
 # workdir = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_25-32/1_S1_L001_R1_001_Lib_25-32_mapping"
 
 
-indexList = {"37_44_m1":"AGCGAGCT", "37_44_m2":"CTGCACGT", "37_44_m3": "GGGATCCG", "37_44_m4": "GCACTAGT", }
-lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_37-44/1_S1_L001_R1_001_Lib_37-44_mapping/Dump"
-workdir = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_37-44/1_S1_L001_R1_001_Lib_37-44_mapping"
+# indexList = {"37_44_m1":"AGCGAGCT", "37_44_m2":"CTGCACGT", "37_44_m3": "GGGATCCG", "37_44_m4": "GCACTAGT", }
+# lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_37-44/1_S1_L001_R1_001_Lib_37-44_mapping/Dump"
+# workdir = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_37-44/1_S1_L001_R1_001_Lib_37-44_mapping"
 
+# indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
+# lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
+# workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping"
+
+# indexList = {"29_36_m1":"CAAGATAA", "29_36_m2":"GGACAACG",}
+# lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_29-36/sample_S1_L001_R1_001_Lib_29-36_mapping/Dump"
+# workdir = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_29-36/sample_S1_L001_R1_001_Lib_29-36_mapping"
 
 
 control_barcodes = {"wt1": ["TTCCAAGTGCAGGTTAGGCG", "TTACGCAT"],
@@ -388,13 +397,13 @@ def count_hybrids():
             lib_statDict[bc] = dict(
                 hybrids=hybrid_portion, mutations=temp_statistic)
         hybrids_summary = str(round(mean(hybrids_summary_stat) * 100, 4)) + "%"
-        # plt.figure(figsize=(10, 10))
-        # plt.title("Histogram density plot for hybrids portion in {}".format(item))
-        # plt.xlabel("Hybrids portion in pct")
-        # plt.ylabel("Portion of hybrids portion from all values")
-        # x = [x * 100 for x in hybrids_summary_stat]
-        # sns.kdeplot(x)
-        # plt.savefig(os.path.join(lib_mapping_dump, "Histogram density plot for hybrids portion in {}.pdf".format(item)), fmt='pdf')
+        plt.figure(figsize=(10, 10))
+        plt.title("Histogram density plot for hybrids portion in {}".format(item))
+        plt.xlabel("Hybrids portion in pct")
+        plt.ylabel("Portion of hybrids portion from all values")
+        x = [x * 100 for x in hybrids_summary_stat]
+        sns.kdeplot(x)
+        plt.savefig(os.path.join(lib_mapping_dump, "Histogram density plot for hybrids portion in {}.pdf".format(item)), fmt='pdf')
         index = indexList[item]
         indexFile = os.path.join(
             workdir, item, "index_{}.fastq".format(index.upper()))

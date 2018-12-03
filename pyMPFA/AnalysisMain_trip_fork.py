@@ -3,28 +3,30 @@
 
 import AnalysisMain as alm
 import os
-import pickle
-import re
-import copy
-import json
-import subprocess
-import gzip
+# import pickle
+# import re
+# import copy
+# import json
+# import subprocess
+# import gzip
 import datetime
 import logging
-from glob import glob
-from string import Template
-from pprint import pprint as view
-from json2html import *
+# from glob import glob
+# from string import Template
+# from pprint import pprint as view
+# from json2html import *
 from collections import OrderedDict
 
 CONFIG = {
     "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-06-07/results/trip_6_2",
     "content": ["expression", "normalization"],
     "exception": {
-        "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-06-07/results/trip_6_2__prob_80",
+        "experiment_dir": "/home/anton/backup/input/trip/"
+        "RUN_2018-06-07/results/trip_6_2__prob_80__bcread_1__indexerror_2",
         "content": ["mapping"],
     },
-    "statistics_output": "/home/anton/backup/input/trip/RUN_2018-06-07/results/statistics/trip_6_2__prob_80",
+    "statistics_output": "/home/anton/backup/input/trip/"
+    "RUN_2018-06-07/results/statistics/trip_6_2__prob_80__bcread_1__indexerror_2",
     "rscript": "/usr/bin/Rscript",
     "output_control": "control.json",
     "output_data": "data.json",
@@ -102,7 +104,7 @@ def main(CONFIG):
                 alm.dump_to_json(OUTPUT[_out], json_output)
                 Logger.info(
                     "{} {} write succesful! ^_^".format(pmi_item, _out))
-        except:
+        except IOError:
             Logger.exception("{} {} write failed! >_<".format(pmi_item, _out))
         # Run biological analysis in R implementation
         alm.biological_sense(CONFIG, use_method="trip", label=pmi_item)

@@ -10,12 +10,24 @@
     source: https://github.com/wiw/MpSA-TRIP/
 """
 
-import os, pickle, subprocess, argparse, json, logging, logging.config, gzip, regex, pdb, string, Levenshtein
+import os
+import pickle
+import subprocess
+import argparse
+import json
+import logging
+import logging.config
+import gzip
+import regex
+import pdb
+import string
+import Levenshtein
 from Bio import SeqIO
 from Bio.SeqIO.QualityIO import FastqGeneralIterator
 
 Logger = logging.getLogger(__name__)
 CONFIG_FILE_PATH = "config.json"
+
 
 def load_main_config(config_path):
     try:
@@ -34,16 +46,20 @@ def load_logging_config(path):
             config = json.load(f)
         logging.config.dictConfig(config)
     else:
-        logging.basicConfig(filename=None, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',datefmt='%Y.%m.%d %H:%M:%S')
+        logging.basicConfig(filename=None, level=logging.INFO,
+                            format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y.%m.%d %H:%M:%S')
+
 
 def parse_arguments():
     try:
-        p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+        p = argparse.ArgumentParser(
+            description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
         p.add_argument("--config", "-c", help="Path to config file")
         args = p.parse_args()
         return args
     except:
         Logger.exception("Don't parse arguments!")
+
 
 def open_input(INPUT):
     try:
@@ -54,6 +70,7 @@ def open_input(INPUT):
     except:
         Logger.exception("Opener error!")
 
+
 def load_pickle(data):
     try:
         with open_input(data) as handle:
@@ -62,15 +79,17 @@ def load_pickle(data):
     except:
         Logger.exception("Don't load your data {}".format(data))
 
+
 def select_file(config, experiment):
     if config['input_file'].keys() == ["single"]:
         return [config['input_file']['single']['path']]
     elif config['input_file'].keys() == ["multiple"]:
         return config['input_file']['muliple'][experiment]
 
+
 def reverseComplement(x):
     try:
-        complement = string.maketrans('ACGTNSRYMKWHBVD','TGCANSRYMKWHBVD')
+        complement = string.maketrans('ACGTNSRYMKWHBVD', 'TGCANSRYMKWHBVD')
         if type(x) == unicode:
             complement = complement.decode("latin-1")
         revx = x.translate(complement)[::-1]
@@ -78,6 +97,7 @@ def reverseComplement(x):
     except:
         Logger.exception("Don't reverse string. Return initial value")
         return x
+
 
 def regexp_maker(option, config, mod_read_structure=None):
     try:
@@ -110,14 +130,16 @@ def regexp_maker(option, config, mod_read_structure=None):
                         sub_index_error = str(config["core"]["error"].get("sub_index_error", "0"))
                         regexp += "(?P<sub_index>{}){{s<={}}}".format(sub_index_str, sub_index_error)
                     if key == "barcode":
-                        barcode_length = ",".join([str(int(round(config["core"]["length"]["barcode_length"] * x, 0))) for x in [0.9, 1.1]])
+                        barcode_length = ",".join(
+                            [str(int(round(config["core"]["length"]["barcode_length"] * x, 0))) for x in [0.9, 1.1]])
                         regexp += "(?P<barcode>[ATGC]{{{}}})".format(barcode_length)
             except:
                 Logger.exception("Error with prepare key {]".format(key))
             try:
                 if key == "sequence":
                     if config["project"] == "TRIP":
-                        key_position_number = [i for i, x in enumerate(config["content"][experiment]["read_structure"]) if x == key][0]
+                        key_position_number = [i for i, x in enumerate(
+                            config["content"][experiment]["read_structure"]) if x == key][0]
                         if key_position_number == len(config["content"][experiment]["read_structure"]) - 1:
                             regexp += "(?P<sequence_1>.*)"
                             return regexp
@@ -135,6 +157,7 @@ def regexp_maker(option, config, mod_read_structure=None):
     except:
         Logger.exception("Undefined error in 'regexp_maker'")
 
+
 def check_sub_index(dubbio_idx, config_sub_index, config_sub_index_error):
     try:
         chkResult = []
@@ -146,12 +169,14 @@ def check_sub_index(dubbio_idx, config_sub_index, config_sub_index_error):
     except:
         return False
 
+
 stat_dict = {
     "counter": {
         "all_lines": 0,
         "matched_barcodes": 0,
     }
 }
+
 
 def collect_grains(option, config, regexp, stat_dict):
     MAIN_DICT = {
@@ -164,13 +189,16 @@ def collect_grains(option, config, regexp, stat_dict):
             match = regexp.match(seq)
             stat_dict["counter"]["all_lines"] += 1
             if match is not None:
-                mgroup = {k:v for k,v in match.groupdict().items() if v is not None}
+                mgroup = {k: v for k, v in match.groupdict().items() if v is not None}
+
 
 for k in mgroup:
     if regex.search("sequence", k) is None:
-        mgroup[k] = reverseComplement(mgroup[k]) if config["content"][experiment]["barcode_reversed"] else mgroup[k]
+        mgroup[k] = reverseComplement(
+            mgroup[k]) if config["content"][experiment]["barcode_reversed"] else mgroup[k]
     if k == "sub_index":
-        mgroup[k] = check_sub_index(mgroup[k], config["content"][experiment]["sub_index"], config["core"]["error"]["sub_index_error"])
+        mgroup[k] = check_sub_index(mgroup[k], config["content"][experiment]
+                                    ["sub_index"], config["core"]["error"]["sub_index_error"])
 
 
 # def main(args):
@@ -200,7 +228,6 @@ try:
             # TRIP: collect barcodes; combinations of: barcode-name_read, name_read-genome, name_read-genome_mapping and barcode-genome_mapping; check probability bc-gm; write result
 except:
     Logger.exception("Undefined IOError!")
-
 
 
 if __name__ == "__main__":
