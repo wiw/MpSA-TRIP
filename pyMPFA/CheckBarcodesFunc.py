@@ -48,7 +48,7 @@ def mainCheckBarcodeInDict(bcDict, barcodeError):
             "        There were {} errors. Do not worry, they are already deleted.\n".format(stat))
 
 
-def checkPMI(_pmi, pmi_item, options):
+def checkPMI_fork(_pmi, pmi_item, options):
     check_result = []
     if _pmi == pmi_item:
         return pmi_item
@@ -59,3 +59,12 @@ def checkPMI(_pmi, pmi_item, options):
         if len(check_result) == 1:
             return check_result[0]
         return False
+
+def checkPMI(exp, pmi, pmiSubst):
+    chkResult = []
+    for i in pmi:
+        if Levenshtein.distance(str(exp), str(i)) <= int(pmiSubst):
+            chkResult.append(str(i))
+    if len(chkResult) == 1:
+        return chkResult[0]
+    return False

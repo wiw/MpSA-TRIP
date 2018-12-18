@@ -11,7 +11,7 @@ from collections import Counter
 from Bio import SeqIO
 from Bio.SeqIO.QualityIO import FastqGeneralIterator
 from PairedEndFunc import reverseComplement
-from CheckBarcodesFunc import mainCheckBarcodeInDict, checkPMI
+from CheckBarcodesFunc import mainCheckBarcodeInDict, checkPMI, checkPMI_fork
 from ReliableCombBcMutFunc import SelectionReliableBarcode, SelectionReliableBarcodeMutation, SelectionReliableBarcodeGenome
 """
 **** MPSA section
@@ -113,6 +113,7 @@ def CollectBarcodeMutationGenome(indexFile,
     bcListDict, bcGenomeListDict = {p: [] for p in pmi}, {p: {} for p in pmi}
     bcDictPI, seqDictPI = {}, {}
     bcDictTmp, alignDict = {}, {}
+    pmiLength = range(pmiLength - 1, pmiLength + 1)
     expr = regex.compile(regExpBcMut)
     for pmiItem in pmi:
         pmiWD = os.path.join(os.path.dirname(indexFile), pmiItem)
@@ -126,7 +127,7 @@ def CollectBarcodeMutationGenome(indexFile,
                 match = expr.match(seq)
                 if match is not None:
                     countAllRds += 1
-                    if int(barcodeLength * 0.9) <= len(match.group("barcode")) <= int(barcodeLength * 1.1) and len(match.group("pIndex")) == pmiLength:
+                    if int(barcodeLength * 0.9) <= len(match.group("barcode")) <= int(barcodeLength * 1.1) and len(match.group("pIndex")) in pmiLength:
                         if "N" not in match.group("barcode").upper() and "N" not in match.group("pIndex").upper():
                             if match.group("genome1") is not None:
                                 g = match.group("genome1")
@@ -218,13 +219,14 @@ def CollectBarcodeGenome(indexFile, barcodeLength, readsValue, barcodeError, con
                                   progressbar.Bar(left='<', marker='.', right='>')]).start()
     t = 0
     expr = regex.compile(regExpBc)
+    pmiLength = range(pmiLength - 1, pmiLength + 1)
     with nopen(indexFile) as handle:
         for seq_record in SeqIO.parse(handle, "fastq"):
             bar.update(t)
             t += 1
             match = expr.match(str(seq_record.seq))
             if match is not None:
-                if int(barcodeLength * 0.9) <= len(match.group("barcode")) <= int(barcodeLength * 1.1) and len(match.group("pIndex")) == pmiLength:
+                if int(barcodeLength * 0.9) <= len(match.group("barcode")) <= int(barcodeLength * 1.1) and len(match.group("pIndex")) in pmiLength:
                     if "N" not in match.group("barcode").upper() and "N" not in match.group("pIndex").upper():
                         if reverseBC:
                             b = reverseComplement(match.group("barcode"))
@@ -281,7 +283,7 @@ def CollectBarcodeMutationGenomePaired(paired_indexes, options):
                                 four_letters_seq_collection.setdefault(
                                     side, {})
                                 _pmi = match_result.get("pIndex", False)
-                                matched_pmi = checkPMI(_pmi, pmi_item, options)
+                                matched_pmi = checkPMI_fork(_pmi, pmi_item, options)
                                 if matched_pmi is not False:
                                     # from this stage get 4-letters seq, and collect to
                                     # dict
@@ -340,7 +342,8 @@ def checkup_regex(match, options):
             checkup.append(True if len(value) in range_item else False)
             checkup.append(True if "N" not in value.upper() else False)
         elif item == "pIndex":
-            checkup.append(True if len(value) == pmi_len else False)
+            pmi_len = range(pmi_len - 1, pmi_len + 1)
+            checkup.append(True if len(value) in pmi_len else False)
             checkup.append(True if "N" not in value.upper() else False)
         elif item == "genome":
             checkup.append(True if type(value) == str else False)

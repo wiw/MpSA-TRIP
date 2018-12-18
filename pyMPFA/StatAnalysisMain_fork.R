@@ -379,6 +379,8 @@ main <- function(args) {
     dev.off()
     # Write output table to csv file
     write.csv2(DATA$data, file.path(arguments$wd, paste0("results_", format(Sys.time(), "%Y-%m-%d"), ".csv")), row.names = FALSE)
+    # Write all environment to RData
+    save(file=file.path(arguments$wd, "session.RData"))
 
 }
 

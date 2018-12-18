@@ -362,7 +362,7 @@ def parse_collection_data(collection_of_output_data):
     # Return html table
 
     def stat_four_seq_data(idata):
-        output= {}
+        output = {}
         for promotor_index, four_seq_data in idata.items():
             output.setdefault(promotor_index, dict(Counter(four_seq_data)))
         return output
@@ -504,7 +504,7 @@ def parse_collection_data(collection_of_output_data):
             "output_table", replicate_count), output_table)
         replicate_count += 1
     encoded_add_to_report_data = {k: v.encode('ascii', 'ignore')
-                           for k, v in add_to_report.items()}
+                                  for k, v in add_to_report.items()}
     return encoded_add_to_report_data
 
 

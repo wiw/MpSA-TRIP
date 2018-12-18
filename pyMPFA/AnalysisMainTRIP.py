@@ -328,13 +328,17 @@ workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutP
 # lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
 # workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/1_S1_L001_R1_001_Lib_33-40_mapping"
 
-indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
-lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
-workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping"
+# indexList = {"33_40_m1": "AGCGAGCT", "33_40_m2": "CTGCACGT"}
+# lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping/Dump"
+# workdir = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40/1_S1_L001_R1_001_Lib_33-40_mapping"
 
 # indexList = {"25_32_m2": "GGACAACG", "25_32_m1": "CAAGATAA", "25_32_conv_m1": "TTCGGAGT", "25_32_conv_m2": "ACTCATTT"}
 # lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_95__bcError_2/Lib_25-32/1_S1_L001_R1_001_Lib_25-32_mapping/Dump"
 # workdir = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_95__bcError_2/Lib_25-32/1_S1_L001_R1_001_Lib_25-32_mapping"
+
+indexList = {"25_32_m1":"CAAGATAA", "25_32_m2":"GGACAACG"}
+lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_25-32/1_S1_L001_R1_001_Lib_25-32_mapping/Dump"
+workdir = "/home/anton/backup/input/trip/RUN_2018-11-20/results/bcRead_3__bcMutProb_95__bcError_2/Lib_25-32/1_S1_L001_R1_001_Lib_25-32_mapping"
 
 
 # indexList = {"25_32_m2": "GGACAACG", "25_32_m1": "CAAGATAA", "25_32_m3": "TTCGGAGT", "25_32_m4": "ACTCATTT"}

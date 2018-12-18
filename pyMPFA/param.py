@@ -2,16 +2,16 @@
 indexList = {"trip6_1_m1":"TTCGGAGT", "trip6_1_m2":"ACTCATTT"}
 all_indexes = ["AGTCGCCG", "TAAACATC", "ACAATTCG", "TACTTGTC", "GTACCGTT", "GCCACATA", "CCTATGGT", "AACGTCGC", "TTCGGAGT", "ACTCATTT", "GGGATCCG", "TCAAGCAA", "AGGCAGCA", "AGCTTTCT", "GGTATGTT", "GAGGGACC", "TAGCTCTA", "TAATTGCG", "GAAATGGG", "TCGAGACT"]
 # promotor index
-pmi = ['AGCTC', 'ACGTA', 'CTGCT', 'AGTCA', 'TCAAA', 'TTGAG', 'TCGCT']
-pmi_rev = ['GAGCT', 'TACGT', 'AGCAG', 'TGACT', 'TTTGA', 'CTCAA', 'AGCGA']
-pmiSubst = 1
+pmi = ['AGCTC', 'ACGTA', 'CTGCT', 'AGTCA', 'TCAA', 'TTGAG', 'TCGCT']
+pmi_rev = ['GAGCT', 'TACGT', 'AGCAG', 'TGACT', 'TTGA', 'CTCAA', 'AGCGA']
+pmiSubst = 0
 
-indexError = 0
+indexError = 2
 barcodeError = 2
 barcodeLength = 18
 pmiLength = 5
 mutationLength = 8
-readsValue = 2
+readsValue = 0
 mutationProbability = 0.80
 separator = " "
 probability = 0.5

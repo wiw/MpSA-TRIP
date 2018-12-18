@@ -18,13 +18,92 @@ from string import Template
 from json2html import *
 from collections import OrderedDict
 # Configuration dictionary for lib 29-36 with bcread=3, bcmut_probability=0.8
+# CONFIG = {
+#     "experiment_dir": "/home/anton/backup/input/trip/"
+#     "RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_29-36",
+#     "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
+#     "exception": {
+#         "experiment_dir": "/home/anton/backup/input/trip/"
+#         "RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_29-36",
+#         "content": ["mapping"]
+#     },
+#     "control": {
+#         "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
+#         "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
+#         "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
+#         "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
+#     },
+#     "statistics_output": "/home/anton/backup/input/trip/"
+#     "RUN_2018-11-20/results/statistics/Lib_29-36_bcRead_2__bcMutProb_50__bcError_2",
+#     "rscript": "/usr/bin/Rscript",
+#     "output_control": "control.json",
+#     "output_data": "data.json",
+#     "output_rpl_count": "rpl_count.json",
+#     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
+#     "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
+# }
+
+# Configuration dictionary for lib 25-32 with bcread=2, bcmut_probability=0.5
+# CONFIG = {
+#     "experiment_dir": "/home/anton/backup/input/trip/"
+#     "RUN_2018-11-20/results/bcRead_2__bcMutProb_80__bcError_2/Lib_25-32",
+#     "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
+#     "exception": {
+#         "experiment_dir": "/home/anton/backup/input/trip/"
+#         "RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_25-32",
+#         "content": ["mapping"]
+#     },
+#     "control": {
+#         "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
+#         "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
+#         "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
+#         "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
+#     },
+#     "statistics_output": "/home/anton/backup/input/trip/"
+#     "RUN_2018-11-20/results/statistics/Lib_25-32_bcRead_2__bcMutProb_50__bcError_2_2018-12-10",
+#     "rscript": "/usr/bin/Rscript",
+#     "output_control": "control.json",
+#     "output_data": "data.json",
+#     "output_rpl_count": "rpl_count.json",
+#     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
+#     "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
+# }
+
+# Configuration dictionary for lib 37-44 with bcread=2, bcmut_probability=0.5
+# CONFIG = {
+#     "experiment_dir": "/home/anton/backup/input/trip/"
+#     "RUN_2018-11-20/results/bcRead_2__bcMutProb_80__bcError_2/Lib_37-44",
+#     "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
+#     "exception": {
+#         "experiment_dir": "/home/anton/backup/input/trip/"
+#         "RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_37-44",
+#         "content": ["mapping"]
+#     },
+#     "control": {
+#         "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
+#         "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
+#         "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
+#         "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
+#     },
+#     "statistics_output": "/home/anton/backup/input/trip/"
+#     "RUN_2018-11-20/results/statistics/Lib_37-44_bcRead_2__bcMutProb_50__bcError_2_2018-12-10",
+#     "rscript": "/usr/bin/Rscript",
+#     "output_control": "control.json",
+#     "output_data": "data.json",
+#     "output_rpl_count": "rpl_count.json",
+#     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
+#     "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
+# }
+
+
+# Config for lib 33-40 Run from 2018-10-19
 CONFIG = {
     "experiment_dir": "/home/anton/backup/input/trip/"
-    "RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_29-36",
+    "RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_33-40",
     "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
     "exception": {
         "experiment_dir": "/home/anton/backup/input/trip/"
-        "RUN_2018-11-20/results/bcRead_2__bcMutProb_50__bcError_2/Lib_29-36",
+        "RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40",
         "content": ["mapping"]
     },
     "control": {
@@ -34,7 +113,7 @@ CONFIG = {
         "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
     },
     "statistics_output": "/home/anton/backup/input/trip/"
-    "RUN_2018-11-20/results/statistics/Lib_29-36_bcRead_2__bcMutProb_50__bcError_2",
+    "RUN_2018-05-10/results/statistics/Lib_33-40_report_2018-12-12",
     "rscript": "/usr/bin/Rscript",
     "output_control": "control.json",
     "output_data": "data.json",
@@ -42,34 +121,6 @@ CONFIG = {
     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
     "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
 }
-
-
-# Config for lib 33-40 Run from 2018-10-19
-# CONFIG = {
-#     "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_33-40",
-#     "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
-#     "exception": {
-#         "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40",
-#         "content": ["mapping"]
-#     },
-#     "control": {
-#         "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
-#         "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
-#         "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
-#         "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
-#     },
-#     "statistics_output": "/home/anton/backup/input/trip/RUN_2018-05-10/results/statistics/Lib_33-40_bcRead_2__bcMutProb_50__bcError_2",
-#     "rscript": "/usr/bin/Rscript",
-#     "output_control": "control.json",
-#     "output_data": "data.json",
-#     "output_rpl_count": "rpl_count.json",
-#     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
-#     "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
-# }
-
-# indexList = {"m1": "CAAGATAA", "m2": "GGACAACG"}
-# lib_mapping_dump = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping/Dump"
-# workdir = "/home/anton/backup/input/trip/RUN_2017-11-27/results/sample_S1_L001_R1_001_BC_Mut_mapping"
 
 # Configuration dictionary for lib 29-36 with bcread=3, bcmut_probability=0.8
 # CONFIG = {
@@ -456,7 +507,8 @@ def main(CONFIG):
     OUTPUT = {
         "output_data": mapped_norm_expression_data,
         "output_control": output_control_data,
-        "output_rpl_count": output_rpl_count
+        "output_rpl_count": output_rpl_count,
+        "output_map_and_norm": map_norm_1_2_data,
     }
     make_report(REPORT, CONFIG)
     # write output data to json
@@ -468,7 +520,7 @@ def main(CONFIG):
     except IOError:
         Logger.exception("{} write failed! >_<".format(_out))
     # Run biological analysis in R implementation
-    # biological_sense(CONFIG)      # disabled
+    biological_sense(CONFIG)      # enabled
 
 
 if __name__ == '__main__':

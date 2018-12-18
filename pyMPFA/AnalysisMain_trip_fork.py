@@ -3,34 +3,27 @@
 
 import AnalysisMain as alm
 import os
-# import pickle
-# import re
-# import copy
-# import json
-# import subprocess
-# import gzip
 import datetime
 import logging
-# from glob import glob
-# from string import Template
 # from pprint import pprint as view
-# from json2html import *
 from collections import OrderedDict
 
 CONFIG = {
-    "experiment_dir": "/home/anton/backup/input/trip/RUN_2018-06-07/results/trip_6_2",
-    "content": ["expression", "normalization"],
-    "exception": {
-        "experiment_dir": "/home/anton/backup/input/trip/"
-        "RUN_2018-06-07/results/trip_6_2__prob_80__bcread_1__indexerror_2",
-        "content": ["mapping"],
-    },
+    "experiment_dir": "/home/anton/backup/input/trip/"
+    "RUN_2018-06-07/results/trip_6_2_loose_bcs__prob_80__bcread_1__indexerror_2",
+    "content": ["expression", "normalization", "mapping"],
+    # "exception": {
+    #     "experiment_dir": "/home/anton/backup/input/trip/"
+    #     "RUN_2018-06-07/results/trip_6_2__prob_80__bcread_1__indexerror_2",
+    #     "content": ["mapping"],
+    # },
     "statistics_output": "/home/anton/backup/input/trip/"
-    "RUN_2018-06-07/results/statistics/trip_6_2__prob_80__bcread_1__indexerror_2",
+    "RUN_2018-06-07/results/statistics/trip_6_2_loose_bcs__prob_80__bcread_1__indexerror_2",
     "rscript": "/usr/bin/Rscript",
     "output_control": "control.json",
     "output_data": "data.json",
     "output_rpl_count": "rpl_count.json",
+    "output_map_and_norm": "map_norm_data.json",
     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
     "pympfa_src": "/home/anton/data/TRIP/pyMPFA",
 }
@@ -92,7 +85,8 @@ def main(CONFIG):
         }
         OUTPUT = {
             "output_data": mapped_norm_expression_data,
-            "output_rpl_count": output_rpl_count
+            "output_rpl_count": output_rpl_count,
+            "output_map_and_norm": map_norm_1_2_data,
         }
         alm.make_report(REPORT, CONFIG, label=pmi_item)
         try:
