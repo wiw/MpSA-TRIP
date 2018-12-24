@@ -10,7 +10,7 @@ from collections import OrderedDict
 
 CONFIG = {
     "experiment_dir": "/home/anton/backup/input/trip/"
-    "RUN_2018-06-07/results/trip_6_2_loose_bcs__prob_80__bcread_1__indexerror_2",
+    "RUN_2018-12-14/results/trip_18_1",
     "content": ["expression", "normalization", "mapping"],
     # "exception": {
     #     "experiment_dir": "/home/anton/backup/input/trip/"
@@ -18,7 +18,7 @@ CONFIG = {
     #     "content": ["mapping"],
     # },
     "statistics_output": "/home/anton/backup/input/trip/"
-    "RUN_2018-06-07/results/statistics/trip_6_2_loose_bcs__prob_80__bcread_1__indexerror_2",
+    "RUN_2018-12-14/results/statistics/trip_18_1",
     "rscript": "/usr/bin/Rscript",
     "output_control": "control.json",
     "output_data": "data.json",

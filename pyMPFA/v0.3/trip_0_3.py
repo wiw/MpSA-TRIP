@@ -44,7 +44,7 @@ def load_logging_config(path):
         with open(path, 'rt') as f:
             config = json.load(f)
         logging.config.dictConfig(config)
-    except:
+    except Exception:
         logging.basicConfig(filename=None, level=logging.INFO,
                             format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y.%m.%d %H:%M:%S')
 
@@ -58,7 +58,7 @@ def parse_arguments():
         args = p.parse_args()
         # args = p.parse_args(["--config", "./config_trip.json"])
         return args
-    except:
+    except Exception:
         Logger.exception("Don't parse arguments!")
 
 
@@ -68,7 +68,7 @@ def open_input(INPUT):
             return gzip.open(INPUT, 'rb')
         else:
             return open(INPUT, 'rb')
-    except:
+    except IOError:
         Logger.exception("Opener error!")
 
 
@@ -77,7 +77,7 @@ def load_pickle(data):
         with open_input(data) as handle:
             unserialized_data = pickle.load(handle)
             return unserialized_data
-    except:
+    except IOError:
         Logger.exception("Don't load your data {}".format(data))
 
 
@@ -95,7 +95,7 @@ def reverseComplement(x):
             complement = complement.decode("latin-1")
         revx = x.translate(complement)[::-1]
         return revx
-    except:
+    except Exception:
         Logger.exception("Don't reverse string. Return initial value")
         return x
 
@@ -107,7 +107,7 @@ def regexp_maker(option, config, mod_read_structure=None):
         read_structure = config["content"][experiment]["read_structure"]
         if mod_read_structure:
             read_structure = mod_read_structure
-    except:
+    except Exception:
         Logger.exception("Don't explain 'read_structure'")
     try:
         for key in read_structure:
@@ -137,7 +137,7 @@ def regexp_maker(option, config, mod_read_structure=None):
                         barcode_length = ",".join(
                             [str(int(round(config["core"]["length"]["barcode_length"] * x, 0))) for x in [0.9, 1.1]])
                         regexp += "(?P<barcode>[ATGC]{{{}}})".format(barcode_length)
-            except:
+            except KeyError:
                 Logger.exception("Error with make key {]".format(key))
             try:
                 if key == "sequence":
@@ -157,11 +157,11 @@ def regexp_maker(option, config, mod_read_structure=None):
                         sequence_length = str(
                             config["core"]["length"].get("mutation_length", "8"))
                         regexp += "(?P<sequence>.{{{}}})".format(sequence_length)
-            except:
+            except KeyError:
                 Logger.exception("Error with make regexp for 'sequence' key")
         regexp += ".*$"
         return regexp
-    except:
+    except Exception:
         Logger.exception("Undefined error in 'regexp_maker'")
 
 
@@ -173,9 +173,10 @@ def check_sub_index(dubbio_idx, config_sub_index, config_sub_index_error):
                 chkResult.append(str(v))
         if len(chkResult) == 1:
             return chkResult[0]
-    except:
+    except Exception:
         Logger.exception("")
         return False
+
 
 stat_dict = {
     "counter": {
@@ -228,51 +229,52 @@ def collect_grains(option, config, stat_dict):
                                             extracted_seq, seq).span()
                                         extracted_seq = (
                                             title, extracted_seq, qual[start:end])
-                                    except:
+                                    except Exception:
                                         Logger.exception(
                                             "Don't try read {} for TRIP project".format(title))
                                 main_dict[mgroup["barcode"]].setdefault(
                                     "sequence", []).append(extracted_seq)
     return main_dict
 
-# def main(args):
-try:
-    if os.path.exists(args.config):
-        config = load_main_config(args.config)
-        load_logging_config(config['logging'])
-except:
-    Logger.exception("There is no config on the specified path!")
-try:
-    main_dict = {}
-    for experiment in config['content']:
-        INPUT = select_file(config, experiment)
-        for f in INPUT:
-            if f.endswith("pickle"):
-                THIS_VAR_NAME_NEED_TO_BE_CHANGE = load_pickle(f)
-                Logger.info("Data '{}' has been loaded from pickle file".format(f))
-                continue
 
-            for idx_name, idx_seq in config["content"][experiment]["index"].items():
-dict_name = "{}_{}".format(experiment, idx_name)
-cur_option = {
-    "input": f,
-    "experiment": experiment,
-    "index_name": idx_name,
-    "index_seq": idx_seq
-}
-cur_option["regexp"] = regex.compile(regexp_maker(cur_option, config))
-main_dict[dict_name] = collect_grains(cur_option, config, stat_dict)
-# MpSA: collect barcodes; combinations of barcode-mutation; check probability bc-mut; write result
-# TRIP: collect barcodes; combinations of: barcode-name_read,
-# name_read-genome, name_read-genome_mapping and barcode-genome_mapping;
-# check probability bc-gm; write result
-except:
-    Logger.exception("Undefined IOError!")
+def main(args):
+    try:
+        if os.path.exists(args.config):
+            config = load_main_config(args.config)
+            load_logging_config(config['logging'])
+    except Exception:
+        Logger.exception("There is no config on the specified path!")
+    try:
+        main_dict = {}
+        for experiment in config['content']:
+            INPUT = select_file(config, experiment)
+            for f in INPUT:
+                if f.endswith("pickle"):
+                    THIS_VAR_NAME_NEED_TO_BE_CHANGE = load_pickle(f)
+                    Logger.info("Data '{}' has been loaded from pickle file".format(f))
+                    continue
+
+                for idx_name, idx_seq in config["content"][experiment]["index"].items():
+                    dict_name = "{}_{}".format(experiment, idx_name)
+                    cur_option = {
+                        "input": f,
+                        "experiment": experiment,
+                        "index_name": idx_name,
+                        "index_seq": idx_seq
+                    }
+                    cur_option["regexp"] = regex.compile(regexp_maker(cur_option, config))
+                    main_dict[dict_name] = collect_grains(cur_option, config, stat_dict)
+                    # MpSA: collect barcodes; combinations of barcode-mutation; check probability bc-mut; write result
+                    # TRIP: collect barcodes; combinations of: barcode-name_read,
+                    # name_read-genome, name_read-genome_mapping and barcode-genome_mapping;
+                    # check probability bc-gm; write result
+    except IOError:
+        Logger.exception("Undefined IOError!")
 
 
 if __name__ == "__main__":
     try:
         args = parse_arguments()
         main(args)
-    except:
+    except Exception:
         Logger.exception("Undefined error in <main>!")
