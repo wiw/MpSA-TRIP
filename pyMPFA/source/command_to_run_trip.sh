@@ -4,7 +4,7 @@
 # > command_to_run.sh <mode> <path_to_source_file> <path_to_experiment_dir> <path_to_output_dir> <sub_experiment_separated_by_comma_wo_spacers> <reversed_barcode>
 # 
 # EXAMPLE:
-# > ./command_to_run.sh /home/anton/backup/input/trip/RUN_2018-05-10/sample_S1_L001_R1_001.fastq.gz /home/anton/backup/input/trip/RUN_2018-05-10/run/Lib_25-32 /home/anton/backup/input/trip/RUN_2018-05-10/results control_e,control_m,control_n,normalization,expression,mapping rev
+# > ./command_to_run.sh paired /home/anton/backup/input/trip/RUN_2018-05-10/sample_S1_L001_R1_001.fastq.gz /home/anton/backup/input/trip/RUN_2018-05-10/run/Lib_25-32 /home/anton/backup/input/trip/RUN_2018-05-10/results control_e,control_m,control_n,normalization,expression,mapping rev
 # 
 MODE=$1
 SOURCE=`echo $2 | sed -r "s/,/ /g"`

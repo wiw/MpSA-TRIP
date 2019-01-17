@@ -11,12 +11,12 @@ from collections import OrderedDict
 CONFIG = {
     "experiment_dir": "/home/anton/backup/input/trip/"
     "RUN_2018-12-14/results/trip_18_1",
-    "content": ["expression", "normalization", "mapping"],
-    # "exception": {
-    #     "experiment_dir": "/home/anton/backup/input/trip/"
-    #     "RUN_2018-06-07/results/trip_6_2__prob_80__bcread_1__indexerror_2",
-    #     "content": ["mapping"],
-    # },
+    "content": ["expression", "normalization"],
+    "exception": {
+        "experiment_dir": "/home/anton/backup/input/trip/"
+        "RUN_2018-06-07/results/trip_6_2__prob_80__bcread_1__indexerror_2",
+        "content": ["mapping"],
+    },
     "statistics_output": "/home/anton/backup/input/trip/"
     "RUN_2018-12-14/results/statistics/trip_18_1",
     "rscript": "/usr/bin/Rscript",

@@ -4,8 +4,8 @@ import regex
 import progressbar
 import random
 import os
-from Bio.SeqIO.QualityIO import FastqGeneralIterator
 from toolshed import nopen
+from Bio.SeqIO.QualityIO import FastqGeneralIterator
 from SupportFunc import get_sequence_count
 """
 **** READ INDEXES FUNCTIONS

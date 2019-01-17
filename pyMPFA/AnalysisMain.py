@@ -97,30 +97,30 @@ from collections import OrderedDict
 
 
 # Config for lib 33-40 Run from 2018-10-19
-CONFIG = {
-    "experiment_dir": "/home/anton/backup/input/trip/"
-    "RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_33-40",
-    "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
-    "exception": {
-        "experiment_dir": "/home/anton/backup/input/trip/"
-        "RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40",
-        "content": ["mapping"]
-    },
-    "control": {
-        "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
-        "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
-        "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
-        "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
-    },
-    "statistics_output": "/home/anton/backup/input/trip/"
-    "RUN_2018-05-10/results/statistics/Lib_33-40_report_2018-12-12",
-    "rscript": "/usr/bin/Rscript",
-    "output_control": "control.json",
-    "output_data": "data.json",
-    "output_rpl_count": "rpl_count.json",
-    "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
-    "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
-}
+# CONFIG = {
+#     "experiment_dir": "/home/anton/backup/input/trip/"
+#     "RUN_2018-05-10/results/bcRead_3__bcmutProb_80/Lib_33-40",
+#     "content": ["control_e", "control_n", "control_m", "expression", "normalization"],
+#     "exception": {
+#         "experiment_dir": "/home/anton/backup/input/trip/"
+#         "RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40",
+#         "content": ["mapping"]
+#     },
+#     "control": {
+#         "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
+#         "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
+#         "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
+#         "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
+#     },
+#     "statistics_output": "/home/anton/backup/input/trip/"
+#     "RUN_2018-05-10/results/statistics/Lib_33-40_report_2018-12-12",
+#     "rscript": "/usr/bin/Rscript",
+#     "output_control": "control.json",
+#     "output_data": "data.json",
+#     "output_rpl_count": "rpl_count.json",
+#     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
+#     "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
+# }
 
 # Configuration dictionary for lib 29-36 with bcread=3, bcmut_probability=0.8
 # CONFIG = {
@@ -144,6 +144,33 @@ CONFIG = {
 #     "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
 #     "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
 # }
+
+# Config for Run_test_run
+CONFIG = {
+    "experiment_dir": "/home/anton/backup/input/trip/"
+    "RUN_test_run/results/test_run_2019_01_16",
+    "content": ["expression", "normalization", "mapping"],
+    # "exception": {
+    #     "experiment_dir": "/home/anton/backup/input/trip/"
+    #     "RUN_2018-05-10/results/bcRead_2__bcMutProb_50__bcError_2/Lib_33-40",
+    #     "content": ["mapping"]
+    # },
+    "control": {
+        "wt-bc1": "TTCCAAGTGCAGGTTAGGCG",
+        "wt-bc2": "TGTGTACGGCTTGCTCTCAA",
+        "deltaC-bc3": "GAGCCCGGATCCACTCCAAG",
+        "deltaC-bc4": "TGTCACGTCAGCTAACCCAC"
+    },
+    "statistics_output": "/home/anton/backup/input/trip/"
+    "RUN_test_run/results/statistics/test_run_report_2019-01-17",
+    "rscript": "/usr/bin/Rscript",
+    "output_control": "control.json",
+    "output_data": "data.json",
+    "output_rpl_count": "rpl_count.json",
+    # "output_map_and_norm": "map_norm_count.json",
+    "html_template": "/home/anton/data/TRIP/pyMPFA/report.html.tpl",
+    "pympfa_src": "/home/anton/data/TRIP/pyMPFA"
+}
 
 if not os.path.exists(CONFIG["statistics_output"]):
     os.makedirs(CONFIG["statistics_output"])
@@ -228,7 +255,7 @@ def load_pickle(CONFIG):
             what_is_pickle = "resultDict"
         else:
             what_is_pickle = "bcDict"
-        regex1 = re.compile(".*" + what_is_pickle + ".*")
+        regex1 = re.compile(".*" + what_is_pickle + ".*pickle")
         pickles = filter(regex1.match, os.listdir(path_to))
         for f in pickles:
             filename, ext = os.path.splitext(f)
@@ -260,6 +287,7 @@ def get_control_count(CONFIG, control):
                 mutm, countm = sets
                 count += countm
         return count
+
     for item in control:
         compiled_control.setdefault(item, copy.deepcopy(CONFIG["control"]))
         for alias, bc in CONFIG["control"].items():
@@ -289,6 +317,7 @@ def align_map_norm_count_expr(data, CONFIG):
                         ["content"] if not re.search("control", i)]
             sets.extend(sets_add)
         return sets
+
     sets = _get_sets(CONFIG)
     map_norm_1_2_data, expr_1_2_data = {}, {}
     fmt_map_data = {}
@@ -508,7 +537,7 @@ def main(CONFIG):
         "output_data": mapped_norm_expression_data,
         "output_control": output_control_data,
         "output_rpl_count": output_rpl_count,
-        "output_map_and_norm": map_norm_1_2_data,
+        # "output_map_and_norm": map_norm_1_2_data,
     }
     make_report(REPORT, CONFIG)
     # write output data to json

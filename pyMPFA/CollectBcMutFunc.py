@@ -85,9 +85,6 @@ def CollectBarcode(indexFile, barcodeLength, readsValue, barcodeError, const_2, 
         return bcList
     bcCount = Counter(bcList)
     bcDict = SelectionReliableBarcode(bcCount, readsValue, barcodeError)
-    if len(bcDict) <= 10**5:
-        # print("        Checking barcodes ... Estimated time: ~ {}".format(supp.estimate_calculation_time(bcDict)))
-        mainCheckBarcodeInDict(bcDict, barcodeError)
     return bcDict
 
 

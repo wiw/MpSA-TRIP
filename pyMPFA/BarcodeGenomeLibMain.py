@@ -45,7 +45,7 @@ def main():
         for pI in bcDictPI:
             csvFile = wrt.WriteBcDictToFile(
                 bcDictPI[pI], os.path.join(picks.workdir, name), indexFile, pI)
-            # csvFile_R = wrt.SimpleCsvWriter(None, bcDictPI[pI], os.path.join(picks.workdir, name), indexFile, pI)
+            csvFile_R = wrt.SimpleCsvWriter(None, bcDictPI[pI], os.path.join(picks.workdir, name), indexFile, pI)
             supp.log_info('''        I had select the {} unique barcodes.\n
             Results writing to file '{}'
             in your working directory: '{}'\n'''.format(len(bcDictPI[pI]), csvFile, os.path.join(picks.workdir, name)))
