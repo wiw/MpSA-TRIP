@@ -1,0 +1,12 @@
+/home/anton/backup/
+/home/anton/data/
+/home/anton/Doc/
+/home/anton/Downloads/
+/home/anton/igv/
+/home/anton/ocs/
+/home/anton/PlayOnLinux\'s\ virtual\ drives/
+/home/anton/test/
+/home/anton/Venn.diagrams/
+/home/anton/Диссовет\ видео
+/home/anton/Рабочий\ стол
+/home/anton/.[a-z]*
